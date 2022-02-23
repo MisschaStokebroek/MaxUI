@@ -1,0 +1,9 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+	<Script file="Raidlayout.lua"/>
+	<Script file="PetRaidlayout.lua"/>
+	<Script file="Party.lua"/>
+	<Script file="Raid.lua"/>
+	<Script file="RaidAlternative.lua"/>
+
+</Ui>

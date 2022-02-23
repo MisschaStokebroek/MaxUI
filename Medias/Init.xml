@@ -1,0 +1,4 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="Medias.lua"/>
+	<Script file="Fonts.lua"/>
+</Ui>

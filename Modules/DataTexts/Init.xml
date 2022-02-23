@@ -1,0 +1,24 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<!-- MAXUI Data Text -->
+	<Script file="Elements\Avoidance.lua"/>
+	<Script file="Elements\Calltoarms.lua"/>
+	<Script file="Elements\Chat.lua"/>
+	<Script file="Elements\Currency.lua"/>
+	<Script file="Elements\Durability.lua"/>
+	<Script file="Elements\GameMenu.lua"/>
+	<Script file="Elements\Garrison.lua"/>
+	<Script file="Elements\DataCenter.lua"/>
+	<Script file="Elements\Location.lua"/>
+	<Script file="Elements\Meters.lua"/>
+	<Script file="Elements\Maps.lua"/>
+	<Script file="Elements\Quests.lua"/>
+	<Script file="Elements\RaidBuffTracker.lua"/>
+	<Script file="Elements\RaidTools.lua"/>
+	<Script file="Elements\Speed.lua"/>
+	<Script file="Elements\Talent.lua"/>
+	<Script file="Elements\UIConfig.lua"/>
+	<Script file="Elements\Xcoordinate.lua"/>
+	<Script file="Elements\Ycoordinate.lua"/>
+	
+	<Script file="DataTexts.lua"/>
+</Ui>

@@ -1,0 +1,7 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="SettingsMaxUI.lua"/>
+	<Script file="SettingsTukui.lua"/>
+	<Script file="GUI.lua"/>
+	<Script file="ExtendedGUI.lua"/>
+	<Script file="ColorPicker.lua"/>
+</Ui>
