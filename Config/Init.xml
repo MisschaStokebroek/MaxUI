@@ -3,5 +3,5 @@
 	<Script file="SettingsTukui.lua"/>
 	<Script file="GUI.lua"/>
 	<Script file="ExtendedGUI.lua"/>
-	<Script file="ColorPicker.lua"/>
+	<Script file="Changelog.lua"/>
 </Ui>

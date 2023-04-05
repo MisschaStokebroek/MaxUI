@@ -1,9 +1,9 @@
 ﻿------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
--- setting up PLAYER FRAMES.
+-- setting up SHAMAN POWERS AND TOTEM.
 
 ------------------------------------------------------------------------------------------
 -- SETUP
@@ -14,108 +14,163 @@ local Class = select(2, UnitClass("player"))
 local Movers = T["Movers"]
 local basePlayer = UnitFrames.Player
 
-if (Class ~= "SHAMAN") then
-	return
-end
+if (Class ~= "SHAMAN") then return end
 
 ------------------------------------------------------------------------------------------
 -- CLASS RESOURCES
 ------------------------------------------------------------------------------------------
 function UnitFrames:Player()
-	-- Tukui
+	local ActionBars = T.ActionBars
+	
 	basePlayer(self)
 
 	if not (C["UnitFrames"]["Style"]["Value"] == "MaxUI") then return end
 	
+	-- elements
 	local Health = self.Health
-	local TotemIcon = [[Interface\AddOns\MaxUI\Medias\MaxUI\totemwhite.tga]]
+	local ActionBar1 = TukuiActionBar1
+	local TotemBars = self.Totems
+
+	-- settings
+	local TotemSpacing = C["ClassOptions"]["ShamanTotemSpace"]
+	local TotemSize = C["ClassOptions"]["ShamanTotemSize"]
+	local ClassPowerHeight = C["ClassOptions"]["ClassPowerHeight"]
+	local ClassPowerWidth = C["ClassOptions"]["ClassPowerWidth"]
+	local ClassPowerSpace = C["ClassOptions"]["ClassPowerSpace"]
+
+	-- textures
+	local TotemIcon = [[Interface\AddOns\MaxUI\Medias\Icons\Custom\totemwhite.tga]]
+	local ClassPowerTexture = T.GetTexture(C["ClassOptions"]["ClassPowerTexture"])
 
 	if C["UnitFrames"]["TotemBar"]  == true then
-		local TotemBars = self.Totems
-		local ActionBar1 = T.ActionBars.Bars.Bar1
-		local TotemSpacing = C["ClassOptions"]["ShamanTotemSpace"]
-	
-		TotemBars:ClearAllPoints()
-		TotemBars:SetPoint("BOTTOM", ActionBar1, "TOP", 0, 7)
-		Movers:RegisterFrame(TotemBars, "Totem Bar")
-
+		
+		-- totem iconbars
 		if C.UnitFrames.TotemBarStyle.Value == "On Screen" then
-			local TotemSize = C["ClassOptions"]["ShamanTotemSize"]
-			TotemBars:SetSize((TotemSize*4) + (TotemSpacing*5), (TotemSize) + (TotemSpacing*2))
-			if C["ClassOptions"]["ShamanTotemBackdrop"] then
+			TotemBars:ClearAllPoints()
+			TotemBars:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+			TotemBars:SetFrameStrata("MEDIUM")
+			TotemBars:SetFrameLevel(5)
+
+			if C["ClassOptions"]["ClassPowerMover"] then
+				Movers:RegisterFrame(TotemBars, "Totem Bar")
+			end
+			
+			if C["ClassOptions"]["ClassPowerBackdrop"] then
 				TotemBars:CreateBackdrop("Transparent")
+				TotemBars.Backdrop:SetOutside()
 				TotemBars.Backdrop:CreateShadow()
+				
+				--if C["Skins"]["UnitFramesFilter"] == true then 
+				--	TotemBars.Backdrop:CreateMaxUIFilter()
+				--end
 			end
-		
+
 			if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Vertical" then
-				TotemBars:SetSize((TotemSize) + (TotemSpacing*2), (TotemSize*4) + (TotemSpacing*5))
+				TotemBars:SetSize((TotemSize+6), ((TotemSize*4)+(TotemSpacing*3)+6))
+			else
+				TotemBars:SetSize((TotemSize*4)+(TotemSpacing*3)+6, (TotemSize)+6)
 			end
 		
+
 			for i = 1, MAX_TOTEMS do
-				if C.UnitFrames.TotemBarStyle.Value == "On Player" then
-					TotemBars[i]:CreateBackdrop()
-					TotemBars[i].Backdrop:CreateShadow()
-					TotemBars[i].Background:SetAlpha(1)
-					TotemBars[i].Background:SetInside(TotemBars[i])
-				end
-				
-				if C["ClassOptions"]["ShamanTotemBackdrop"] then
-					TotemBars[i].Backdrop.Shadow:Hide()
-				end
-				
+				TotemBars[i]:ClearAllPoints()
 				TotemBars[i]:SetHeight(TotemSize)
 				TotemBars[i]:SetWidth(TotemSize)
 
 				if i == 1 then
-					TotemBars[i]:SetPoint("TOPLEFT", TotemBars, "TOPLEFT", TotemSpacing, -TotemSpacing)
+					TotemBars[i]:SetPoint("TOPLEFT", TotemBars, "TOPLEFT", 3, -3)
 				else
-					TotemBars[i]:SetPoint("LEFT", TotemBars[i-1], "RIGHT", TotemSpacing, 0)
-					if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Vertical"  then
-						TotemBars[i]:ClearAllPoints()
+					if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Vertical" then
 						TotemBars[i]:SetPoint("TOP", TotemBars[i-1], "BOTTOM", 0, -TotemSpacing)
+					else
+						TotemBars[i]:SetPoint("LEFT", TotemBars[i-1], "RIGHT", TotemSpacing, 0)
 					end
 				end
 				
-				TotemBars[i].Backdrop:SetAlpha(0.7)
+				if C["ClassOptions"]["ClassPowerBackdrop"] then
+					TotemBars[i].Backdrop.Shadow:Hide()
+				else
+					TotemBars[i].Backdrop:SetOutside(TotemBars[i])
+				end
 				
 				TotemBars[i].Backdrop.BackgroundTexture:SetTexture(nil)
 				TotemBars[i].Backdrop:SetBorderColor(unpack(T.Colors.totems[i]))
 
-				TotemBars[i].Backdrop.OverlayIcon = TotemBars[i].Backdrop:CreateTexture(nil, "OVERLAY", 1)
+				TotemBars[i].Backdrop.OverlayIcon = TotemBars[i].Backdrop:CreateTexture(nil, "ARTWORK", nil, 1)
 				TotemBars[i].Backdrop.OverlayIcon:SetPoint("CENTER", TotemBars[i].Backdrop, "CENTER", 0, 0)
 				TotemBars[i].Backdrop.OverlayIcon:SetSize(TotemSize -8, TotemSize -8)
 				TotemBars[i].Backdrop.OverlayIcon:SetTexture(TotemIcon)
 				TotemBars[i].Backdrop.OverlayIcon:SetVertexColor(unpack(T.Colors.totems[i]))
+				
+				if C["Skins"]["UnitFramesFilter"] == true then 
+					TotemBars[i].Backdrop:CreateMaxUIFilterInside()
+				end
 			end
 
+		-- totem statusbars
 		elseif C.UnitFrames.TotemBarStyle.Value == "On Player" then
-			local TotemSize = C["ClassOptions"]["ShamanTotemSize"]
+			TotemBars:ClearAllPoints()
+			TotemBars:SetPoint("BOTTOM", self, "TOP", 0, 9)
 			self.Shadow:SetPoint("TOPLEFT", -4, 3)
-			TotemBars:SetWidth((TotemSize*4) + 10)
-			TotemBars.Backdrop:CreateShadow()
-		
-			if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Vertical" then
-				TotemBars:SetWidth(TotemSize + 2)
-				TotemBars:SetHeight(32 + 4)
-				TotemBars.Backdrop.OverlayIcon = TotemBars.Backdrop:CreateTexture(nil, "OVERLAY", 1)
-				TotemBars.Backdrop.OverlayIcon:SetPoint("CENTER", TotemBars.Backdrop, "CENTER", 0, 0)
-				TotemBars.Backdrop.OverlayIcon:SetSize(24, 24)
-				TotemBars.Backdrop.OverlayIcon:SetAlpha(0.5)
-				TotemBars.Backdrop.OverlayIcon:SetTexture(TotemIcon)
+			TotemBars:SetFrameStrata("MEDIUM")
+			TotemBars:SetFrameLevel(5)
+			TotemBars.Backdrop:Hide()
+
+			if C["ClassOptions"]["ClassPowerMover"] then
+				Movers:RegisterFrame(TotemBars, "Totem Bar")
 			end
-	
+			
+			if C["ClassOptions"]["ClassPowerBackdrop"] then
+				TotemBars.Backdrop:SetBackdropColor(0.11, 0.11, 0.11, .7)
+				TotemBars.Backdrop:Show()
+				TotemBars.Backdrop:CreateShadow()
+				
+				if C["Skins"]["UnitFramesFilter"] == true then 
+					TotemBars.Backdrop:CreateMaxUIFilter()
+				end
+			end
+			
+			if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Vertical" then
+				TotemBars:SetSize((ClassPowerWidth*2)+6, (ClassPowerHeight*4)+(ClassPowerSpace*3)+6)
+			else
+				TotemBars:SetSize(((ClassPowerWidth*4)*2)+(ClassPowerSpace*3)+6, (ClassPowerHeight)+6)
+			end
+			
 			for i = 1, 4 do
-				TotemBars[i]:SetWidth(TotemSize)
+				TotemBars[i]:SetFrameStrata("MEDIUM")
+				TotemBars[i]:SetFrameLevel(8)
+				TotemBars[i]:SetHeight(ClassPowerHeight)
+				TotemBars[i]:SetWidth(ClassPowerWidth*2)
+				TotemBars[i]:SetStatusBarTexture(ClassPowerTexture)
+		
+				TotemBars[i]:CreateBackdrop()
+				TotemBars[i].Backdrop:SetOutside(TotemBars[i])
+				TotemBars[i].Backdrop:CreateShadow()
+				if C["General"]["ClassShadowExcludeUF"] then
+					TotemBars[i].Backdrop.Shadow:SetBackdropBorderColor(0, 0, 0, .8)
+				end
+
+				if C["ClassOptions"]["ClassPowerBackdrop"] then
+					TotemBars[i].Backdrop.Shadow:Hide()
+				end
+
+				if C["Skins"]["UnitFramesFilter"] == true then 
+					if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Horizontal" then
+						TotemBars[i]:CreateMaxUIFilter()
+					else
+						TotemBars[i]:CreateMaxUIVerticalFilter()
+					end	
+				end
 
 				if i == 1 then
 					TotemBars[i]:ClearAllPoints()
-					TotemBars[i]:SetPoint("TOPLEFT", TotemBars, "TOPLEFT", 1, -1)
+					TotemBars[i]:SetPoint("TOPLEFT", TotemBars, "TOPLEFT", 3, -3)
 				else
 					TotemBars[i]:ClearAllPoints()
-					TotemBars[i]:SetPoint("LEFT", TotemBars[i-1], "RIGHT", 3, 0)
 					if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Vertical" then
-						TotemBars[i]:ClearAllPoints()
-						TotemBars[i]:SetPoint("TOP", TotemBars[i-1], "BOTTOM", 0, -1)
+							TotemBars[i]:SetPoint("TOP", TotemBars[i-1], "BOTTOM", 0, -ClassPowerSpace)
+					else
+						TotemBars[i]:SetPoint("LEFT", TotemBars[i-1], "RIGHT", ClassPowerSpace, 0)
 					end
 				end
 			end

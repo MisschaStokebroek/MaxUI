@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up ANIMA BAR
@@ -24,6 +24,7 @@ local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
 Anima.AnimaColor = {153 / 255, 204 / 255, 255 / 255}
 
 local AnimaFrameHolder = CreateFrame("Frame", "AnimaFrameHolder", UIParent)
+AnimaFrameHolder:SetPoint("CENTER", UIParent, "CENTER")
 AnimaFrameHolder:SetHeight(22) 
 AnimaFrameHolder:SetWidth(200)
 
@@ -31,6 +32,9 @@ AnimaFrameHolder:SetWidth(200)
 -- AZERITE TOOLTIP
 ------------------------------------------------------------------------------------------
 function Anima:SetTooltip()
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["ANIMABarEnable"] then return end
+
 	local BarType = self.BarType
 	local Current, Max, Pts
 	Current, Max = Anima:GetAnima()
@@ -59,6 +63,9 @@ end
 -- ANIMA CREATE
 ------------------------------------------------------------------------------------------
 function Anima:GetAnima()
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["ANIMABarEnable"] then return end
+
 	local CurrencyID, MaxDisplayableValue = C_CovenantSanctumUI.GetAnimaInfo()
 	local CurrencyInfo = C_CurrencyInfo.GetCurrencyInfo(CurrencyID)
 	local Current = CurrencyInfo.quantity 
@@ -68,6 +75,9 @@ function Anima:GetAnima()
 end
 
 function Anima:Create()
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["ANIMABarEnable"] then return end
+
 	for i = 1, self.NumBars do
 		local AnimaBar = CreateFrame("StatusBar", nil, UIParent)
 
@@ -93,12 +103,9 @@ function Anima:Create()
 		AnimaBar:SetFrameLevel(11)
 		AnimaBar:SetStatusBarTexture(T.GetTexture(BarTexture))
 		
-		--AnimaBar:SetScript("OnMouseUp", function(self) GarrisonLandingPage_Toggle() end)
-		
 		local Animatext = AnimaBar:CreateFontString(nil, "OVERLAY")
 		Animatext:SetFontObject(T.GetFont(C["DataTexts"].Font))
 		Animatext:SetScale(C.DataTexts.FontSize/10)
-		Animatext:SetPoint("RIGHT", AnimaBar, "LEFT", -6, 0)
 		Animatext:SetText("Anima")
 
 		NoAnimatext = self:CreateFontString(nil, "OVERLAY")
@@ -111,7 +118,15 @@ function Anima:Create()
 		if C["Misc"]["PercentageTag"] == true then
 			Animapercenttext:SetFontObject(T.GetFont(C["DataTexts"].Font))
 			Animapercenttext:SetScale(C.DataTexts.FontSize/10)
+		end	
+
+		if C["Misc"]["ANIMABarTextPlacement"]["Value"] == "Inside" then
+			Animapercenttext:SetPoint("RIGHT", AnimaBar, "RIGHT", -6, 0)
+			Animatext:SetPoint("LEFT", AnimaBar, "LEFT", 6, 0)
+		
+		elseif C["Misc"]["ANIMABarTextPlacement"]["Value"] == "Outside" then
 			Animapercenttext:SetPoint("LEFT", AnimaBar, "RIGHT", 6, 0)
+			Animatext:SetPoint("RIGHT", AnimaBar, "LEFT", -6, 0)
 		end	
 
 		AnimaBar:HookScript("OnEnter", function(self)
@@ -121,7 +136,11 @@ function Anima:Create()
 		AnimaBar:HookScript("OnLeave", function(self)
 			AnimaBar.Backdrop:SetBorderColor(unpack(C["General"]["BorderColor"]))
 		end)
-	
+
+		if C["Skins"]["DataBarFilter"] == true then 
+			AnimaBar:CreateMaxUIFilter()
+		end
+
 		self["AnimaBar"..i] = AnimaBar
 	end	
 		
@@ -139,6 +158,9 @@ end
 -- ANIMA UPDATE
 ------------------------------------------------------------------------------------------
 function Anima:Update()
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["ANIMABarEnable"] then return end
+
 	for i = 1, self.NumBars do
 		local AnimaCurrency = C_CovenantSanctumUI.GetAnimaInfo()
 		local AnimaCurrencyInfo = C_CurrencyInfo.GetCurrencyInfo(AnimaCurrency)
@@ -167,7 +189,33 @@ end
 -- ANIMA ENABLE / DISABLE
 ------------------------------------------------------------------------------------------
 function Anima:Enable()
+	if not (C.General.Themes.Value == "MaxUI") then return end
 	if not C["Misc"]["ANIMABarEnable"] then return end
+	
+	if not C["Misc"]["ANIMABarDTEnable"] then
+		if C["Misc"]["ANIMABarTextPlacement"]["Value"] == "Inside" then
+			AnimaFrameHolder:SetHeight(C["Misc"]["ANIMABarHeight"] + 12) 
+			AnimaFrameHolder:SetWidth(C["Misc"]["ANIMABarWidth"] + 12)
+		elseif C["Misc"]["HONORBarTextPlacement"]["Value"] == "Outside" then
+			AnimaFrameHolder:SetHeight(C["Misc"]["ANIMABarHeight"] + 12) 
+			AnimaFrameHolder:SetWidth(C["Misc"]["ANIMABarWidth"] + 120)
+		else	
+			AnimaFrameHolder:SetHeight(C["Misc"]["ANIMABarHeight"] + 12) 
+			AnimaFrameHolder:SetWidth(C["Misc"]["ANIMABarWidth"] + 12)
+		end	
+		
+		if C["Misc"]["ANIMABarBackdrop"] == true then
+			AnimaFrameHolder:CreateBackdrop(nil, Texture)
+			AnimaFrameHolder.Backdrop:SetOutside()
+			AnimaFrameHolder.Backdrop:CreateShadow()
+			AnimaFrameHolder.Backdrop:SetAlpha(C["Misc"]["ANIMABarAlpha"])
+		end
+		Movers:RegisterFrame(AnimaFrameHolder, "Anima DataBar")
+		
+		if C["Misc"]["ANIMABarCombatState"]["Value"] == "Hide" then
+			RegisterStateDriver(AnimaFrameHolder, "visibility", "[combat] hide; show")
+		end
+	end
 
 	if not self.IsCreated then
 		self:Create()
@@ -202,7 +250,7 @@ T.Miscellaneous.Anima = Anima
 -- ANIMA DATATEXT 
 ------------------------------------------------------------------------------------------
 local Update = function(self)
-	if not C["Misc"]["ANIMABarEnable"] then return end
+	if not C["Misc"]["ANIMABarDTEnable"] then return end
 	AnimaFrameHolder:ClearAllPoints()
 	AnimaFrameHolder:SetPoint("CENTER", self, "CENTER", 0, 0)
 	AnimaFrameHolder:SetParent(self)
@@ -218,7 +266,8 @@ local OnMouseDown = function()
 end
 
 local Enable = function(self)
-	if not C["Misc"]["ANIMABarEnable"] then return end
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["ANIMABarDTEnable"] then return end
 	self:Update()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:SetScript("OnEvent", self.Update)
@@ -226,7 +275,7 @@ local Enable = function(self)
 end
 
 local Disable = function(self)
-	if not C["Misc"]["ANIMABarEnable"] then return end
+	if not C["Misc"]["ANIMABarDTEnable"] then return end
 	self.Text:SetText("")
 	self:SetScript("OnUpdate", nil)
 	self:SetScript("OnMouseDown", nil)

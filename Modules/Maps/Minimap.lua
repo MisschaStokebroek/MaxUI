@@ -1,10 +1,10 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up MAPS.
--- MawBuffsBelowMinimapFrame
+
 ------------------------------------------------------------------------------------------
 -- SETUP
 ------------------------------------------------------------------------------------------
@@ -13,22 +13,26 @@ local Minimap = T.Maps.Minimap
 local baseEnable = Minimap.Enable
 local Texture = T.GetTexture(C.General.HeaderTexture)
 local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
-local thickness = thickness
+local thickness
 
 ------------------------------------------------------------------------------------------
 -- MINIMAP ADJUSTMENTS
 ------------------------------------------------------------------------------------------
 function Minimap:TukuiStyleAdjustments()
-	local Mail = MiniMapMailFrame
-	
+	local Mail = (T.Retail and MiniMapMailIcon:GetParent()) or (MinimapCluster and MinimapCluster.MailFrame) or (MiniMapMailFrame)
+	local MailBorder = MiniMapMailBorder
+	local MailIcon = MiniMapMailIcon
+
 	if T.Retail then
 		MawBuffsBelowMinimapFrame.Container:ClearAllPoints()
 		MawBuffsBelowMinimapFrame.Container:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -10)
 	end
 	
 	-- Mail Icon
-	Mail:ClearAllPoints()
-	Mail:SetPoint("TOPLEFT", 0, 0)
+	if Mail then
+		Mail:ClearAllPoints()
+		Mail:SetPoint("TOPLEFT", 3, -3)
+	end
 
 	Minimap.Backdrop:SetOutside()
 	
@@ -57,6 +61,39 @@ function Minimap:TukuiStyleAdjustments()
 	elseif C["Location"]["Position"]["Value"] == "Bottom" then
 		Minimap:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -30, -30)	
 	end	
+end
+
+function Minimap:RectangleMask()
+	local scale = C["General"]["MinimapScale"]/100
+    local texturePath = "Interface\\AddOns\\MaxUI\\Medias\\Textures\\RecMapMask.tga"
+    local diff = (256*scale) - (190*scale)
+    local halfDiff = ceil(diff / 2)
+
+    Minimap:SetClampedToScreen(true)
+    Minimap:SetMaskTexture(texturePath)
+    Minimap:SetSize(256*scale, 256*scale)
+    Minimap:SetHitRectInsets(0, 0, halfDiff * 2, halfDiff * 1)
+    Minimap:SetClampRectInsets(0, 0, 0, 0)
+    
+   	Minimap:ClearAllPoints()
+    Minimap:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -6, 20)
+
+    Minimap.diff = diff
+    Minimap.halfDiff = halfDiff
+
+    Minimap.Backdrop:SetOutside()
+
+    self.Backdrop:ClearAllPoints()
+    self.Backdrop:SetPoint("TOP", 0, -38*scale)
+    self.Backdrop:SetPoint("BOTTOM", 0, 37*scale)
+    self.Backdrop:SetPoint("LEFT", 0, -2*scale)
+    self.Backdrop:SetPoint("RIGHT", 0, 2*scale)
+    
+    self.Backdrop.Shadow:ClearAllPoints()
+    self.Backdrop.Shadow:SetPoint("TOP", 0, 4)
+    self.Backdrop.Shadow:SetPoint("BOTTOM", 0, -4)
+    self.Backdrop.Shadow:SetPoint("LEFT", -4, 0)
+    self.Backdrop.Shadow:SetPoint("RIGHT", 4, 0)
 end
 
 function Minimap:Compass()
@@ -94,25 +131,38 @@ function Minimap:CombatState()
 end
 
 function Minimap:MaxUIStyle()
+	-- wow
+	-- elements
 	local MinimapDataText = T.DataTexts.Panels.Minimap
+	local TopLine = TopLine
+	local Mail = (T.Retail and MiniMapMailIcon:GetParent()) or (MinimapCluster and MinimapCluster.MailFrame) or (MiniMapMailFrame)
+	local MailBorder = MiniMapMailBorder
+	local MailIcon = MiniMapMailIcon
+
+	-- settings
 	local MapHeight = C["Location"]["MapHeight"]
 	local MapWidth = C["Location"]["MapWidth"]
 	local RightHeight = C["Chat"]["RightHeight"]
-	local TopLine = TopLine
-	local MapSize = T.Maps.Minimap:GetWidth()
-	local MapFont = T.GetFont(C["General"].Font)
+	thickness = C["General"]["thickness"] 
 	local Backdrop = Minimap.Backdrop
 	local MinimapZone = Minimap.MinimapZone
 	local MinimapCoords = Minimap.MinimapCoords
-	thickness = C["General"]["thickness"] 
-	
-	if C["Skins"]["MinimapFilter"] == true then 
-		Minimap.Filter = Minimap:CreateTexture(nil, "OVERLAY")
-		Minimap.Filter:SetAlpha(C["Skins"]["FilterAlpha"])
-		Minimap.Filter:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, 0)
-		Minimap.Filter:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 0, 0)
-		Minimap.Filter:SetTexture([[Interface\AddOns\MaxUI\Medias\Textures\Overlay.tga]])
+	local MapSize = T.Maps.Minimap:GetWidth()
+	local MapFont = T.GetFont(C["General"].Font)
+
+	if Mail then
+		Mail:ClearAllPoints()
+		Mail:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 4, -4)
+		Mail:SetSize(22, 22)
+		
+		MailIcon:ClearAllPoints()
+		MailIcon:SetPoint("TOPRIGHT", Mail, "TOPRIGHT")
+		MailIcon:SetSize(24, 24)
+		MailIcon:SetTexture("Interface\\AddOns\\MaxUI\\Medias\\Icons\\Menu\\cMail.tga")
 	end
+
+	MinimapZone.Backdrop:SetAlpha(0.8)
+	MinimapZone.Backdrop:CreateShadow()
 	
 	-- datatext hide it
 	MinimapDataText:ClearAllPoints()
@@ -121,29 +171,14 @@ function Minimap:MaxUIStyle()
 	MinimapDataText:SetHeight(22)
 	MinimapDataText:SetAlpha(0)
 	
-	-- add optional dt's for coords and zone
-	local ZoneHolder = CreateFrame("Frame", "ZoneHolder", Minimap)
-	ZoneHolder:SetHeight(22) 
-	ZoneHolder:SetWidth(MapSize-8)
-	ZoneHolder:SetPoint("TOP", Minimap, "TOP", 0, -6)
-
-	local LEFTCoordsHolder = CreateFrame("Frame", "LEFTCoordsHolder", Minimap)
-	LEFTCoordsHolder:SetHeight(22) 
-	LEFTCoordsHolder:SetWidth((MapSize-8)/2)
-	LEFTCoordsHolder:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 2, 6)
-
-	local RIGHTCoordsHolder = CreateFrame("Frame", "RIGHTCoordsHolder", Minimap)
-	RIGHTCoordsHolder:SetHeight(22) 
-	RIGHTCoordsHolder:SetWidth((MapSize-8)/2)
-	RIGHTCoordsHolder:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -2, 6)
-	
-	--MinimapZone:ClearAllPoints()
-	--MinimapZone:SetPoint("TOP", Minimap, "TOP", 0, -6)
 	if C.Maps.MinimapCoords then
 		MinimapCoords:ClearAllPoints()
-		MinimapCoords:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 6, -6)
+		MinimapCoords:SetSize(70, 22)
+		MinimapCoords:SetPoint("BOTTOMLEFT", MinimapZone, "TOPLEFT", 0, 4)
+		MinimapCoords.Backdrop:SetAlpha(0.8)
+		MinimapCoords.Backdrop:CreateShadow()
 	end
-	
+
 	-- Resize Minimap Backdrop
 	Backdrop:ClearAllPoints()
 	Backdrop:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -1, 1)
@@ -151,9 +186,9 @@ function Minimap:MaxUIStyle()
 
 	local y
 	if C["General"]["thickness"] <=19 then
-		y = 12
+		y = C["Location"]["MinimapRectangular"] and -26 or 12
 	else
-		y = 6 
+		y = C["Location"]["MinimapRectangular"] and -32 or 6 
 	end
 
 	-- minimap position
@@ -181,65 +216,15 @@ function Minimap:MaxUIStyle()
 		Minimap:SetWidth(RightHeight-1)
 		Minimap:SetHeight(RightHeight-1)
 	end	
-
-	-- tracker button
-	if T.Retail then
-		local Tracker = CreateFrame("Frame", "Tracker", Minimap)
-		Tracker:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -4, -4)
-		Tracker:SetHeight(18)
-		Tracker:SetWidth(18)
-		Tracker:SetFrameStrata("HIGH")
-		Tracker:SetFrameLevel(Minimap:GetFrameLevel()+1)
-		Tracker:CreateBackdrop(nil, Texture)
-		Tracker.Backdrop:SetInside()
-		Tracker.Backdrop:SetBackdropColor(unpack(C.General.BackdropColor))
-		Tracker.Backdrop:SetAlpha(C["General"]["GeneralPanelAlpha"])
-		if not IsAddOnLoaded('ProjectAzilroka') then 
-			Tracker.Backdrop:CreateShadow()
-		end
-
-		MiniMapTrackingButton:StripTextures()
-		MiniMapTrackingButton:SetParent(Tracker)
-		MiniMapTrackingButton:ClearAllPoints()
-		MiniMapTrackingButton:SetAllPoints()
-			MiniMapTrackingButton.Icon = MiniMapTrackingButton:CreateTexture(nil, "ART")
-			MiniMapTrackingButton.Icon:SetInside()
-			MiniMapTrackingButton.Icon:SetTexture([[Interface\AddOns\MaxUI\Medias\menuicons\maplocation.tga]])
-
-		
-		if not IsAddOnLoaded("ProjectAzilroka") then
-			Tracker:SetAlpha(0)
-			MiniMapTrackingButton:SetScript("OnEnter", function(self)
-				Tracker:SetAlpha(1)
-			end)
-
-			MiniMapTrackingButton:SetScript("OnLeave", function(self)
-				Tracker:SetAlpha(0)
-			end)
-		end
-	end
 	
 	-- Animation
-	--Minimap:Hide()
-	--Minimap:SetAlpha(0)	
 	Minimap:fadeIn(C["General"]["FaderTime"])
 	Minimap:fadeOut(C["General"]["FaderTime"])
-
-	-- temp fix for datatext not running function from API.
-	function MinimapFadeToggle()
-		if Minimap:IsShown() then
-			Minimap.fadeOut:Play()
-		else
-			Minimap:Show()
-			Minimap.fadeIn:Play()
-		end
-	end
 	
 	-- taxi button
-	Minimap.EarlyExitButton:CreateShadow()
+	Minimap.EarlyExitButton:SkinMaxUIButton(true)
+	--Minimap.EarlyExitButton:SetInside(MinimapDataText)
 	Minimap.EarlyExitButton:SetFrameStrata("HIGH")
-	Minimap.EarlyExitButton:SetInside(MinimapDataText)
-	
 	Minimap.EarlyExitButton.Text:Hide()
 	
 	local MinimapEarlyExitButtonText = Minimap.EarlyExitButton:CreateFontString(nil, "OVERLAY")
@@ -247,18 +232,15 @@ function Minimap:MaxUIStyle()
 	MinimapEarlyExitButtonText:SetPoint("CENTER")
 	MinimapEarlyExitButtonText:SetText("|cffFFFFFFDismount now.|r")
 
-	Minimap.EarlyExitButton.Texture = Minimap.EarlyExitButton:CreateTexture(nil, "ART")
-	Minimap.EarlyExitButton.Texture:SetInside(Minimap.EarlyExitButton)
-	Minimap.EarlyExitButton.Texture:SetTexture(Texture)
-	Minimap.EarlyExitButton.Texture:SetVertexColor(unpack(ClassColor))
-	if C["General"]["ClassColorHeaders"]["Value"] == "Dark" then 
-		Minimap.EarlyExitButton.Texture:SetVertexColor(0.11, 0.11, 0.11)
-	elseif C["General"]["ClassColorHeaders"]["Value"] == "ClassColor" then 
-		Minimap.EarlyExitButton.Texture:SetVertexColor(unpack(ClassColor))
-	elseif C["General"]["ClassColorHeaders"]["Value"] == "BackdropColor" then 
-		Minimap.EarlyExitButton.Texture:SetVertexColor(unpack(C.General.BackdropColor))
-	else
-		Minimap.EarlyExitButton.Texture:SetVertexColor(0.43, 0.43, 0.43)
+	if C["Skins"]["MinimapFilter"] == true then 
+		Minimap:CreateMaxUIFilter()
+	end
+
+	if C["Skins"]["MinimapElementsFilter"] == true then 
+		MinimapZone:CreateMaxUIFilter()
+		if C.Maps.MinimapCoords then
+			MinimapCoords:CreateMaxUIFilter()
+		end
 	end
 end
 
@@ -291,7 +273,6 @@ function Minimap:StartHighlight()
 end
 
 function Minimap:Enable()
-	-- Tukui
 	baseEnable(self)
 
 	-- Compass
@@ -302,9 +283,14 @@ function Minimap:Enable()
 	-- Combat State
 	self:CombatState()
 
-	-- MaxUI
+	-- MaxUI Style
 	if C["General"]["Themes"]["Value"] == "MaxUI" then 
 		self:TukuiStyleAdjustments()
 		self:MaxUIStyle()
-	end	
-end	
+	end
+
+	-- Compass
+	if C["Location"]["MinimapRectangular"] == true then 
+		Minimap:RectangleMask()
+	end
+end

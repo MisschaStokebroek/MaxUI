@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 01-08-2021
+-- latest update: 10-01-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up BASIC CONFIGURATION for Tukui options and settings.
@@ -30,30 +30,40 @@ C["ActionBars"]["BottomLeftBar"] = true
 C["ActionBars"]["BottomRightBar"] = true
 C["ActionBars"]["RightBar"] = true
 C["ActionBars"]["LeftBar"] = true
+C["ActionBars"]["Bar6"] = false
+C["ActionBars"]["Bar7"] = false
+C["ActionBars"]["Bar8"] = false
 C["ActionBars"]["HotKey"] = true
 C["ActionBars"]["EquipBorder"] = true
 C["ActionBars"]["Macro"] = false
 C["ActionBars"]["ShapeShift"] = true
 C["ActionBars"]["Pet"] = true
 C["ActionBars"]["SwitchBarOnStance"] = true
-C["ActionBars"]["Bar1ButtonsPerRow"] = 6
+C["ActionBars"]["Bar1ButtonsPerRow"] = 4
 C["ActionBars"]["Bar2ButtonsPerRow"] = 6
-C["ActionBars"]["Bar3ButtonsPerRow"] = 6
+C["ActionBars"]["Bar3ButtonsPerRow"] = 4
 C["ActionBars"]["Bar4ButtonsPerRow"] = 6
 C["ActionBars"]["Bar5ButtonsPerRow"] = 6
+C["ActionBars"]["Bar6ButtonsPerRow"] = 1
+C["ActionBars"]["Bar7ButtonsPerRow"] = 1
+C["ActionBars"]["Bar8ButtonsPerRow"] = 1
 C["ActionBars"]["Bar1NumButtons"] = 12
 C["ActionBars"]["Bar2NumButtons"] = 12
 C["ActionBars"]["Bar3NumButtons"] = 12
 C["ActionBars"]["Bar4NumButtons"] = 12
 C["ActionBars"]["Bar5NumButtons"] = 12
+C["ActionBars"]["Bar6NumButtons"] = 12
+C["ActionBars"]["Bar7NumButtons"] = 12
+C["ActionBars"]["Bar8NumButtons"] = 12
 C["ActionBars"]["BarPetButtonsPerRow"] = 10
 C["ActionBars"]["NormalButtonSize"] = 32
-C["ActionBars"]["PetButtonSize"] = 26
+C["ActionBars"]["PetButtonSize"] = 30
 C["ActionBars"]["ButtonSpacing"] = 4
 C["ActionBars"]["ShowBackdrop"] = true
 C["ActionBars"]["AutoAddNewSpell"] = false
 C["ActionBars"]	["ProcAnim"] = true
 C["ActionBars"]["Font"] = "MaxUI Outlined"
+C["ActionBars"]["MultiCastBar"] = true
 
 -- Auras
 C["Auras"]["Enable"] = true
@@ -74,6 +84,8 @@ C["Bags"]["SortToBottom"] = true
 C["Bags"]["ButtonSize"] = 30
 C["Bags"]["Spacing"] = 4
 C["Bags"]["ItemsPerRow"] = 11
+C["Bags"]["ReagentBagColor"] = {0.68, 0.83, 0.51}
+C["Bags"]["ReagentInsideBag"] = false
 
 -- Chat	
 C["Chat"]["Enable"] = true
@@ -115,6 +127,7 @@ C["Loot"]["Enable"] = true
 C["Loot"]["Font"] = "MaxUI Outlined"
 
 -- Misc
+C["Misc"]["DisplayWidgetPowerBar"] = true
 C["Misc"]["BlizzardMicroMenu"] = false
 C["Misc"]["ItemLevel"] = true
 C["Misc"]["ThreatBar"] = true
@@ -129,6 +142,7 @@ C["Misc"]["UIErrorSize"] = 16
 C["Misc"]["UIErrorFont"] = "MaxUI Outlined"
 C["Misc"]["MicroToggle"]["Value"] = "ALT-M"
 C["Misc"]["MicroStyle"]["Value"] = "Game Menu"
+C["Misc"]["ObjectiveTracker"] = true
 
 -- maps
 C["Maps"]["MinimapTracking"] = false
@@ -144,7 +158,7 @@ C["NamePlates"]["NameplateCastBar"] = true
 C["NamePlates"]["Font"] = "MaxUI Outlined"
 C["NamePlates"]["OnlySelfDebuffs"] = true
 C["NamePlates"]["QuestIcon"] = true
-C["NamePlates"]["ClassIcon"] = true
+C["NamePlates"]["ClassIcon"] = false
 C["NamePlates"]["HighlightColor"] = {1, 1, 0}
 C["NamePlates"]["AggroColor1"] = {98/255, 223/255, 89/255}
 C["NamePlates"]["AggroColor2"] = {1, 1, 0.5}
@@ -155,6 +169,8 @@ C["NamePlates"]["ColorThreat"] = false
 
 -- Party	
 C["Party"]["Enable"] = false
+C["Party"]["Buffs"] = true
+C["Party"]["Debuffs"] = true
 C["Party"]["ShowPets"] = false
 C["Party"]["ShowPlayer"] = true
 C["Party"]["ShowHealthText"] = true
@@ -176,6 +192,7 @@ C["Raid"]["VerticalHealth"] = false
 C["Raid"]["MaxUnitPerColumn"] = 5
 C["Raid"]["Raid40MaxUnitPerColumn"] = 10
 C["Raid"]["Font"] = "MaxUI Outlined"
+C["Raid"]["HealthFont"] = "MaxUI Outlined"
 C["Raid"]["DesaturateBuffs"] = false
 C["Raid"]["RaidBuffsStyle"]["Value"] = "Aura Track"
 C["Raid"]["RaidBuffs"]["Value"] = "Self"
@@ -192,12 +209,6 @@ C["Raid"]["AuraTrackSpellTextures"] = true
 C["Raid"]["AuraTrackThickness"] = 5
 C["Raid"]["GroupBy"]["Value"] = "GROUP"
 C["Raid"]["HealthTag"]["Value"] = ""
-
---C["Raid"]["DesaturateNonPlayerBuffs"] = false
---C["Raid"]["ClassRaidBuffs"] = true
---C["Raid"]["AuraTrack"] = true
---C["Raid"]["AuraTrackIconSize"] = 10
---C["Raid"]["AuraTrackSpacing"] = 4
 
 -- Textures
 C["Textures"]["QuestProgressTexture"] = "Tukui"

@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 01-08-2021
+-- latest update: 10-01-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up CONFIGURATION MAXUI, additional options and settings.
@@ -10,7 +10,45 @@
 ------------------------------------------------------------------------------------------
 local T, C, L = Tukui:unpack()
 local ClassTextColor = T.RGBToHex(unpack(T.Colors.class[select(2, UnitClass("player"))]))
-local BackdropTextColor = T.RGBToHex(unpack(C.General.BackdropColor))
+
+------------------------------------------------------------------------------------------
+-- CONFIG MENU
+------------------------------------------------------------------------------------------
+C["AddOns"] = {
+
+	["HekiliSkin"] = false,
+
+	["BugSackSkin"] = false,
+	["BugSackWidth"] = 800,
+	["BugSackHeight"] = 420,
+
+	["SimulationcraftSkin"] = false,
+
+	["ImmersionSkin"] = false,
+	["ImmersionTopEdge"] = false,
+
+	["DBMSkin"] = false,
+	["DBMSkinEdge"] = false,
+	["DBMBarBackdropAlpha"] = 0.8,
+	["DBMIconBarSpacing"] = 6,
+	["DBMBarTextPosition"] = {
+		["Options"] = {
+			["Above"] = "Above",	
+			["Inside"] = "Inside",	
+			["Below"] = "Below",	
+		},
+		["Value"] = "Inside",
+	},
+
+	["ColorPickerPlusSkin"] = false,
+	
+	["CliqueSkin"] = false,
+	
+	["ProjectAzilrokaSkin"] = false,
+	
+	--["PawnSkin"] = false,
+
+}
 
 ------------------------------------------------------------------------------------------
 -- CONFIG MENU
@@ -23,6 +61,8 @@ C["ConfigMenu"] = {
 		},
 		["Value"] = "Extended",
 	},
+	["EnableCustomBG"] = false,
+	["CustomBG"] = "",
 }
 
 ------------------------------------------------------------------------------------------
@@ -74,6 +114,7 @@ C["General"]["FontSize"] = 12
 C["General"]["GlobalFont"]["Options"]["Cartoon"] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\cartoon.ttf"
 C["General"]["GlobalFont"]["Options"]["Comic"] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\comic.ttf"
 C["General"]["GlobalFont"]["Options"]["MaxUI"] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\MaxUI.ttf"
+C["General"]["GlobalFont"]["Options"]["MaxUI It."] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\MaxUIitalic.ttf"
 C["General"]["GlobalFont"]["Options"]["Bold"] = "Interface\\AddOns\\MaxUI\\Medias\\Bold\\MaxUI.ttf"
 C["General"]["GlobalFont"]["Options"]["Warcraft"] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\LifeCraft.ttf"
 C["General"]["GlobalFont"]["Options"]["Morpheus"] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\Morpheus.ttf"
@@ -94,11 +135,33 @@ C["General"]["FontFlag"] = {
 -- panels and frames
 C["General"]["GeneralPanelAlpha"] = 1
 C["General"]["thickness"] = 1
+C["General"]["ABLineThickness"] = 1
+C["General"]["HeaderHeight"] = 22
+C["General"]["TopEdgeText"] = false
+
+-- move to datatexts
+C["General"]["ScreenSpacing"] = 6
+
+-- buttons
+C["General"]["ButtonStyle"] = {
+	["Options"] = {
+		["Blizzard"] = "Blizzard",
+		["MaxUI"] = "MaxUI",
+	},	
+	["Value"] = "MaxUI",
+}
+
+C["General"]["IconDesaturate"] = true
+C["General"]["ButtonSize"] = 24
+
+C["General"]["ButtonFont"] = "MaxUI Outlined"
+C["General"]["ButtonFontSize"] = 12
 
 -- textures
 C["General"]["HeaderTexture"] = "Tukui" 
 C["General"]["LineTexture"] = "Tukui"
 C["General"]["TextureButton"] = "Tukui"
+C["General"]["StatusBarTexture"] = "Tukui"
 
 -- colors
 C["General"]["ClassColorHeaders"] = {
@@ -107,19 +170,32 @@ C["General"]["ClassColorHeaders"] = {
 		["Backdrop"] = "BackdropColor",
 		["|cffC0C0C0Grey|r"] = "Grey",
 		["" ..ClassTextColor .."Class".. "|r"] = "ClassColor",	
+		["Custom"] = "Custom",
 	},
 	["Value"] = "Grey",
 }
 C["General"]["ClassColorLines"] = {
 	["Options"] = {
 		["|cff202020Dark|r"] = "Dark",
+		["Standard"] = "Standard",
 		["Backdrop"] = "BackdropColor",
 		["|cffC0C0C0Grey|r"] = "Grey",
 		["" ..ClassTextColor .."Class".. "|r"] = "ClassColor",	
+		["Custom"] = "Custom",
 	},
 	["Value"] = "Grey",
 }
-
+C["General"]["ClassColorActionBarLines"] = {
+	["Options"] = {
+		["|cff202020Dark|r"] = "Dark",
+		["Standard"] = "Standard",
+		["Backdrop"] = "BackdropColor",
+		["|cffC0C0C0Grey|r"] = "Grey",
+		["" ..ClassTextColor .."Class".. "|r"] = "ClassColor",	
+		["Custom"] = "Custom",
+	},
+	["Value"] = "Grey",
+}
 C["General"]["ClassShadow"] = {
 	["Options"] = {
 		["|cff202020Dark|r"] = "Dark",
@@ -127,9 +203,24 @@ C["General"]["ClassShadow"] = {
 		["Backdrop"] = "BackdropColor",
 		["|cffC0C0C0Grey|r"] = "Grey",
 		["" ..ClassTextColor .."Class".. "|r"] = "ClassColor",	
+		["Custom"] = "Custom",
 	},
 	["Value"] = "Standard",
 }
+
+C["General"]["ButtonColor"] = {
+	["Options"] = {
+		["|cff202020Dark|r"] = "Dark",
+		["Standard"] = "Standard",
+		["Backdrop"] = "BackdropColor",
+		["|cffC0C0C0Grey|r"] = "Grey",
+		["" ..ClassTextColor .."Class".. "|r"] = "ClassColor",	
+		["Custom"] = "Custom",
+	},
+	["Value"] = "Standard",
+}
+
+C["General"]["CustomColor"] = {1, 0, 0}
 
 C["General"]["ClassShadowExcludeUF"] = false
 
@@ -140,9 +231,132 @@ C["General"]["ClassShadowExcludeUF"] = false
 C["ActionBars"]["ABAlpha"] = 0.7
 
 C["ActionBars"]["ABFontSize"] = 10
-C["ActionBars"]["CDFontSize"] = 12
 
+-- cooldown text
 C["ActionBars"]["CooldownFlash"] = false
+C["ActionBars"]["CoolDown"] = true
+--C["ActionBars"]["CDFontSize"] = 12
+C["ActionBars"]["CoolDownFontSize"] = 10
+C["ActionBars"]["CoolDownColor"] = {1, 0, 0} 
+C["ActionBars"]["CoolDownPosition"] = {
+	["Options"] = {
+		["topleft"] = "TOPLEFT",
+		["top"] = "TOP",
+		["topright"] = "TOPRIGHT",
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+		["bottomleft"] = "BOTTOMLEFT",
+		["bottom"] = "BOTTOM",
+		["bottomright"] = "BOTTOMRIGHT",
+	},
+	["Value"] = "CENTER",
+}
+
+C["ActionBars"]["CoolDownOffsetH"] = 0 
+C["ActionBars"]["CoolDownOffsetV"] = 0 
+C["ActionBars"]["CoolDownJustifyH"] = {
+	["Options"] = {
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+	},
+	["Value"] = "CENTER",
+}
+
+-- hotkey text
+--C["ActionBars"]["HotKey"] = true
+C["ActionBars"]["HotKeyFont"] = "MaxUI Outlined"
+C["ActionBars"]["HotKeyFontSize"] = 10
+C["ActionBars"]["HotKeyColor"] = {1, 1, 1} 
+C["ActionBars"]["HotKeyPosition"] = {
+	["Options"] = {
+		["topleft"] = "TOPLEFT",
+		["top"] = "TOP",
+		["topright"] = "TOPRIGHT",
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+		["bottomleft"] = "BOTTOMLEFT",
+		["bottom"] = "BOTTOM",
+		["bottomright"] = "BOTTOMRIGHT",
+	},
+	["Value"] = "TOPLEFT",
+}
+
+C["ActionBars"]["HotKeyOffsetH"] = 2 
+C["ActionBars"]["HotKeyOffsetV"] = -2 
+C["ActionBars"]["HotKeyJustifyH"] = {
+	["Options"] = {
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+	},
+	["Value"] = "LEFT",
+}
+
+-- count text
+C["ActionBars"]["Count"] = true
+C["ActionBars"]["CountFont"] = "MaxUI Outlined"
+C["ActionBars"]["CountFontSize"] = 10
+C["ActionBars"]["CountColor"] = {1, 1, 0} 
+C["ActionBars"]["CountPosition"] = {
+	["Options"] = {
+		["topleft"] = "TOPLEFT",
+		["top"] = "TOP",
+		["topright"] = "TOPRIGHT",
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+		["bottomleft"] = "BOTTOMLEFT",
+		["bottom"] = "BOTTOM",
+		["bottomright"] = "BOTTOMRIGHT",
+	},
+	["Value"] = "TOPRIGHT",
+}
+
+C["ActionBars"]["CountOffsetH"] = 0
+C["ActionBars"]["CountOffsetV"] = -2
+C["ActionBars"]["CountJustifyH"] = {
+	["Options"] = {
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+	},
+	["Value"] = "RIGHT",
+}
+
+-- macro text
+--C["ActionBars"]["Macro"] = false
+C["ActionBars"]["MacroFont"] = "MaxUI Outlined"
+C["ActionBars"]["MacroFontSize"] = 10
+C["ActionBars"]["MacroColor"] = {1, 1, 153/255} 
+C["ActionBars"]["MacroPosition"] = {
+	["Options"] = {
+		["topleft"] = "TOPLEFT",
+		["top"] = "TOP",
+		["topright"] = "TOPRIGHT",
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+		["bottomleft"] = "BOTTOMLEFT",
+		["bottom"] = "BOTTOM",
+		["bottomright"] = "BOTTOMRIGHT",
+	},
+	["Value"] = "BOTTOM",
+}
+
+C["ActionBars"]["MacroOffsetH"] = 0 
+C["ActionBars"]["MacroOffsetV"] = 2
+C["ActionBars"]["MacroJustifyH"] = {
+	["Options"] = {
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+	},
+	["Value"] = "CENTER",
+}
+
 
 -- enable
 C["ActionBars"]["ExtraBarEnable"] = true
@@ -165,14 +379,25 @@ C["ActionBars"]["TrinketBarLayout"] = {
 	["Value"] = "Horizontal",
 }
 
+C["ActionBars"]["Bar6ButtonsPerRow"] = 6
+C["ActionBars"]["Bar7ButtonsPerRow"] = 6
+C["ActionBars"]["Bar8ButtonsPerRow"] = 12
+
+--C["ActionBars"]["Bar6NumButtons"] = 12
+--C["ActionBars"]["Bar7NumButtons"] = 12
+--C["ActionBars"]["Bar8NumButtons"] = 12
+
 -- Actionbars Button Size settings 
 C["ActionBars"]["ActionBar1ButtonSize"] = 26
 C["ActionBars"]["ActionBar2ButtonSize"] = 26
 C["ActionBars"]["ActionBar3ButtonSize"] = 26
 C["ActionBars"]["ActionBar4ButtonSize"] = 26
 C["ActionBars"]["ActionBar5ButtonSize"] = 26
-C["ActionBars"]["PetBarButtonSize"] = 26
-C["ActionBars"]["StanceBarButtonSize"] = 26
+C["ActionBars"]["ActionBar6ButtonSize"] = 26
+C["ActionBars"]["ActionBar7ButtonSize"] = 26
+C["ActionBars"]["ActionBar8ButtonSize"] = 26
+C["ActionBars"]["PetBarButtonSize"] = 30
+C["ActionBars"]["StanceBarButtonSize"] = 30
 C["ActionBars"]["ExtraBarButtonSize"] = 48
 C["ActionBars"]["TrinketBarButtonSize"] = 36
 
@@ -214,6 +439,33 @@ C["ActionBars"]["Actionbar4"] = {
 }
 
 C["ActionBars"]["Actionbar5"] = {
+	["Options"] = {
+		["Show"] = "Show",
+		["Hide"] = "Hide",	
+		["Mouseover"] = "Mouseover",
+	},
+	["Value"] = "Show",
+}
+
+C["ActionBars"]["Actionbar6"] = {
+	["Options"] = {
+		["Show"] = "Show",
+		["Hide"] = "Hide",	
+		["Mouseover"] = "Mouseover",
+	},
+	["Value"] = "Show",
+}
+
+C["ActionBars"]["Actionbar7"] = {
+	["Options"] = {
+		["Show"] = "Show",
+		["Hide"] = "Hide",	
+		["Mouseover"] = "Mouseover",
+	},
+	["Value"] = "Show",
+}
+
+C["ActionBars"]["Actionbar8"] = {
 	["Options"] = {
 		["Show"] = "Show",
 		["Hide"] = "Hide",	
@@ -264,6 +516,9 @@ C["ActionBars"]["ActionBar2Alpha"] = 0.4
 C["ActionBars"]["ActionBar3Alpha"] = 0.4
 C["ActionBars"]["ActionBar4Alpha"] = 0.4
 C["ActionBars"]["ActionBar5Alpha"] = 0.4
+C["ActionBars"]["ActionBar6Alpha"] = 0.4
+C["ActionBars"]["ActionBar7Alpha"] = 0.4
+C["ActionBars"]["ActionBar8Alpha"] = 0.4
 C["ActionBars"]["PetBarAlpha"] = 0.4
 C["ActionBars"]["StanceBarAlpha"] = 0.4
 C["ActionBars"]["ExtraBarAlpha"] = 1
@@ -305,8 +560,35 @@ C["ActionBars"]["ActionBar4CombatState"] = {
 	},
 	["Value"] = "Nothing",
 }
-	
+
 C["ActionBars"]["ActionBar5CombatState"] = {
+	["Options"] = {
+		["Show in Combat"] = "Show",
+		["Hide in Combat"] = "Hide",	
+		["Nothing"] = "Nothing",
+	},
+	["Value"] = "Nothing",
+}
+	
+C["ActionBars"]["ActionBar6CombatState"] = {
+	["Options"] = {
+		["Show in Combat"] = "Show",
+		["Hide in Combat"] = "Hide",	
+		["Nothing"] = "Nothing",
+	},
+	["Value"] = "Nothing",
+}
+
+C["ActionBars"]["ActionBar7CombatState"] = {
+	["Options"] = {
+		["Show in Combat"] = "Show",
+		["Hide in Combat"] = "Hide",	
+		["Nothing"] = "Nothing",
+	},
+	["Value"] = "Nothing",
+}
+
+C["ActionBars"]["ActionBar8CombatState"] = {
 	["Options"] = {
 		["Show in Combat"] = "Show",
 		["Hide in Combat"] = "Hide",	
@@ -367,7 +649,7 @@ C["ActionBars"]["ActionBar1Edges"] = {
 	["Value"] = "None",
 }
 		
-C["ActionBars"]	["ActionBar2Edges"] = {
+C["ActionBars"]["ActionBar2Edges"] = {
 	["Options"] = {
 		["Top"] = "Top",
 		["Bottom"] = "Bottom",	
@@ -381,7 +663,7 @@ C["ActionBars"]	["ActionBar2Edges"] = {
 	["Value"] = "None",
 }
 	
-C["ActionBars"]	["ActionBar3Edges"] = {
+C["ActionBars"]["ActionBar3Edges"] = {
 	["Options"] = {
 		["Top"] = "Top",
 		["Bottom"] = "Bottom",	
@@ -395,7 +677,7 @@ C["ActionBars"]	["ActionBar3Edges"] = {
 	["Value"] = "None",
 }
 	
-C["ActionBars"]	["ActionBar4Edges"] = {
+C["ActionBars"]["ActionBar4Edges"] = {
 	["Options"] = {
 		["Top"] = "Top",
 		["Bottom"] = "Bottom",	
@@ -409,21 +691,7 @@ C["ActionBars"]	["ActionBar4Edges"] = {
 	["Value"] = "None",
 }
 	
-C["ActionBars"]	["ActionBar5Edges"] = {
-	["Options"] = {
-		["Top"] = "Top",
-		["Bottom"] = "Bottom",	
-		["Left"] = "Left",	
-		["Right"] = "Right",	
-		["Top & Bottom"] = "TopBottom",	
-		["Left & Right"] = "LeftRight",	
-		["All"] = "All",
-		["None"] = "None",
-	},
-	["Value"] = "None",
-}
-	
-C["ActionBars"]	["ActionBarPetEdges"] = {
+C["ActionBars"]["ActionBar5Edges"] = {
 	["Options"] = {
 		["Top"] = "Top",
 		["Bottom"] = "Bottom",	
@@ -437,7 +705,7 @@ C["ActionBars"]	["ActionBarPetEdges"] = {
 	["Value"] = "None",
 }
 
-C["ActionBars"]	["ActionBarStanceEdges"] = {
+C["ActionBars"]["ActionBar6Edges"] = {
 	["Options"] = {
 		["Top"] = "Top",
 		["Bottom"] = "Bottom",	
@@ -451,7 +719,7 @@ C["ActionBars"]	["ActionBarStanceEdges"] = {
 	["Value"] = "None",
 }
 
-C["ActionBars"]	["ActionBarExtraEdges"] = {
+C["ActionBars"]["ActionBar7Edges"] = {
 	["Options"] = {
 		["Top"] = "Top",
 		["Bottom"] = "Bottom",	
@@ -465,7 +733,63 @@ C["ActionBars"]	["ActionBarExtraEdges"] = {
 	["Value"] = "None",
 }
 
-C["ActionBars"]	["TrinketBarEdges"] = {
+C["ActionBars"]["ActionBar8Edges"] = {
+	["Options"] = {
+		["Top"] = "Top",
+		["Bottom"] = "Bottom",	
+		["Left"] = "Left",	
+		["Right"] = "Right",	
+		["Top & Bottom"] = "TopBottom",	
+		["Left & Right"] = "LeftRight",	
+		["All"] = "All",
+		["None"] = "None",
+	},
+	["Value"] = "None",
+}
+	
+C["ActionBars"]["ActionBarPetEdges"] = {
+	["Options"] = {
+		["Top"] = "Top",
+		["Bottom"] = "Bottom",	
+		["Left"] = "Left",	
+		["Right"] = "Right",	
+		["Top & Bottom"] = "TopBottom",	
+		["Left & Right"] = "LeftRight",	
+		["All"] = "All",
+		["None"] = "None",
+	},
+	["Value"] = "None",
+}
+
+C["ActionBars"]["ActionBarStanceEdges"] = {
+	["Options"] = {
+		["Top"] = "Top",
+		["Bottom"] = "Bottom",	
+		["Left"] = "Left",	
+		["Right"] = "Right",	
+		["Top & Bottom"] = "TopBottom",	
+		["Left & Right"] = "LeftRight",	
+		["All"] = "All",
+		["None"] = "None",
+	},
+	["Value"] = "None",
+}
+
+C["ActionBars"]["ActionBarExtraEdges"] = {
+	["Options"] = {
+		["Top"] = "Top",
+		["Bottom"] = "Bottom",	
+		["Left"] = "Left",	
+		["Right"] = "Right",	
+		["Top & Bottom"] = "TopBottom",	
+		["Left & Right"] = "LeftRight",	
+		["All"] = "All",
+		["None"] = "None",
+	},
+	["Value"] = "None",
+}
+
+C["ActionBars"]["TrinketBarEdges"] = {
 	["Options"] = {
 		["Top"] = "Top",
 		["Bottom"] = "Bottom",	
@@ -485,6 +809,9 @@ C["ActionBars"]["ActionBar2Backdrop"] = true
 C["ActionBars"]["ActionBar3Backdrop"] = true
 C["ActionBars"]["ActionBar4Backdrop"] = true
 C["ActionBars"]["ActionBar5Backdrop"] = true
+C["ActionBars"]["ActionBar6Backdrop"] = true
+C["ActionBars"]["ActionBar7Backdrop"] = true
+C["ActionBars"]["ActionBar8Backdrop"] = true
 C["ActionBars"]["PetBarBackdrop"] = true
 C["ActionBars"]["StanceBarBackdrop"] = true
 C["ActionBars"]["ExtraBarBackdrop"] = true
@@ -494,6 +821,70 @@ C["ActionBars"]["TrinketBarBackdrop"] = true
 -- AURAS
 ------------------------------------------------------------------------------------------
 C["Auras"]["AurasFontSize"] = 12
+C["Auras"]["AurasBarSize"] = 8
+C["Auras"]["AurasSize"] = 100
+
+-- duration
+C["Auras"]["Duration"] = true
+C["Auras"]["DurationFont"] = "MaxUI Outlined"
+C["Auras"]["DurationFontSize"] = 12
+--C["Auras"]["DurationColor"] = {1, 1, 1} 
+C["Auras"]["DurationPosition"] = {
+	["Options"] = {
+		["topleft"] = "TOPLEFT",
+		["top"] = "TOP",
+		["topright"] = "TOPRIGHT",
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+		["bottomleft"] = "BOTTOMLEFT",
+		["bottom"] = "BOTTOM",
+		["bottomright"] = "BOTTOMRIGHT",
+	},
+	["Value"] = "BOTTOM",
+}
+
+C["Auras"]["DurationOffsetH"] = 0 
+C["Auras"]["DurationOffsetV"] = -10 
+C["Auras"]["DurationJustifyH"] = {
+	["Options"] = {
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+	},
+	["Value"] = "CENTER",
+}
+
+-- count
+C["Auras"]["Count"] = true
+C["Auras"]["CountFont"] = "MaxUI Outlined"
+C["Auras"]["CountFontSize"] = 12
+C["Auras"]["CountColor"] = {1, 1, 0} 
+C["Auras"]["CountPosition"] = {
+	["Options"] = {
+		["topleft"] = "TOPLEFT",
+		["top"] = "TOP",
+		["topright"] = "TOPRIGHT",
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+		["bottomleft"] = "BOTTOMLEFT",
+		["bottom"] = "BOTTOM",
+		["bottomright"] = "BOTTOMRIGHT",
+	},
+	["Value"] = "TOPLEFT",
+}
+
+C["Auras"]["CountOffsetH"] = 0 
+C["Auras"]["CountOffsetV"] = -2 
+C["Auras"]["CountJustifyH"] = {
+	["Options"] = {
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+	},
+	["Value"] = "LEFT",
+}
 
 C["Auras"]["Position"] = {
 	["Options"] = {
@@ -556,13 +947,15 @@ C["Chat"]["Position"] = {
 	["Value"] = "Bottom",
 }
 
+C["Chat"]["UnlinkEditBox"] = false
+
 -- Background
 C["Chat"]["BackgroundOptions"] = {
 	["Options"] = {
 		["Logo"] = "Logo",
 		["Class"] = "Class",
 		["Texture"] = "Texture",	
-		["Blank"] = "Blank",
+		["Basic"] = "Blank",
 		["Character"] = "Character",
 		["None"] = "None",
 	},
@@ -576,9 +969,20 @@ C["Chat"]["ChattextureAlpha"] = 0.6
 C["Chat"]["ChattextureColor"] = {0.11, 0.11, 0.11}
 
 -- Combat state
-C["Chat"]["ChatBGCombatState"] = {
+C["Chat"]["CompleteChatBox"] = false
+
+C["Chat"]["LeftChatBGCombatState"] = {
 	["Options"] = {
-		["Show in Combat"] = "Show",
+		--["Show in Combat"] = "Show",
+		["Hide in Combat"] = "Hide",	
+		["Nothing"] = "Nothing",
+	},
+	["Value"] = "Nothing",
+}
+
+C["Chat"]["RightChatBGCombatState"] = {
+	["Options"] = {
+		--["Show in Combat"] = "Show",
 		["Hide in Combat"] = "Hide",	
 		["Nothing"] = "Nothing",
 	},
@@ -598,8 +1002,9 @@ C["DataTexts"]["Topline"] = true
 C["DataTexts"]["AmountTopDataTexts"] = 9
 
 C["DataTexts"]["DataCenter"] = true
-C["DataTexts"]["AmountDataCenterDataTexts"] = 12
+C["DataTexts"]["AmountDataCenterDataTexts"] = 10
 C["DataTexts"]["DataCenterAlpha"] = 0.7
+
 C["DataTexts"]["TooltipAnchor"] = {
 	["Options"] = {
 		["Right"] = "ANCHOR_RIGHT",
@@ -614,7 +1019,7 @@ C["DataTexts"]["TooltipAnchor"] = {
 }
 C["DataTexts"]["DataCenterClassLogo"] = true
 
-C["DataTexts"]["Icons"] = true
+C["DataTexts"]["Icons"] = false
 
 -- Combat state
 C["DataTexts"]["ToplineCombatState"] = {
@@ -637,20 +1042,20 @@ C["DataTexts"]["BottomlineCombatState"] = {
 
 C["DataTexts"]["DataCenterCombatState"] = {
 	["Options"] = {
-		["Show in Combat"] = "Show",
 		["Hide in Combat"] = "Hide",	
 		["Nothing"] = "Nothing",
 	},
 	["Value"] = "Nothing",
 }
 
--- maxUI experimental
-C["DataTexts"]["Slidable"] = false	
-
 ------------------------------------------------------------------------------------------
 -- LOOT
 ------------------------------------------------------------------------------------------
 C["Loot"]["FontSize"] = 12
+
+C["Loot"]["GroupLootHeaderHeight"] = 10
+C["Loot"]["GroupLootSpacing"] = 30
+
 
 ------------------------------------------------------------------------------------------	
 -- MINIMAP	
@@ -670,6 +1075,7 @@ C["Location"] = {
 
 	-- minimap
 	["MinimapEnable"] = true,
+	["MinimapRectangular"] = false,
 	["Compass"] = false,
 	["Position"] = {
 		["Options"] = {
@@ -707,6 +1113,9 @@ C["Location"] = {
 ------------------------------------------------------------------------------------------
 -- MISC
 ------------------------------------------------------------------------------------------
+--C["Misc"]["MicroStyle"]["Options"]["|cffFFFF99MaxUI Game Menu|r"] = "MaxUI Game Menu"
+--C["Misc"]["MicroStyle"]["Value"] = "MaxUI Game Menu"
+
 C["Misc"]["ErrorSpeechEnable"] = true
 C["Misc"]["ErrorSpeechCombatState"] = {
 	["Options"] = {
@@ -722,33 +1131,123 @@ C["Misc"]["PercentageTag"] = true
 
 -- experience
 C["Misc"]["XPBarEnable"] = true
-C["Misc"]["XPBarHeight"] = 6
-C["Misc"]["XPBarWidth"] = 110
+C["Misc"]["XPBarDTEnable"] = true
+C["Misc"]["XPBarHeight"] = 12
+C["Misc"]["XPBarWidth"] = 200
 C["Misc"]["XPBarTexture"] = "Tukui"
+C["Misc"]["XPBarBackdrop"] = true
+C["Misc"]["XPBarAlpha"] = 0.7
+C["Misc"]["XPBarTextPlacement"] = {
+	["Options"] = {
+		["Inside"] = "Inside",
+		["Outside"] = "Outside",	
+		["Nothing"] = "Nothing",
+	},
+	["Value"] = "Inside",
+}
+C["Misc"]["XPBarCombatState"] = {
+	["Options"] = {
+		["Hide in Combat"] = "Hide",	
+		["Nothing"] = "Nothing",
+	},
+	["Value"] = "Nothing",
+}
 
 -- reputation
 C["Misc"]["REPBarEnable"] = true
-C["Misc"]["REPBarHeight"] = 6
-C["Misc"]["REPBarWidth"] = 110
+C["Misc"]["REPBarDTEnable"] = true
+C["Misc"]["REPBarHeight"] = 12
+C["Misc"]["REPBarWidth"] = 200
 C["Misc"]["REPBarTexture"] = "Tukui"
+C["Misc"]["REPBarBackdrop"] = true
+C["Misc"]["REPBarAlpha"] = 0.7
+C["Misc"]["REPBarTextPlacement"] = {
+	["Options"] = {
+		["Inside"] = "Inside",
+		["Outside"] = "Outside",	
+		["Nothing"] = "Nothing",
+	},
+	["Value"] = "Inside",
+}
+C["Misc"]["REPBarCombatState"] = {
+	["Options"] = {
+		["Hide in Combat"] = "Hide",	
+		["Nothing"] = "Nothing",
+	},
+	["Value"] = "Nothing",
+}
 
 -- honor
 C["Misc"]["HONORBarEnable"] = true
-C["Misc"]["HONORBarHeight"] = 6
-C["Misc"]["HONORBarWidth"] = 110
+C["Misc"]["HONORBarDTEnable"] = true
+C["Misc"]["HONORBarHeight"] = 12
+C["Misc"]["HONORBarWidth"] = 200
 C["Misc"]["HONORBarTexture"] = "Tukui"
+C["Misc"]["HONORBarBackdrop"] = true
+C["Misc"]["HONORBarAlpha"] = 0.7
+C["Misc"]["HONORBarTextPlacement"] = {
+	["Options"] = {
+		["Inside"] = "Inside",
+		["Outside"] = "Outside",	
+		["Nothing"] = "Nothing",
+	},
+	["Value"] = "Inside",
+}
+C["Misc"]["HONORBarCombatState"] = {
+	["Options"] = {
+		["Hide in Combat"] = "Hide",	
+		["Nothing"] = "Nothing",
+	},
+	["Value"] = "Nothing",
+}
 
 -- azerite
 C["Misc"]["AZERITEBarEnable"] = false
-C["Misc"]["AZERITEBarHeight"] = 6
-C["Misc"]["AZERITEBarWidth"] = 110
+C["Misc"]["AZERITEBarDTEnable"] = true
+C["Misc"]["AZERITEBarHeight"] = 12
+C["Misc"]["AZERITEBarWidth"] = 200
 C["Misc"]["AZERITEBarTexture"] = "Tukui"
+C["Misc"]["AZERITEBarBackdrop"] = true
+C["Misc"]["AZERITEBarAlpha"] = 0.7
+C["Misc"]["AZERITEBarTextPlacement"] = {
+	["Options"] = {
+		["Inside"] = "Inside",
+		["Outside"] = "Outside",	
+		["Nothing"] = "Nothing",
+	},
+	["Value"] = "Inside",
+}
+C["Misc"]["AZERITEBarCombatState"] = {
+	["Options"] = {
+		["Hide in Combat"] = "Hide",	
+		["Nothing"] = "Nothing",
+	},
+	["Value"] = "Nothing",
+}
 
 -- anima
 C["Misc"]["ANIMABarEnable"] = true
-C["Misc"]["ANIMABarHeight"] = 6
-C["Misc"]["ANIMABarWidth"] = 110
+C["Misc"]["ANIMABarDTEnable"] = true
+C["Misc"]["ANIMABarHeight"] = 12
+C["Misc"]["ANIMABarWidth"] = 200
 C["Misc"]["ANIMABarTexture"] = "Tukui"
+C["Misc"]["ANIMABarBackdrop"] = true
+C["Misc"]["ANIMABarAlpha"] = 0.7
+C["Misc"]["ANIMABarTextPlacement"] = {
+	["Options"] = {
+		["Inside"] = "Inside",
+		["Outside"] = "Outside",	
+		["Nothing"] = "Nothing",
+	},
+	["Value"] = "Inside",
+}
+C["Misc"]["ANIMABarCombatState"] = {
+	["Options"] = {
+		["Hide in Combat"] = "Hide",	
+		["Nothing"] = "Nothing",
+	},
+	["Value"] = "Nothing",
+}
 
 -- threatbar
 C["Misc"]["ThreatBarHeight"] = 20
@@ -771,17 +1270,32 @@ C["Misc"]["BarTexture"] = "Tukui"
 ------------------------------------------------------------------------------------------
 -- NAMEPLATES
 ------------------------------------------------------------------------------------------
--- font
-C["NamePlates"]["FontSize"] = 12
-C["NamePlates"]["HealthFontSize"] = 10
-
--- textures
-C["NamePlates"]["CastTexture"] = "Tukui"
-
 -- settings
-C["NamePlates"]["HealthBars"] = true
-C["NamePlates"]["GradientColor"] = true
+C["NamePlates"]["MaxDistance"] = 60
+C["NamePlates"]["CombatOnly"] = true
 
+-- style
+C["NamePlates"]["Style"] = {
+	["Options"] = {
+		["|cffFFFF99MaxUI|r"] = "MaxUI",
+		["Tukui"] = "Tukui",
+	},
+	["Value"] = "MaxUI",
+}
+
+C["NamePlates"]["ElementAnchored"] = {
+	["Options"] = {
+		["|cffFFFF99Left|r"] = "LEFT",
+		["|cffFFFF99Centered|r"] = "CENTER",
+		["|cffFFFF99Right|r"] = "RIGHT",
+	},
+	["Value"] = "CENTER",
+}
+
+-- health
+C["NamePlates"]["HealthFontSize"] = 10
+C["NamePlates"]["HealthBars"] = true
+C["NamePlates"]["HealthPrediction"] = false
 C["NamePlates"]["HealthTag"] = {
 	["Options"] = {
 		["None"] = "",
@@ -793,7 +1307,8 @@ C["NamePlates"]["HealthTag"] = {
 	},
 	["Value"] = "[MaxUI:HealthColor][MaxUI:CurHP]",
 }
-	
+
+-- power	
 C["NamePlates"]["PowerTag"] = {
 	["Options"] = {
 		["None"] = "",
@@ -806,6 +1321,8 @@ C["NamePlates"]["PowerTag"] = {
 	["Value"] = "[MaxUI:PowerColor][MaxUI:CurPP]",
 }
 
+-- name
+C["NamePlates"]["FontSize"] = 12
 C["NamePlates"]["NameTag"] = {
 	["Options"] = {
 		["None"] = "",
@@ -837,27 +1354,27 @@ C["NamePlates"]["NameTag"] = {
 	["Value"] = "[Tukui:DiffColor][level]|r[Tukui:Classification] [Tukui:GetNameColor][name:abbrev]|r [perhp]%",
 }
 
+-- castbar
+C["NamePlates"]["CastTexture"] = "Tukui"
 C["NamePlates"]["CastbarFullNameplateOverlap"] = false
-C["NamePlates"]["HealthPrediction"] = false
-C["NamePlates"]["MaxDistance"] = 60
-C["NamePlates"]["CombatOnly"] = true
-
--- sizing
 C["NamePlates"]["CastHeight"] = 4
+
+-- buffs
+C["NamePlates"]["StealableBuffs"] = true
+C["NamePlates"]["NumberStealableBuffs"] = 3
+C["NamePlates"]["StealableBuffsSize"] = 20
 
 -- debuffs
 C["NamePlates"]["Debuffs"] = true
 C["NamePlates"]["DebuffSize"] = 20
-C["NamePlates"]["DebuffsOnTop"] = true
+C["NamePlates"]["DebuffAnchorSpace"] = 4
+C["NamePlates"]["DebuffsOnTop"] = false
 
 -- quests
 C["NamePlates"]["QuestIconSize"] = 40
 
 -- threat
 C["NamePlates"]["ThreatIndicator"] = true
---C["NamePlates"]["ThreatOnHealth"] = false
-C["NamePlates"]["ThreatGlow"] = false
---C["NamePlates"]["ThreatSolo"] = true
 
 -- marking
 C["NamePlates"]["MarkerSize"] = 40
@@ -887,7 +1404,42 @@ C["NamePlates"]["PvPClassificationIndicator"] = false
 ------------------------------------------------------------------------------------------
 -- PARTY
 ------------------------------------------------------------------------------------------
--- styling
+-- settings
+C["Party"]["VerticalSpacing"] = 70
+C["Party"]["PetSizeScale"] = 70
+C["Party"]["ShowSolo"] = true
+C["Party"]["PercentageTags"] = true
+
+-- style
+C["Party"]["Style"] = {
+	["Options"] = {
+		["|cffFFFF99MaxUI|r"] = "MaxUI",
+		["Tukui"] = "Tukui",
+	},
+	["Value"] = "MaxUI",
+}
+
+C["Party"]["Orientation"] = {
+	["Options"] = {
+		["|cffFFFF99Vertical|r"] = "Vertical",
+		["|cffFFFF99Horizontal|r"] = "Horizontal",
+	},
+	["Value"] = "Horizontal",
+}
+
+C["Party"]["ElementAnchored"] = {
+	["Options"] = {
+		["|cffFFFF99Left|r"] = "LEFT",
+		["|cffFFFF99Centered|r"] = "CENTER",
+		["|cffFFFF99Right|r"] = "RIGHT",
+	},
+	["Value"] = "LEFT",
+}
+
+-- health
+C["Party"]["HealthHeight"] = 32
+C["Party"]["HealthWidth"] = 200
+C["Party"]["HealthFontSize"] = 12
 C["Party"]["HealthTag"] = {
 	["Options"] = {
 		["None"] = "",
@@ -900,6 +1452,11 @@ C["Party"]["HealthTag"] = {
 	["Value"] = "|cff549654[MaxUI:CurHP] | [MaxUI:MaxHP]|r",
 }
 	
+-- power
+C["Party"]["PowerHeight"] = 12
+C["Party"]["PowerWidth"] = 130
+C["Party"]["PowerFont"] = "MaxUI Outlined"
+C["Party"]["PowerFontSize"] = 10
 C["Party"]["PowerTag"] = {
 	["Options"] = {
 		["None"] = "",
@@ -911,27 +1468,22 @@ C["Party"]["PowerTag"] = {
 	},
 	["Value"] = "[MaxUI:PowerColor][MaxUI:CurPP] | [MaxUI:MaxPP]",
 }
-	
--- sizing
-C["Party"]["HealthHeight"] = 32
-C["Party"]["HealthWidth"] = 200
-C["Party"]["PowerHeight"] = 12
-C["Party"]["PowerWidth"] = 130
-C["Party"]["VerticalSpacing"] = 0
 
--- fonts
-C["Party"]["PowerFont"] = "MaxUI Outlined"
-	
-C["Party"]["HealthFontSize"] = 12
-C["Party"]["PowerFontSize"] = 10
+-- name
 C["Party"]["NameFontSize"] = 14
 	
--- textures
+-- castbar
+C["Party"]["CastBar"] = false
+C["Party"]["CastBarIcon"] = true
+C["Party"]["CastBarText"] = true
+C["Party"]["CastBarTime"] = true
+C["Party"]["CastFont"] = "MaxUI Outlined"
+C["Party"]["CastFontSize"] = 10
 C["Party"]["CastTexture"] = "Tukui"
-
--- settings
-C["Party"]["ShowSolo"] = true
-C["Party"]["PercentageTags"] = true
+C["Party"]["CastBarUnlink"] = false
+C["Party"]["CastHeight"] = 10
+C["Party"]["CastWidth"] = 160
+C["Party"]["CastTexture"] = "Tukui"
 
 -- marking/role
 C["Party"]["RaidIconSize"] = 20
@@ -940,19 +1492,19 @@ C["Party"]["RoleIcon"] = true
 -- buufs/debuffs
 C["Party"]["ShowBuffs"] = true
 C["Party"]["ShowDebuffs"] = true
+C["Party"]["NumberOfDebuffsShown"] = 3
+C["Party"]["NumberOfBuffsShown"] = 8
 
 -- portrait
 C["Party"]["PortraitOverlayAlpha"] = 0.5
 C["Party"]["PortraitStyle"] = {
 	["Options"] = {
 		["None"] = "None",
-		["Side"] = "Side",
+		["Outside"] = "Side",
 		["Overlay"] = "Overlay",
 	},	
 	["Value"] = "None",
 }
-
--- Combat State
 
 ------------------------------------------------------------------------------------------
 -- PET BATTLE
@@ -973,9 +1525,8 @@ C["PetBattle"] = {
 C["Quests"] = {
 	-- objective tracker
 	["TrackerFixed"] = true,
---	["QuestSpacing"] = 6,
+	["TrackerCollapsedOnLogin"] = false,
 	["QuestProgressTexture"] = "Tukui",
-	["QuestHeaderBackdrops"] = false,
 	["QuestHeaderLines"] = true,
 
 	-- tracking
@@ -1000,21 +1551,60 @@ C["Quests"] = {
 ------------------------------------------------------------------------------------------
 -- RAID
 ------------------------------------------------------------------------------------------
-C["Raid"]["Alternative"] = false
-
--- Fonts
-C["Raid"]["FontSize"] = 10
-C["Raid"]["HealthFontSize"] = 10
-C["Raid"]["PercentageFontSize"] = 10
-C["Raid"]["HealthPercentageFont"] = "MaxUI Outlined"
-
 -- Settings
-C["Raid"]["PowerVertical"] = false
 C["Raid"]["ShowSolo"] = true
+C["Raid"]["GroupNumber"] = true
+C["Raid"]["BGAlpha"] = 0.2
+
+C["Raid"]["Style"] = {
+	["Options"] = {
+		["|cffFFFF99MaxUI|r"] = "MaxUI",
+		["|cffFFFF99Alternative|r"] = "Alternative",
+		["Tukui"] = "Tukui",
+	},
+	["Value"] = "MaxUI",
+}
+
+C["Raid"]["ElementAnchored"] = {
+	["Options"] = {
+		["|cffFFFF99Left|r"] = "LEFT",
+		["|cffFFFF99Centered|r"] = "CENTER",
+		["|cffFFFF99Right|r"] = "RIGHT",
+	},
+	["Value"] = "CENTER",
+}
+
+C["Raid"]["Orientation"] = {
+	["Options"] = {
+		["|cffFFFF99Vertical|r"] = "Vertical",
+		["|cffFFFF99Horizontal|r"] = "Horizontal",
+	},
+	["Value"] = "Horizontal",
+}
+
+-- health
+C["Raid"]["HealthFontSize"] = 10
+C["Raid"]["HealthPercentageFont"] = "MaxUI Outlined"
 C["Raid"]["ShowMissingHealth"] = false
 C["Raid"]["ShowPercentageHealth"] = false
-C["Raid"]["GroupNumber"] = true
-	
+
+-- power
+C["Raid"]["PowerVertical"] = false
+
+-- name
+C["Raid"]["FontSize"] = 10
+C["Raid"]["PercentageFontSize"] = 10
+C["Raid"]["NameColor"] = {
+	["Options"] = {
+		["Class"] = "Class",
+		["Custom"] = "Custom",
+	},
+	["Value"] = "Class",
+}
+C["Raid"]["CustomNameColor"] = {1, 1, 0}
+
+-- buffs	
+C["Raid"]["DeBuffsOnRight"] = false
 C["Raid"]["BuffsPosition"] = {
 	["Options"] = {
 		["Inside Top"] = "InsideTop",
@@ -1025,26 +1615,9 @@ C["Raid"]["BuffsPosition"] = {
 	["Value"] = "Inside",
 }
 
--- Name coloring
-C["Raid"]["NameColor"] = {
-	["Options"] = {
-		["Class"] = "Class",
-		["Custom"] = "Custom",
-	},
-	["Value"] = "Class",
-}
-C["Raid"]["CustomNameColor"] = {1, 1, 0}
-
-C["Raid"]["DeBuffsOnRight"] = false
-
 -- Sizing and Spacing
 C["Raid"]["HorSpacing"] = 4
 C["Raid"]["VerSpacing"] = 10
-
--- Marking and Role
-C["Raid"]["MarkerSize"] = 16
-C["Raid"]["RoleIconSize"] = 16
---C["Raid"]["AssignmentIcon"] = true
 
 -- Growth Direction
 C["Raid"]["GrowDirection"] = {
@@ -1057,7 +1630,10 @@ C["Raid"]["GrowDirection"] = {
 	["Value"] = "VerticalDown",	
 }
 
--- Combat State
+-- Marking and Role
+C["Raid"]["MarkerSize"] = 16
+C["Raid"]["RoleIconSize"] = 16
+--C["Raid"]["AssignmentIcon"] = true
 
 ------------------------------------------------------------------------------------------
 -- Scrolling Combat Text
@@ -1116,38 +1692,25 @@ C["Scrolling Text"] = {
 ------------------------------------------------------------------------------------------
 C["Skins"] = {
 	
-	["MaxUIAddOnSkins"] = false,
-	["MaxUISkins"] = false,
-	["MinimapFilter"] = false,
-	["ChatFilter"] = false,
-	["AFKFilter"] = false,
-	["UIParentFilter"] = false,
-	["ScreenFilterAlpha"] = 0.8,
-	["ScreenFilterColor"] = {0, 0, 0},
-	["FilterAlpha"] = 0.6,
-	["FilterSize"] = 48,
-	
-	["Color"] = {
-		["Options"] = {
-			["|cff202020Dark|r"] = "Dark",
-			["Backdrop"] = "BackdropColor",
-			["|cffC0C0C0Grey|r"] = "Grey",
-			["" ..ClassTextColor .."Class".. "|r"] = "ClassColor",	
-		},
-	["Value"] = "Grey",
-}
+-- Skin options
+	["MaxUIPositioningBlizzardFrames"] = false,
 
---[[
+	--["MaxUIAddOnSkins"] = false,
+	--["MaxUISkins"] = false,
+	["MaxUISkinsBlizzard"] = false,
+	["MaxUISkinsAddons"] = false,
+	
 	-- system
 	["GameMenu"] = false,
 	["CustomerSupport"] = false,
 	["WhatsNew"] = false,
 	["Report"] = false,
-	["System"] = false,
-	["Interface"] = false,
+	["SettingsPanel"] = false,
+	["Popups"] = false,
 	["Keybinds"] = false,
 	["Macros"] = false,
 	["AddOns"] = false,
+	["ColorPicker"] = false,
 
 	-- character
 	["Character"] = false,
@@ -1157,16 +1720,17 @@ C["Skins"] = {
 	
 	-- social
 	["Social"] = false,
-	["PVE"] = false,
+	["LFG"] = false,
 	["Guild"] = false,
 	["EventCalendar"] = false,
 	["Communities"] = false,
 
 	-- maps and quest
-	["WorldMap"] = false,
+	["WorldMapQuestlog"] = false,
 	["QuestGossip"] = false,
 	["Flightmap"] = false,
 	["DungeonJournal"] = false,
+	["MissionsRenown"] = false,
 	
 	-- merchant and vendors
 	["Merchant"] = false,
@@ -1185,7 +1749,54 @@ C["Skins"] = {
 	["Achievements"] = false,
 	["Collections"] = false,
 	
---]]	
+-- filters
+	["MinimapFilter"] = false,
+	["MinimapElementsFilter"] = false,
+	["ChatFilter"] = false,
+	["DataCenterFilter"] = false,
+	["DataTextFilter"] = false,
+	["DataBarFilter"] = false,
+	["InventoryFilter"] = false,
+	["InventoryBGFilter"] = false,
+	["TooltipFilter"] = false,
+	["TooltipHealthFilter"] = false,
+	["ObjectiveTrackerFilter"] = false,
+	["BattlegroundTrackerFilter"] = false,
+	
+	["HeaderFilter"] = false,
+	["ButtonFilter"] = false,
+	["BackdropFilter"] = false,
+	
+	["ActionBarButtonFilter"] = false,
+	["AurasFilter"] = false,
+	
+	["UnitFramesFilter"] = false,
+	["NamePlatesFilter"] = false,
+	["GroupRaidFilter"] = false,
+
+	["SkinTexture"] = "Rounded",
+	["SkinVerticalTexture"] = "Rounded Vert Left",
+	["FilterAlpha"] = 0.8,
+	["CustomFilterColor"] = {1, 1, 1},
+	
+	-- screen filter
+	["AFKFilter"] = false,
+	["UIParentFilter"] = false,
+	["ScreenFilterAlpha"] = 0.8,
+	["ScreenFilterColor"] = {0, 0, 0},
+	["FilterSize"] = 48,
+	
+	["Color"] = {
+		["Options"] = {
+			["|cff202020Dark|r"] = "Dark",
+			["Backdrop"] = "BackdropColor",
+			["|cffC0C0C0Grey|r"] = "Grey",
+			["" ..ClassTextColor .."Class".. "|r"] = "ClassColor",	
+			["Custom"] = "Custom",	
+		},
+	["Value"] = "Grey",
+	["CustomSkinsColor"] = {1, 0, 0},
+	},
 }
 
 ------------------------------------------------------------------------------------------
@@ -1193,9 +1804,16 @@ C["Skins"] = {
 ------------------------------------------------------------------------------------------
 C["Tools"] = {
 	-- options
-	["ToolButtonSize"] = 24,
-	["Font"] = "MaxUI Outlined",
-	["FontSize"] = 12,
+	--["ToolButtonSize"] = 24,
+	--["Font"] = "MaxUI Outlined",
+	--["FontSize"] = 12,
+	--["ButtonStyle"] = {
+		--["Options"] = {
+			--["Blizzard"] = "Blizzard",
+			--["MaxUI"] = "MaxUI",
+		--},	
+		--["Value"] = "MaxUI",
+	--},
 
 	-- tools
 	["UIConfig"] = true,
@@ -1229,14 +1847,6 @@ C["Tools"] = {
 ------------------------------------------------------------------------------------------
 -- TOOLTIPS
 ------------------------------------------------------------------------------------------
---C["Tooltips"]["TooltipsCombatState"] = {
---	["Options"] = {
---		["Hide in Combat"] = "Hide",	
---		["Nothing"] = "Nothing",
---	},
---	["Value"] = "Nothing",
---}
-
 C["Tooltips"]["HealthFontSize"] = 12
 C["Tooltips"]["TooltipAlpha"] = 0.7
 
@@ -1248,9 +1858,68 @@ C["Tooltips"]["TooltipAlpha"] = 0.7
 ------------------------------------------------------------------------------------------
 -- Settings
 C["UnitFrames"]["HealCommAlpha"] = 0.6 
-C["UnitFrames"]["RemainingTime"] = false 
-C["UnitFrames"]["IconCountSize"] = 10 
-C["UnitFrames"]["IconRemainingSize"] = 10 
+
+--C["UnitFrames"]["AurasFont"] = "MaxUI Outlined"
+
+C["UnitFrames"]["Count"] = true 
+C["UnitFrames"]["CountFont"] = "MaxUI Outlined"
+C["UnitFrames"]["CountSize"] = 10 
+C["UnitFrames"]["CountColor"] = {1, 1, 0} 
+C["UnitFrames"]["CountPosition"] = {
+	["Options"] = {
+		["topleft"] = "TOPLEFT",
+		["top"] = "TOP",
+		["topright"] = "TOPRIGHT",
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+		["bottomleft"] = "BOTTOMLEFT",
+		["bottom"] = "BOTTOM",
+		["bottomright"] = "BOTTOMRIGHT",
+	},
+	["Value"] = "TOPLEFT",
+}
+
+C["UnitFrames"]["CountOffsetH"] = 1 
+C["UnitFrames"]["CountOffsetV"] = -1 
+C["UnitFrames"]["CountJustifyH"] = {
+	["Options"] = {
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+	},
+	["Value"] = "LEFT",
+}
+
+C["UnitFrames"]["RemainingTime"] = true 
+C["UnitFrames"]["RemainingTimeFont"] = "MaxUI Outlined"
+C["UnitFrames"]["RemainingTimeSize"] = 10 
+C["UnitFrames"]["RemainingTimeColor"] = {1, 0, 0} 
+C["UnitFrames"]["RemainingTimePosition"] = {
+	["Options"] = {
+		["topleft"] = "TOPLEFT",
+		["top"] = "TOP",
+		["topright"] = "TOPRIGHT",
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+		["bottomleft"] = "BOTTOMLEFT",
+		["bottom"] = "BOTTOM",
+		["bottomright"] = "BOTTOMRIGHT",
+	},
+	["Value"] = "BOTTOM",
+}
+
+C["UnitFrames"]["RemainingTimeOffsetH"] = 1 
+C["UnitFrames"]["RemainingTimeOffsetV"] = -6 
+C["UnitFrames"]["RemainingTimeJustifyH"] = {
+	["Options"] = {
+		["left"] = "LEFT",
+		["center"] = "CENTER",
+		["right"] = "RIGHT",
+	},
+	["Value"] = "CENTER",
+}
 
 -- Horizontal or vertical
 C["UnitFrames"]["HorVer"] = {
@@ -1315,10 +1984,6 @@ C["UnitFrames"]["MaxUIAnchor"] = false
 C["UnitFrames"]["MaxUIAnchorWidth"] = 0
 C["UnitFrames"]["MaxUIAnchorVertical"] = 0
 
--- Dark/Customizable UnitFrames
---C["UnitFrames"]["DarkEnable"] = false
---C["UnitFrames"]["GradientEnable"] = false
-
 C["UnitFrames"]["Colorstyle"] = {
 	["Options"] = {
 		["|cff202020Dark|r"] = "Dark",
@@ -1337,8 +2002,18 @@ C["UnitFrames"]["ColorTexture"] = {233/255, 0, 18/255}
 -- UNITFRAMES CLASS OPTIONS	
 ------------------------------------------------------------------------------------------
 C["ClassOptions"] = {
+
+	["ClassPowerStyle"] = {
+		["Options"] = {
+			["|cffFFFF99MaxUI|r"] = "MaxUI",
+			["Tukui"] = "Tukui",
+		},
+		["Value"] = "MaxUI",
+	},
+
 	-- settings
-	["ComboBar"] = true,
+	["ClassPowerMover"] = true,
+	["ClassPowerBackdrop"] = false,
 
 	["ClassResourcesOrientation"] = {
 		["Options"] = {
@@ -1374,9 +2049,12 @@ C["ClassOptions"] = {
 		["Value"] = "Nothing",
 	},
 	
+	["ComboBar"] = true,
+	
 	-- class specific
 	["Deathknight"] = true,
 	["Demonhunter"] = true,
+	["Evoker"] = true,
 	["Druid"] = true,
 	["DruidAdditionalPower"] = true,
 	["Hunter"] = true,
@@ -1387,7 +2065,6 @@ C["ClassOptions"] = {
 	["PriestAdditionalPower"] = true,
 	["Rogue"] = true,
 	["ShamanAdditionalPower"] = true,
-	["ShamanTotemBackdrop"] = true,
 	["ShamanTotemSize"] = 32,
 	["ShamanTotemSpace"] = 4,
 	["Warlock"] = true,
@@ -1407,55 +2084,162 @@ C["UnitFrames"]["TotemBarStyle"] = {
 -- UF: SPECIFIC
 ------------------------------------------------------------------------------------------
 -- UF: Player
+
+-- health
 C["UnitFrames"]["PlayerHealthTag"] = {
 	["Options"] = {
 		["None"] = "",
-		["Current"] = "[MaxUI:HealthColor][MaxUI:CurHP]",
-		["Percent"] = "[MaxUI:HealthColor][perhp]%",
-		["Current - Percent"] = "[MaxUI:HealthColor][MaxUI:CurHP] - [perhp]%",
-		["Missing"] = "[MaxUI:HealthColor]-[MaxUI:MisHP]",
-		["Current | Max"] = "[MaxUI:HealthColor][MaxUI:CurHP] | [MaxUI:MaxHP]",
+		["current"] = "[MaxUI:HealthColor][MaxUI:CurHP]",
+		["percent"] = "[MaxUI:HealthColor][perhp]%",
+		["current - percent"] = "[MaxUI:HealthColor][MaxUI:CurHP] - [perhp]%",
+		["missing"] = "[MaxUI:HealthColor]-[MaxUI:MisHP]",
+		["current | max"] = "[MaxUI:HealthColor][MaxUI:CurHP] | [MaxUI:MaxHP]",
 	},
 	["Value"] = "[MaxUI:HealthColor][MaxUI:CurHP] | [MaxUI:MaxHP]",
 }
 
 C["UF: Player"] = {
 
-	-- Enable
+	-- settings
 	["Enable"] = true,
+	["PercentageTags"] = true,
+	["CombatLog"] = true,
 
-	-- styling
+	-- health
+	["HealthHeight"] = 36,
+	["HealthWidth"] = 200,
+	["HealthFont"] = "MaxUI Outlined",
+	["HealthFontSize"] = 12,
+	["HealthTexture"] = "Tukui",
+
+	-- power
+	["PowerHeight"] = 12,
+	["PowerWidth"] = 140,
+	["PowerFont"] = "MaxUI Outlined",
+	["PowerFontSize"] = 10,
+	["PowerTexture"] = "Tukui",
 	["PowerTag"] = {
 		["Options"] = {
 			["None"] = "",
-			["Current"] = "[MaxUI:PowerColor][MaxUI:CurPP]",
-			["Percent"] = "[MaxUI:PowerColor][perpp]%",
-			["Current - Percent"] = "[MaxUI:PowerColor][MaxUI:CurPP] - [perpp]%",
-			["Missing"] = "[MaxUI:PowerColor]-[MaxUI:MisPP]",
-			["Current | Max"] = "[MaxUI:PowerColor][MaxUI:CurPP] | [MaxUI:MaxPP]",
+			["current"] = "[MaxUI:PowerColor][MaxUI:CurPP]",
+			["percent"] = "[MaxUI:PowerColor][perpp]%",
+			["current - percent"] = "[MaxUI:PowerColor][MaxUI:CurPP] - [perpp]%",
+			["missing"] = "[MaxUI:PowerColor]-[MaxUI:MisPP]",
+			["current | max"] = "[MaxUI:PowerColor][MaxUI:CurPP] | [MaxUI:MaxPP]",
 		},
 		["Value"] = "[MaxUI:PowerColor][MaxUI:CurPP] | [MaxUI:MaxPP]",
 	},
 	
-	["PercentageTags"] = true,
-	["CombatLog"] = true,
-	
+	-- name
+	["NameFont"] = "MaxUI Outlined",
+	["NameFontSize"] = 14,
+	["DescFontSize"] = 12,
+	["NameTag"] = {
+		["Options"] = {
+			["None"] = "",
+			["Create-your-own-in-lua"] = "[name] [name] [name] [name]",
+
+			["name:Full+lvl+status"] = "[Tukui:GetNameColor][name] [Tukui:DiffColor][level] [classification][pvp]",
+			["name:Abbrev+lvl+status"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level] [classification][pvp]",
+			["name:Long+ lvl+status"] = "[Tukui:GetNameColor][Tukui:NameLong] [Tukui:DiffColor][level] [classification][pvp]",
+			["name:Medium+lvl+status"] = "[Tukui:GetNameColor][Tukui:NameMedium] [Tukui:DiffColor][level] [classification][pvp]",
+			["name:Short+lvl+status"] = "[Tukui:GetNameColor][Tukui:NameShort] [Tukui:DiffColor][level] [classification][pvp]",
+			
+			["name:Full+lvl"] = "[Tukui:GetNameColor][name] [Tukui:DiffColor][level]",
+			["name:Abbreviated+lvl"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level]",
+			["name:Long+lvl"] = "[Tukui:GetNameColor][Tukui:NameLong] [Tukui:DiffColor][level]",
+			["name:Medium+lvl"] = "[Tukui:GetNameColor][Tukui:NameMedium] [Tukui:DiffColor][level]",
+			["name:Short+lvl"] = "[Tukui:GetNameColor][Tukui:NameShort] [Tukui:DiffColor][level]",
+			
+			["name:Full"] = "[Tukui:GetNameColor][name]",
+			["name:Abbreviated"] = "[Tukui:GetNameColor][name:abbrev]",
+			["name:Long"] = "[Tukui:GetNameColor][Tukui:NameLong]",
+			["name:Medium"] = "[Tukui:GetNameColor][Tukui:NameMedium]",
+			["name:Short"] = "[Tukui:GetNameColor][Tukui:NameShort]",
+			
+			["name:Full+status"] = "[Tukui:GetNameColor][name] [classification][pvp]",
+			["name:Abbreviated+status"] = "[Tukui:GetNameColor][name:abbrev] [classification][pvp]",
+			["name:Long+status"] = "[Tukui:GetNameColor][Tukui:NameLong] [classification][pvp]",
+			["name:Medium+status"] = "[Tukui:GetNameColor][Tukui:NameMedium] [classification][pvp]",
+			["name:Short+status"] = "[Tukui:GetNameColor][Tukui:NameShort] [classification][pvp]",
+		},
+		["Value"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level] [classification][pvp]",
+	},
+
+	["DescriptionTag"] = {
+		["Options"] = {
+			["None"] = "",
+			["Create-your-own-in-lua"] = "[name] [name] [name] [name]",
+			
+			["Preset 1"] = "[faction] [race] [arenaspec] [smartclass]",
+			["Preset 2"] = "[group] [leader] [status] [offline] [resting]",
+			["Preset 3"] = "[sex] [race] [creature]",
+			["Preset 4"] = "[threatcolor] [threat]",
+			
+			["creature"] = "[creature]",
+			["sex"] = "[sex]",
+			["name"] = "[name]",
+			["faction"] = "[faction]",
+			["race"] = "[race]",
+			
+			["group"] = "[group]",
+			["threat"] = "[threat]",
+			
+			["arenaspec"] = "[arenaspec]",
+			["smartlevel"] = "[smartlevel]",
+			["smartclass"] = "[smartclass]",
+			
+			["offline"] = "[offline]",
+			["resting"] = "[resting]",
+			["status"] = "[status]",
+			["pvp"] = "[pvp]",
+			["leader"] = "[leader]",
+			["leaderlong"] = "[leaderlong]",
+			["dead"] = "[dead]",
+			["level"] = "[level]",
+			
+			["affix"] = "[affix]",
+			["shortclassification"] = "[shortclassification]",
+			["classification"] = "[classification]",
+			["plus"] = "[plus]",
+			["rare"] = "[rare]",
+
+			["arcanecharges"] = "[arcanecharges]",
+			["chi"] = "[chi]",
+			["cpoints"] = "[cpoints]",
+			["holypower"] = "[holypower]",
+			["runes"] = "[runes]",
+			["soulshards"] = "[soulshards]",
+		},
+		["Value"] = "",
+	},
+
 	-- castbar
 	["CastBar"] = true,
-	["CastBarUnlink"] = true,
 	["CastBarIcon"] = true,
-	["CenteredHealer"] = false,
-	
-	-- sizing
-	["HealthHeight"] = 36,
-	["HealthWidth"] = 200,
-	["PowerHeight"] = 12,
-	["PowerWidth"] = 140,
+	["CastBarText"] = true,
+	["CastBarTime"] = true,
+	["CastBarUnlink"] = true,
+	["StandAloneCastBar"] = false,
+	["StandAloneCastBarTimeOffsetV"] = -16,
+	["StandAloneCastBarTextOffsetV"] = -16,
 	["CastHeight"] = 12,
 	["CastWidth"] = 200,
+	["CastFont"] = "MaxUI Outlined",
+	["CastFontSize"] = 12,
+	["CastTexture"] = "Tukui",
+	
+	-- aurabars
 	["AuraBarsHeight"] = 17,
 	["AuraBarsWidth"] = 200,
 	["AuraBarsSpacing"] = 2,
+	["AuraBarsAlignment"] = {
+		["Options"] = {
+			["Left"] = "LEFT",
+			["Right"] = "RIGHT",	
+		},
+		["Value"] = "LEFT",
+	},
 	["AuraBarsGrowDirection"] = {
 		["Options"] = {
 			["Up"] = "UP",
@@ -1463,22 +2247,6 @@ C["UF: Player"] = {
 		},
 		["Value"] = "UP",
 	},
-	
-	-- font
-	["HealthFont"] = "MaxUI Outlined",
-	["PowerFont"] = "MaxUI Outlined",
-	["CastFont"] = "MaxUI Outlined",
-	["NameFont"] = "MaxUI Outlined",
-	
-	["HealthFontSize"] = 12,
-	["PowerFontSize"] = 10,
-	["CastFontSize"] = 12,
-	["NameFontSize"] = 14,
-	
-	-- texture
-	["HealthTexture"] = "Tukui",
-	["PowerTexture"] = "Tukui",
-	["CastTexture"] = "Tukui",
 
 	-- buffs
 	["OnlySelfBuffs"] = true,
@@ -1507,7 +2275,8 @@ C["UF: Player"] = {
 	["PortraitStyle"] = {
 		["Options"] = {
 			["None"] = "None",
-			["Side"] = "Side",
+			["Outside"] = "Side",
+			["Class Icon"] = "ClassIcon",
 			["Overlay"] = "Overlay",
 		},	
 		["Value"] = "None",
@@ -1531,7 +2300,8 @@ C["UF: Player"] = {
 	["PVPIconSize"] = 48,
 	
 	-- combat state
-	["NonCombatAlphaEnable"] = true,
+	["NonCombatAlphaEnable"] = false,
+	["OnlyFullHP"] = true,
 	["NonCombatAlpha"] = 1,
 }
 
@@ -1539,84 +2309,146 @@ C["UF: Player"] = {
 C["UnitFrames"]["TargetHealthTag"] = {
 	["Options"] = {
 		["None"] = "",
-		["Current"] = "[MaxUI:HealthColor][MaxUI:CurHP]",
-		["Percent"] = "[MaxUI:HealthColor][perhp]%",
-		["Current - Percent"] = "[MaxUI:HealthColor][MaxUI:CurHP] - [perhp]%",
-		["Missing"] = "[MaxUI:HealthColor]-[MaxUI:MisHP]",
-		["Current | Max"] = "[MaxUI:HealthColor][MaxUI:CurHP] | [MaxUI:MaxHP]",
+		["current"] = "[MaxUI:HealthColor][MaxUI:CurHP]",
+		["percent"] = "[MaxUI:HealthColor][perhp]%",
+		["current - percent"] = "[MaxUI:HealthColor][MaxUI:CurHP] - [perhp]%",
+		["missing"] = "[MaxUI:HealthColor]-[MaxUI:MisHP]",
+		["current | max"] = "[MaxUI:HealthColor][MaxUI:CurHP] | [MaxUI:MaxHP]",
 	},
 	["Value"] = "[MaxUI:HealthColor][MaxUI:CurHP] | [MaxUI:MaxHP]",
 }
 
 C["UF: Target"] = {
 
-	-- enable
+	-- settings
 	["Enable"] = true,
-
 	["ColorThreat"] = false, 
 	["ColorGradient"] = false, 
+	["PercentageTags"] = true,
+	["CombatLog"] = true,
 	
-	-- styling
+
+	-- health
+	["HealthHeight"] = 36,
+	["HealthWidth"] = 200,
+	["HealthFont"] = "MaxUI Outlined",
+	["HealthFontSize"] = 12,
+	["HealthTexture"] = "Tukui",
+
+	-- power
+	["PowerHeight"] = 12,
+	["PowerWidth"] = 140,
+	["PowerFont"] = "MaxUI Outlined",
+	["PowerFontSize"] = 10,
+	["PowerTexture"] = "Tukui",
 	["PowerTag"] = {
 		["Options"] = {
 			["None"] = "",
-			["Current"] = "[MaxUI:PowerColor][MaxUI:CurPP]",
-			["Percent"] = "[MaxUI:PowerColor][perpp]%",
-			["Current - Percent"] = "[MaxUI:PowerColor][MaxUI:CurPP] - [perpp]%",
-			["Missing"] = "[MaxUI:PowerColor]-[MaxUI:MisPP]",
-			["Current | Max"] = "[MaxUI:PowerColor][MaxUI:CurPP] | [MaxUI:MaxPP]",
+			["current"] = "[MaxUI:PowerColor][MaxUI:CurPP]",
+			["percent"] = "[MaxUI:PowerColor][perpp]%",
+			["current - percent"] = "[MaxUI:PowerColor][MaxUI:CurPP] - [perpp]%",
+			["missing"] = "[MaxUI:PowerColor]-[MaxUI:MisPP]",
+			["current | max"] = "[MaxUI:PowerColor][MaxUI:CurPP] | [MaxUI:MaxPP]",
 		},
 		["Value"] = "[MaxUI:PowerColor][MaxUI:CurPP] | [MaxUI:MaxPP]",
 	},
 
+	-- name
+	["NameFont"] = "MaxUI Outlined",
+	["NameFontSize"] = 14,
+	["DescFontSize"] = 12,
 	["NameTag"] = {
 		["Options"] = {
 			["None"] = "",
-			["Name:Full"] = "[Tukui:GetNameColor][name] [Tukui:DiffColor][level] [classification][pvp]",
-			["Name:Abbreviated"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level] [classification][pvp]",
-			["Name:Long"] = "[Tukui:GetNameColor][Tukui:NameLong] [Tukui:DiffColor][level] [classification][pvp]",
-			["Name:Medium"] = "[Tukui:GetNameColor][Tukui:NameMedium] [Tukui:DiffColor][level] [classification][pvp]",
-			["Name:Short"] = "[Tukui:GetNameColor][Tukui:NameShort] [Tukui:DiffColor][level] [classification][pvp]",
+			["Create-your-own-in-lua"] = "[name] [name] [name] [name]",
+		
+			["Name:Full+lvl+status"] = "[Tukui:GetNameColor][name] [Tukui:DiffColor][level] [classification][pvp]",
+			["Name:Abbrev+lvl+status"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level] [classification][pvp]",
+			["Name:Long+ lvl+status"] = "[Tukui:GetNameColor][Tukui:NameLong] [Tukui:DiffColor][level] [classification][pvp]",
+			["Name:Medium+lvl+status"] = "[Tukui:GetNameColor][Tukui:NameMedium] [Tukui:DiffColor][level] [classification][pvp]",
+			["Name:Short+lvl+status"] = "[Tukui:GetNameColor][Tukui:NameShort] [Tukui:DiffColor][level] [classification][pvp]",
+			
+			["Name:Full+lvl"] = "[Tukui:GetNameColor][name] [Tukui:DiffColor][level]",
+			["Name:Abbreviated+lvl"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level]",
+			["Name:Long+lvl"] = "[Tukui:GetNameColor][Tukui:NameLong] [Tukui:DiffColor][level]",
+			["Name:Medium+lvl"] = "[Tukui:GetNameColor][Tukui:NameMedium] [Tukui:DiffColor][level]",
+			["Name:Short+lvl"] = "[Tukui:GetNameColor][Tukui:NameShort] [Tukui:DiffColor][level]",
+			
+			["Name:Full"] = "[Tukui:GetNameColor][name]",
+			["Name:Abbreviated"] = "[Tukui:GetNameColor][name:abbrev]",
+			["Name:Long"] = "[Tukui:GetNameColor][Tukui:NameLong]",
+			["Name:Medium"] = "[Tukui:GetNameColor][Tukui:NameMedium]",
+			["Name:Short"] = "[Tukui:GetNameColor][Tukui:NameShort]",
+			
+			["Name:Full+status"] = "[Tukui:GetNameColor][name] [classification][pvp]",
+			["Name:Abbreviated+status"] = "[Tukui:GetNameColor][name:abbrev] [classification][pvp]",
+			["Name:Long+status"] = "[Tukui:GetNameColor][Tukui:NameLong] [classification][pvp]",
+			["Name:Medium+status"] = "[Tukui:GetNameColor][Tukui:NameMedium] [classification][pvp]",
+			["Name:Short+status"] = "[Tukui:GetNameColor][Tukui:NameShort] [classification][pvp]",
 		},
 		["Value"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level] [classification][pvp]",
 	},
 	
-	["PercentageTags"] = true,
-	["CombatLog"] = true,
-	["RoleIcon"] = true,
-	["RoleIconSize"] = 24,
-	["RaidIcon"] = true,
-	["RaidIconSize"] = 24,
+	["DescriptionTag"] = {
+		["Options"] = {
+			["None"] = "",
+			["Create-your-own-in-lua"] = "[name] [name] [name] [name]",
+			
+			["Preset 1"] = "[faction][race][arenaspec][smartclass]",
+			["Preset 2"] = "[group][leader][status][offline][resting]",
+			["Preset 3"] = "[sex][race][creature]",
+			["Preset 4"] = "[threatcolor][threat]",
+			
+			["creature"] = "[creature]",
+			["sex"] = "[sex]",
+			["name"] = "[name]",
+			["faction"] = "[faction]",
+			["race"] = "[race]",
+			
+			["group"] = "[group]",
+			["threat"] = "[threat]",
+			
+			["arenaspec"] = "[arenaspec]",
+			["smartlevel"] = "[smartlevel]",
+			["smartclass"] = "[smartclass]",
+			
+			["offline"] = "[offline]",
+			["resting"] = "[resting]",
+			["status"] = "[status]",
+			["pvp"] = "[pvp]",
+			["leader"] = "[leader]",
+			["leaderlong"] = "[leaderlong]",
+			["dead"] = "[dead]",
+			["level"] = "[level]",
+			
+			["affix"] = "[affix]",
+			["shortclassification"] = "[shortclassification]",
+			["classification"] = "[classification]",
+			["plus"] = "[plus]",
+			["rare"] = "[rare]",
+
+			["arcanecharges"] = "[arcanecharges]",
+			["chi"] = "[chi]",
+			["cpoints"] = "[cpoints]",
+			["holypower"] = "[holypower]",
+			["runes"] = "[runes]",
+			["soulshards"] = "[soulshards]",
+		},
+		["Value"] = "",
+	},
 
 	-- castbar
 	["CastBar"] = true,
-	["CastBarUnlink"] = true,
 	["CastBarIcon"] = true,
-	
-	-- sizing
-	["HealthHeight"] = 36,
-	["HealthWidth"] = 200,
-	["PowerHeight"] = 12,
-	["PowerWidth"] = 140,
+	["CastBarText"] = true,
+	["CastBarTime"] = true,
+	["CastBarUnlink"] = true,
 	["CastHeight"] = 12,
 	["CastWidth"] = 200,
-
-	-- font
-	["HealthFont"] = "MaxUI Outlined",
-	["PowerFont"] = "MaxUI Outlined",
 	["CastFont"] = "MaxUI Outlined",
-	["NameFont"] = "MaxUI Outlined",
-	
-	["HealthFontSize"] = 12,
-	["PowerFontSize"] = 10,
 	["CastFontSize"] = 12,
-	["NameFontSize"] = 14,
-
-	-- texture
-	["HealthTexture"] = "Tukui",
-	["PowerTexture"] = "Tukui",
 	["CastTexture"] = "Tukui",
-	
+
 	-- buffs
 	["OnlySelfBuffs"] = true,
 	["BuffSize"] = 22,
@@ -1644,24 +2476,37 @@ C["UF: Target"] = {
 	["PortraitStyle"] = {
 		["Options"] = {
 			["None"] = "None",
-			["Side"] = "Side",
+			["Outside"] = "Side",
+			--["Class Icon"] = "ClassIcon",
 			["Overlay"] = "Overlay",
 		},	
 		["Value"] = "None",
 	},
+
+	-- icons
+	["RoleIcon"] = true,
+	["RoleIconSize"] = 24,
+	["RaidIcon"] = true,
+	["RaidIconSize"] = 24,
 	
 	-- combat state
-	["NonCombatAlphaEnable"] = true,
+	["NonCombatAlphaEnable"] = false,
 	["NonCombatAlpha"] = 1,
 }
 
 -- UF:PET
 C["UF: Pet"] = {
 
-	-- enable
+	-- settings
 	["Enable"] = true,
+	["PercentageTags"] = true,
 
-	-- styling
+	-- health
+	["HealthHeight"] = 30,
+	["HealthWidth"] = 160,
+	["HealthFont"] = "MaxUI Outlined",
+	["HealthFontSize"] = 12,
+	["HealthTexture"] = "Tukui",
 	["HealthTag"] = {
 		["Options"] = {
 			["None"] = "",
@@ -1673,7 +2518,13 @@ C["UF: Pet"] = {
 		},
 		["Value"] = "[MaxUI:HealthColor][MaxUI:CurHP]",
 	},
-	
+
+	-- power	
+	["PowerHeight"] = 8,
+	["PowerWidth"] = 100,
+	["PowerFont"] = "MaxUI Outlined",
+	["PowerFontSize"] = 10,
+	["PowerTexture"] = "Tukui",
 	["PowerTag"] = {
 		["Options"] = {
 			["None"] = "",
@@ -1685,14 +2536,26 @@ C["UF: Pet"] = {
 		},
 		["Value"] = "[MaxUI:PowerColor][MaxUI:CurPP]",
 	},
-	
-	["PercentageTags"] = true,
-	["RaidIcon"] = true,
-	["RaidIconSize"] = 24,
+
+	-- name	
+	["NameFont"] = "MaxUI Outlined",
+	["NameFontSize"] = 12,
+	["NameTag"] = {
+		["Options"] = {
+			["None"] = "",
+			["Name:Full"] = "[Tukui:GetNameColor][name] [Tukui:DiffColor][level] [classification][pvp]",
+			["Name:Abbreviated"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level] [classification][pvp]",
+			["Name:Long"] = "[Tukui:GetNameColor][Tukui:NameLong] [Tukui:DiffColor][level] [classification][pvp]",
+			["Name:Medium"] = "[Tukui:GetNameColor][Tukui:NameMedium] [Tukui:DiffColor][level] [classification][pvp]",
+			["Name:Short"] = "[Tukui:GetNameColor][Tukui:NameShort] [Tukui:DiffColor][level] [classification][pvp]",
+		},
+		["Value"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level] [classification][pvp]",
+	},
 
 	-- castbar
 	["CastBar"] = true,
 	["CastBarText"] = true,
+	["CastBarTime"] = true,
 	["CastBarUnlink"] = false,
 	["CastHeight"] = 10,
 	["CastWidth"] = 160,
@@ -1700,25 +2563,6 @@ C["UF: Pet"] = {
 	["CastFontSize"] = 10,
 	["CastTexture"] = "Tukui",
 
-	-- sizing
-	["HealthHeight"] = 30,
-	["HealthWidth"] = 160,
-	["PowerHeight"] = 8,
-	["PowerWidth"] = 100,
-	
-	-- font
-	["HealthFont"] = "MaxUI Outlined",
-	["PowerFont"] = "MaxUI Outlined",
-	["NameFont"] = "MaxUI Outlined",
-	
-	["HealthFontSize"] = 12,
-	["PowerFontSize"] = 10,
-	["NameFontSize"] = 12,
-
-	-- texture
-	["HealthTexture"] = "Tukui",
-	["PowerTexture"] = "Tukui",
-	
 	-- buffs
 	["Buffs"] = true,
 	["OnlySelfBuffs"] = true,
@@ -1747,27 +2591,34 @@ C["UF: Pet"] = {
 	["PortraitStyle"] = {
 		["Options"] = {
 			["None"] = "None",
-			["|cffFFFF99Side|r"] = "Side",
+			["Outside"] = "Side",
 			["Overlay"] = "Overlay",
 		},	
 		["Value"] = "None",
 	},
 
+	-- icons
+	["RaidIcon"] = true,
+	["RaidIconSize"] = 24,
+
 	-- combat state
 	["NonCombatAlpha"] = 1,
-	["NonCombatAlphaEnable"] = true,
+	["NonCombatAlphaEnable"] = false,
 }
 
 -- UF:TARGETOFTARGET 
 C["UF: ToT"] = {
 
-	-- enable
+	-- settings
 	["Enable"] = true,
-
-	-- color
 	["ColorThreat"] = false, 
 
-	-- styling
+	-- health
+	["HealthHeight"] = 30,
+	["HealthWidth"] = 160,
+	["HealthFont"] = "MaxUI Outlined",
+	["HealthFontSize"] = 12,
+	["HealthTexture"] = "Tukui",
 	["HealthTag"] = {
 		["Options"] = {
 			["None"] = "",
@@ -1780,6 +2631,12 @@ C["UF: ToT"] = {
 		["Value"] = "[MaxUI:HealthColor][MaxUI:CurHP]",
 	},
 	
+	-- power
+	["PowerHeight"] = 8,
+	["PowerWidth"] = 100,
+	["PowerFont"] = "MaxUI Outlined",
+	["PowerFontSize"] = 10,
+	["PowerTexture"] = "Tukui",
 	["PowerTag"] = {
 		["Options"] = {
 			["None"] = "",
@@ -1792,6 +2649,9 @@ C["UF: ToT"] = {
 		["Value"] = "[MaxUI:PowerColor][MaxUI:CurPP]",
 	},
 
+	-- name
+	["NameFont"] = "MaxUI Outlined",
+	["NameFontSize"] = 12,
 	["NameTag"] = {
 		["Options"] = {
 			["None"] = "",
@@ -1803,32 +2663,6 @@ C["UF: ToT"] = {
 		},
 		["Value"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level] [classification][pvp]",
 	},
-
-	-- icons
-	["PercentageTags"] = true,
-	["RoleIcon"] = true,
-	["RoleIconSize"] = 24,
-	["RaidIcon"] = true,
-	["RaidIconSize"] = 24,
-
-	-- sizing
-	["HealthHeight"] = 30,
-	["HealthWidth"] = 160,
-	["PowerHeight"] = 8,
-	["PowerWidth"] = 100,
-	
-	-- font
-	["HealthFont"] = "MaxUI Outlined",
-	["PowerFont"] = "MaxUI Outlined",
-	["NameFont"] = "MaxUI Outlined",
-	
-	-- texture
-	["HealthFontSize"] = 12,
-	["PowerFontSize"] = 10,
-	["NameFontSize"] = 12,
-
-	["HealthTexture"] = "Tukui",
-	["PowerTexture"] = "Tukui",
 	
 	-- buffs
 	["Buffs"] = true,
@@ -1859,15 +2693,22 @@ C["UF: ToT"] = {
 	["PortraitStyle"] = {
 		["Options"] = {
 			["None"] = "None",
-			["Side"] = "Side",
+			["Outside"] = "Side",
 			["Overlay"] = "Overlay",
 		},	
 		["Value"] = "None",
 	},
 	
+	-- icons
+	["PercentageTags"] = true,
+	["RoleIcon"] = true,
+	["RoleIconSize"] = 24,
+	["RaidIcon"] = true,
+	["RaidIconSize"] = 24,
+
 	-- combat state
 	["NonCombatAlpha"] = 1,
-	["NonCombatAlphaEnable"] = true,
+	["NonCombatAlphaEnable"] = false,
 }
 
 -- UF:FOCUS	
@@ -1883,29 +2724,27 @@ C["UnitFrames"]["FocusHealthTag"] = {
 	["Value"] = "[MaxUI:HealthColor][MaxUI:CurHP]",
 }
 
-C["UnitFrames"]["FocusTargetHealthTag"] = {
-	["Options"] = {
-		["None"] = "",
-		["Current"] = "[MaxUI:HealthColor][MaxUI:CurHP]",
-		["Percent"] = "[MaxUI:HealthColor][perhp]%",
-		["Current - Percent"] = "[MaxUI:HealthColor][MaxUI:CurHP] - [perhp]%",
-		["Missing"] = "[MaxUI:HealthColor]-[MaxUI:MisHP]",
-		["Current | Max"] = "[MaxUI:HealthColor][MaxUI:CurHP] | [MaxUI:MaxHP]",
-	},
-	["Value"] = "[MaxUI:HealthColor][MaxUI:CurHP]",
-}
-
 C["UF: Focus"] = {
 
-	-- enable
+	-- settings
 	["Enable"] = true,
 	["EnableFT"] = true,
-	
-	-- color
+	["PercentageTags"] = false,
 	["ColorThreat"] = false, 
-
-	-- styling
 	
+	-- health
+	["HealthHeight"] = 30,
+	["HealthWidth"] = 160,
+	["HealthFont"] = "MaxUI Outlined",
+	["HealthFontSize"] = 10,
+	["HealthTexture"] = "Tukui",
+
+	-- power
+	["PowerHeight"] = 10,
+	["PowerWidth"] = 100,
+	["PowerFont"] = "MaxUI Outlined",
+	["PowerFontSize"] = 10,
+	["PowerTexture"] = "Tukui",
 	["PowerTag"] = {
 		["Options"] = {
 			["None"] = "",
@@ -1918,6 +2757,9 @@ C["UF: Focus"] = {
 		["Value"] = "[MaxUI:PowerColor][MaxUI:CurPP]",
 	},
 	
+	-- name
+	["NameFont"] = "MaxUI Outlined",
+	["NameFontSize"] = 12,
 	["FocusNameTag"] = {
 		["Options"] = {
 			["None"] = "",
@@ -1930,70 +2772,46 @@ C["UF: Focus"] = {
 		["Value"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level] [classification][pvp]",
 	},
 
-	["FocusTargetNameTag"] = {
-		["Options"] = {
-			["None"] = "",
-			["Name:Full"] = "[Tukui:GetNameColor][name] [Tukui:DiffColor][level] [classification][pvp]",
-			["Name:Abbreviated"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level] [classification][pvp]",
-			["Name:Long"] = "[Tukui:GetNameColor][Tukui:NameLong] [Tukui:DiffColor][level] [classification][pvp]",
-			["Name:Medium"] = "[Tukui:GetNameColor][Tukui:NameMedium] [Tukui:DiffColor][level] [classification][pvp]",
-			["Name:Short"] = "[Tukui:GetNameColor][Tukui:NameShort] [Tukui:DiffColor][level] [classification][pvp]",
-		},
-		["Value"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level] [classification][pvp]",
-	},
-
-	["PercentageTags"] = false,
-	["RoleIcon"] = true,
-	["RoleIconSize"] = 24,
-	["RoleIcon"] = true,
-	["RaidIconSize"] = 24,
-
 	-- castbar
 	["CastBar"] = true,
-	["CastIcon"] = false,
-
-	-- sizing
-	["HealthHeight"] = 30,
-	["HealthWidth"] = 160,
-	["PowerHeight"] = 10,
-	["PowerWidth"] = 100,
-	
-	-- font
-	["PowerFont"] = "MaxUI Outlined",
-	["HealthFont"] = "MaxUI Outlined",
-	["NameFont"] = "MaxUI Outlined",
+	["CastBarIcon"] = false,
+	["CastBarText"] = true,
+	["CastBarTime"] = true,
+	["CastBarUnlink"] = false,
+	["CastHeight"] = 10,
+	["CastWidth"] = 160,
 	["CastFont"] = "MaxUI Outlined",
-	
-	["HealthFontSize"] = 10,
-	["PowerFontSize"] = 10,
 	["CastFontSize"] = 10,
-	["NameFontSize"] = 12,
-
-	-- texture
-	["PowerTexture"] = "Tukui",
-	["HealthTexture"] = "Tukui",
 	["CastTexture"] = "Tukui",
-	
+
 	-- buffs
 	["Buffs"] = true,
+	["NumberOfBuffsShown"] = 3,
 	
 	-- debuffs
 	["Debuffs"] = true,
+	["NumberOfDebuffsShown"] = 3,
 	
 	-- portrait
 	["PortraitOverlayAlpha"] = 0.5,
 	["PortraitStyle"] = {
 		["Options"] = {
 			["None"] = "None",
-			["Side"] = "Side",
+			["Outside"] = "Side",
 			["Overlay"] = "Overlay",
 		},	
 		["Value"] = "None",
 	},
+
+	-- icons
+	["RoleIcon"] = true,
+	["RoleIconSize"] = 24,
+	["RoleIcon"] = true,
+	["RaidIconSize"] = 24,
 	
 	-- combat state
 	["NonCombatAlpha"] = 1,
-	["NonCombatAlphaEnable"] = true,
+	["NonCombatAlphaEnable"] = false,
 }
 
 -- UF:BOSS
@@ -2010,12 +2828,27 @@ C["UnitFrames"]["BossHealthTag"] = {
 }
 
 C["UF: Boss"] = {
-	-- enable
 
-	-- color
+	-- settings 
+
 	["ColorThreat"] = false, 
+	["PercentageTags"] = true,
+	["Spacing"] = 50,
 
-	-- styling
+	-- health
+	["HealthHeight"] = 32,
+	["HealthWidth"] = 180,
+	["HealthFont"] = "MaxUI Outlined",
+	["HealthFontSize"] = 12,
+	["HealthTexture"] = "Tukui",
+	["HealComm"] = false,
+
+	-- power
+	["PowerHeight"] = 10,
+	["PowerWidth"] = 130,
+	["PowerFont"] = "MaxUI Outlined",
+	["PowerFontSize"] = 10,
+	["PowerTexture"] = "Tukui",
 	["PowerTag"] = {
 		["Options"] = {
 			["None"] = "",
@@ -2028,6 +2861,9 @@ C["UF: Boss"] = {
 		["Value"] = "[MaxUI:PowerColor][MaxUI:CurPP] | [MaxUI:MaxPP]",
 	},
 
+	-- name
+	["NameFont"] = "MaxUI Outlined",
+	["NameFontSize"] = 12,
 	["NameTag"] = {
 		["Options"] = {
 			["None"] = "",
@@ -2040,62 +2876,57 @@ C["UF: Boss"] = {
 		["Value"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level] [classification][pvp]",
 	},
 
-	["PercentageTags"] = true,
-	["RoleIcon"] = true,
-	["RaidIconSize"] = 24,
-
 	-- castbar
 	["CastBar"] = true,
-	["CastIcon"] = true,
-	
-	-- sizing
-	["HealthHeight"] = 32,
-	["HealthWidth"] = 180,
-	["PowerHeight"] = 10,
-	["PowerWidth"] = 130,
-	["Spacing"] = 50,
-	
-	-- font
-	["PowerFont"] = "MaxUI Outlined",
-	["HealthFont"] = "MaxUI Outlined",
+	["CastBarIcon"] = false,
+	["CastBarText"] = true,
+	["CastBarTime"] = true,
+	["CastBarUnlink"] = false,
+	["CastHeight"] = 10,
+	--["CastWidth"] = 160,
 	["CastFont"] = "MaxUI Outlined",
-	["NameFont"] = "MaxUI Outlined",
-	
-	["HealthFontSize"] = 12,
-	["PowerFontSize"] = 10,
 	["CastFontSize"] = 12,
-	["NameFontSize"] = 12,
-
-	-- texture
-	["PowerTexture"] = "Tukui",
-	["HealthTexture"] = "Tukui",
 	["CastTexture"] = "Tukui",
 	
 	-- buffs
 	["Buffs"] = true,
-
+	["NumberOfBuffsShown"] = 3,
+	
 	-- debuffs
 	["Debuffs"] = true,
+	["NumberOfDebuffsShown"] = 3,
 	
 	-- portrait
 	["PortraitOverlayAlpha"] = 0.5,
 	["PortraitStyle"] = {
 		["Options"] = {
 			["None"] = "None",
-			["Side"] = "Side",
+			["Outside"] = "Side",
 			["Overlay"] = "Overlay",
 		},	
 		["Value"] = "None",
 	},
+
+	-- icon
+	["RoleIcon"] = true,
+	["RaidIconSize"] = 24,
 }
 
 -- UF:ARENA
 C["UF: Arena"] = {
 
-	-- enable
+	-- settings
 	["Enable"] = true,
+	["PercentageTags"] = true,
+	["Spacing"] = 50,
 
-	-- styling
+	-- health
+	["HealthHeight"] = 32,
+	["HealthWidth"] = 180,
+	["HealthFont"] = "MaxUI Outlined",
+	["HealthFontSize"] = 12,
+	["HealthTexture"] = "Tukui",
+	["HealComm"] = false,
 	["HealthTag"] = {
 		["Options"] = {
 			["None"] = "",
@@ -2107,7 +2938,13 @@ C["UF: Arena"] = {
 		},
 		["Value"] = "[MaxUI:HealthColor][MaxUI:CurHP] | [MaxUI:MaxHP]",
 	},
-	
+
+	-- power	
+	["PowerHeight"] = 10,
+	["PowerWidth"] = 130,
+	["PowerFont"] = "MaxUI Outlined",
+	["PowerFontSize"] = 10,
+	["PowerTexture"] = "Tukui",
 	["PowerTag"] = {
 		["Options"] = {
 			["None"] = "",
@@ -2120,58 +2957,59 @@ C["UF: Arena"] = {
 		["Value"] = "[MaxUI:PowerColor][MaxUI:CurPP] | [MaxUI:MaxPP]",
 	},
 
-	["PercentageTags"] = true,
-	["RaidIcon"] = true,
-	["RaidIconSize"] = 24,
-	--["RoleIcon"] = true,
-	["SpecIcon"] = true,
-	["Trinket"] = true,
-
+	-- name
+	["NameFont"] = "MaxUI Outlined",
+	["NameFontSize"] = 12,
+	["NameTag"] = {
+		["Options"] = {
+			["None"] = "",
+			["Name:Full"] = "[Tukui:GetNameColor][name] [Tukui:DiffColor][level] [classification][pvp]",
+			["Name:Abbreviated"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level] [classification][pvp]",
+			["Name:Long"] = "[Tukui:GetNameColor][Tukui:NameLong] [Tukui:DiffColor][level] [classification][pvp]",
+			["Name:Medium"] = "[Tukui:GetNameColor][Tukui:NameMedium] [Tukui:DiffColor][level] [classification][pvp]",
+			["Name:Short"] = "[Tukui:GetNameColor][Tukui:NameShort] [Tukui:DiffColor][level] [classification][pvp]",
+		},
+		["Value"] = "[Tukui:GetNameColor][name:abbrev] [Tukui:DiffColor][level] [classification][pvp]",
+	},	
 	-- castbar
 	["CastBar"] = true,
-	["CastIcon"] = true,
-
-	-- sizing
-	["HealthHeight"] = 32,
-	["HealthWidth"] = 180,
-	["PowerHeight"] = 10,
-	["PowerWidth"] = 130,
-	["Spacing"] = 50,
-	
-	-- font
-	["PowerFont"] = "MaxUI Outlined",
-	["HealthFont"] = "MaxUI Outlined",
+	["CastBarIcon"] = false,
+	["CastBarText"] = true,
+	["CastBarTime"] = true,
+	["CastBarUnlink"] = false,
+	["CastHeight"] = 10,
+	["CastWidth"] = 160,
 	["CastFont"] = "MaxUI Outlined",
-	["NameFont"] = "MaxUI Outlined",
-	
-	["HealthFontSize"] = 12,
-	["PowerFontSize"] = 10,
 	["CastFontSize"] = 12,
-	["NameFontSize"] = 12,
-
-	-- texture
-	["PowerTexture"] = "Tukui",
-	["HealthTexture"] = "Tukui",
 	["CastTexture"] = "Tukui",
-	
+
 	-- buffs
 	["Buffs"] = true,
+	["NumberOfBuffsShown"] = 3,
 	
 	-- debuffs
 	["Debuffs"] = true,
+	["NumberOfDebuffsShown"] = 3,
 	
 	-- portrait
 	["PortraitOverlayAlpha"] = 0.5,
 	["PortraitStyle"] = {
 		["Options"] = {
 			["None"] = "None",
-			["Side"] = "Side",
+			["Outside"] = "Side",
 			["Overlay"] = "Overlay",
 		},	
 		["Value"] = "None",
 	},
+
+	-- icon
+	["RaidIcon"] = true,
+	["RaidIconSize"] = 24,
+	--["RoleIcon"] = true,
+	["SpecIcon"] = true,
+	["Trinket"] = true,
 	
 	-- combat state
 	["NonCombatAlpha"] = 1,
-	["NonCombatAlphaEnable"] = true,
+	["NonCombatAlphaEnable"] = false,
 }

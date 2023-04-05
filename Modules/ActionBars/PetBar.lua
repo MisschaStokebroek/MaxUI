@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-07-2021
+-- latest update: 29-11-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up PET BAR.
@@ -61,9 +61,9 @@ function ActionBars:CombatStatePetBar()
 end
 
 function ActionBars:MaxUIStylePetBar()
+	local PetBar = ActionBars.Bars.Pet
 	local BackdropR, BackdropG, BackdropB = unpack(C["General"]["BackdropColor"])
 	local BackdropAlpha = (C["ActionBars"]["ABAlpha"])
-	local PetBar = ActionBars.Bars.Pet
 
 	PetBar:SetFrameLevel(4)
 	PetBar:SetFrameStrata("BACKGROUND")
@@ -80,9 +80,9 @@ function ActionBars:MaxUIStylePetBar()
 		PetBar.Backdrop:SetAlpha(0)
 		
 		for i = 1, NUM_PET_ACTION_SLOTS do
-		local Button = _G["PetActionButton"..i]
+			local Button = _G["PetActionButton"..i]
 			Button:CreateShadow()
-			PetBar["Button"..i] = Button
+			--PetBar["Button"..i] = Button
 		end
 	end
 end
@@ -122,18 +122,23 @@ function ActionBars:StylingPetBar()
 		PetBar:CreateMaxUIBottomEdge()
 		PetBar:CreateMaxUILeftEdge()
 		PetBar:CreateMaxUIRightEdge()
-	
-	elseif C["ActionBars"]["ActionBar4Edges"]["Value"] == "None" then
-
 	end
 end
 
 function ActionBars:CreatePetBar()
-	-- Tukui
-    baseCreatePetBar(self)
+ 	if (not C.ActionBars.Pet) then return end
+  
+   baseCreatePetBar(self)
 
-	if (not C.ActionBars.Pet) then
-		return
+   for i = 1, NUM_PET_ACTION_SLOTS do
+		local Button = _G["PetActionButton"..i]
+		local Icon = _G["PetActionButton"..i.."Icon"]
+
+		if T.Retail then
+			Button.IconMask:ClearAllPoints()
+			Button.IconMask:SetPoint("TOPLEFT", Button, -15, 15)
+			Button.IconMask:SetPoint("BOTTOMRIGHT", Button, 15, -15)
+		end
 	end
 
 	self:VisibilityPetBar()
@@ -145,7 +150,6 @@ function ActionBars:CreatePetBar()
 		self:MaxUIStylePetBar()
 	end	
 	
-	--self:LayoutPetBar()
 	self:PositionPetBar()
 	self:StylingPetBar()
 end

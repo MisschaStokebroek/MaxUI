@@ -6,6 +6,9 @@
 	<Script file="ActionBar03.lua"/>
 	<Script file="ActionBar04.lua"/>
 	<Script file="ActionBar05.lua"/>
+	<Script file="ActionBar06.lua"/>
+	<Script file="ActionBar07.lua"/>
+	<Script file="ActionBar08.lua"/>
 	<Script file="StanceBar.lua"/>
 	<Script file="PetBar.lua"/>
 	<Script file="ExtraBar.lua"/>

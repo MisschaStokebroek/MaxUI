@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up THREAT BAR.
@@ -41,15 +41,16 @@ local function MaxUIStyleThreatBar()
 	ThreatBar.Title:SetPoint("LEFT", ThreatBar, 2, 0)
 	
 	ThreatBar.Background:SetColorTexture(unpack(BackdropColor))
+	
+	if C["Skins"]["DataBarFilter"] == true then 
+		ThreatBar:CreateMaxUIFilter()
+	end
 end
 
 function ThreatBar:Create()
 	if not C["Misc"]["ThreatBar"] then return end
-
-    -- Tukui
     baseCreate(self)
 	
-	-- MaxUI
 	if not (C.General.Themes.Value == "MaxUI") then return end
 	MaxUIStyleThreatBar()
 end

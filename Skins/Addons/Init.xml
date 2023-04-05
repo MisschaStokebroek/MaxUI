@@ -1,5 +1,12 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	
-	<!-- External Addons Skins -->
-	<Script file="BugSack.lua"/>
+
+	<Script file="Bugsack.lua"/>
+	<Script file="Clique.lua"/>
+	<Script file="ColorPickerPlus.lua"/>
+	<Script file="DBM.lua"/>
+	<Script file="Hekili.lua"/>
+	<Script file="Immersion.lua"/>
+	<Script file="ProjectAzilroka.lua"/>
+	<Script file="Simulationcraft.lua"/>
+
 </Ui>

@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-07-2021
+-- latest update: 30-10-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up CUSTOM PANELS AND FRAMES.
@@ -13,8 +13,6 @@ local Minimap = T.Maps.Minimap
 local baseMinimapEnable = Minimap.Enable
 local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
 local thickness = thickness
-local UFanchorwidth = UFanchorwidth
-local UFverticaladjust = UFverticaladjust
 local Movers = T["Movers"]
 
 ------------------------------------------------------------------------------------------
@@ -23,33 +21,33 @@ local Movers = T["Movers"]
 function Minimap:MaxUIScreenFilter()
 	local R, G, B = unpack(C.Skins.ScreenFilterColor)
 
-	WorldFrame.TOPFilter = WorldFrame:CreateTexture("BACKGROUND")
-	WorldFrame.TOPFilter:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -100, 0)
-	WorldFrame.TOPFilter:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", 100, 0)
+	WorldFrame.TOPFilter = WorldFrame:CreateTexture(nil, "BACKGROUND")
+	WorldFrame.TOPFilter:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -10, 0)
+	WorldFrame.TOPFilter:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", 10, 0)
 	WorldFrame.TOPFilter:SetHeight(C.Skins.FilterSize)
 	WorldFrame.TOPFilter:SetVertexColor(R, G, B, C["Skins"]["ScreenFilterAlpha"])
-	WorldFrame.TOPFilter:SetTexture([[Interface\AddOns\MaxUI\Medias\Textures\GradationTop.tga]])
-	
-	WorldFrame.BOTTOMFilter = WorldFrame:CreateTexture("BACKGROUND")
-	WorldFrame.BOTTOMFilter:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", -100, 0)
-	WorldFrame.BOTTOMFilter:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 100, 0)
+	WorldFrame.TOPFilter:SetTexture([[Interface\AddOns\MaxUI\Medias\Textures\GradationTopV.tga]])
+
+	WorldFrame.BOTTOMFilter = WorldFrame:CreateTexture(nil, "BACKGROUND")
+	WorldFrame.BOTTOMFilter:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", -10, 0)
+	WorldFrame.BOTTOMFilter:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 10, 0)
 	WorldFrame.BOTTOMFilter:SetHeight(C.Skins.FilterSize)
 	WorldFrame.BOTTOMFilter:SetVertexColor(R, G, B, C["Skins"]["ScreenFilterAlpha"])
-	WorldFrame.BOTTOMFilter:SetTexture([[Interface\AddOns\MaxUI\Medias\Textures\GradationBottom.tga]])
+	WorldFrame.BOTTOMFilter:SetTexture([[Interface\AddOns\MaxUI\Medias\Textures\GradationBottomV.tga]])
 
-	WorldFrame.LEFTFilter = WorldFrame:CreateTexture("BACKGROUND")
-	WorldFrame.LEFTFilter:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 100)
-	WorldFrame.LEFTFilter:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 0, -100)
+	WorldFrame.LEFTFilter = WorldFrame:CreateTexture(nil, "BACKGROUND")
+	WorldFrame.LEFTFilter:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 10)
+	WorldFrame.LEFTFilter:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 0, -10)
 	WorldFrame.LEFTFilter:SetWidth(C.Skins.FilterSize)
 	WorldFrame.LEFTFilter:SetVertexColor(R, G, B, C["Skins"]["ScreenFilterAlpha"])
-	WorldFrame.LEFTFilter:SetTexture([[Interface\AddOns\MaxUI\Medias\Textures\Gradation.tga]])
-	
-	WorldFrame.RIGHTFilter = WorldFrame:CreateTexture("BACKGROUND")
-	WorldFrame.RIGHTFilter:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", 0, 100)
-	WorldFrame.RIGHTFilter:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, -100)
+	WorldFrame.LEFTFilter:SetTexture([[Interface\AddOns\MaxUI\Medias\Textures\GradationLeftV.tga]])
+
+	WorldFrame.RIGHTFilter = WorldFrame:CreateTexture(nil, "BACKGROUND")
+	WorldFrame.RIGHTFilter:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", 0, 10)
+	WorldFrame.RIGHTFilter:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, -10)
 	WorldFrame.RIGHTFilter:SetWidth(C.Skins.FilterSize)
 	WorldFrame.RIGHTFilter:SetVertexColor(R, G, B, C["Skins"]["ScreenFilterAlpha"])
-	WorldFrame.RIGHTFilter:SetTexture([[Interface\AddOns\MaxUI\Medias\Textures\GradationRight.tga]])
+	WorldFrame.RIGHTFilter:SetTexture([[Interface\AddOns\MaxUI\Medias\Textures\GradationRightV.tga]])
 end
 
 ------------------------------------------------------------------------------------------
@@ -58,26 +56,16 @@ end
 function Minimap:MaxUITopPanels()
 	local Texture = T.GetTexture(C.General.LineTexture)
 	thickness = C["General"]["thickness"] 
-	local LeftHeight = C["Chat"]["LeftHeight"]
-	local RightHeight = C["Chat"]["RightHeight"]
-	local LeftWidth = C["Chat"]["LeftWidth"]
-	local RightWidth = C["Chat"]["RightWidth"]
 
 	local TopLine = CreateFrame("Frame", "TopLine", UIParent)
 	TopLine:SetParent(UIParent)
 	TopLine:SetHeight(thickness)
-	
-	if thickness <= 6 then
-		TopLine:SetPoint("TOPLEFT", 6, -10)
-		TopLine:SetPoint("TOPRIGHT", -6, -10)
-	else
-		TopLine:SetPoint("TOPLEFT", 6, -6)
-		TopLine:SetPoint("TOPRIGHT", -6, -6)
-	end
-	
+	TopLine:SetPoint("TOPLEFT", C["General"]["ScreenSpacing"], -C["General"]["ScreenSpacing"])
+	TopLine:SetPoint("TOPRIGHT", -C["General"]["ScreenSpacing"], -C["General"]["ScreenSpacing"])
+
 	TopLine:SetFrameStrata("BACKGROUND")
 	TopLine:SetFrameLevel(2)
-	
+
 	TopLine:CreateBackdrop(nil, Texture)
 	TopLine.Backdrop:SetOutside()
 	TopLine.Backdrop:CreateShadow()
@@ -89,14 +77,16 @@ function Minimap:MaxUITopPanels()
 		TopLine.Backdrop:SetBackdropColor(unpack(ClassColor))
 	elseif C["General"]["ClassColorLines"]["Value"] == "BackdropColor" then 
 		TopLine.Backdrop:SetBackdropColor(unpack(C.General.BackdropColor))
+	elseif C["General"]["ClassColorLines"]["Value"] == "Custom" then 
+		TopLine.Backdrop:SetBackdropColor(unpack(C.General.CustomColor))
 	else
 		TopLine.Backdrop:SetBackdropColor(0.43, 0.43, 0.43)
 	end
-	
+
 	if C["DataTexts"]["Topline"] == false then
 		TopLine:SetAlpha(0)
 	end
-	
+
 	Minimap.TopLine = TopLine
 end
 
@@ -104,29 +94,19 @@ end
 -- BOTTOM Panels
 ------------------------------------------------------------------------------------------
 function Minimap:MaxUIBottomPanels()
-	local TopLine = Minimap.TopLine
 	local Texture = T.GetTexture(C.General.LineTexture)
 	thickness = C["General"]["thickness"] 
-	local LeftHeight = C["Chat"]["LeftHeight"]
-	local RightHeight = C["Chat"]["RightHeight"]
-	local LeftWidth = C["Chat"]["LeftWidth"]
-	local RightWidth = C["Chat"]["RightWidth"]
 
 	local BottomLine = CreateFrame("Frame", "BottomLine", UIParent)
 	BottomLine:SetParent(UIParent)
 	BottomLine:SetHeight(thickness)
-	
-	if thickness <= 6 then
-		BottomLine:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 6, 10)
-		BottomLine:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT",  -6, 10)
-	else
-		BottomLine:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 6, 6)
-		BottomLine:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT",  -6, 6)
-	end
-	
+
+	BottomLine:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", C["General"]["ScreenSpacing"], C["General"]["ScreenSpacing"])
+	BottomLine:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT",  -C["General"]["ScreenSpacing"], C["General"]["ScreenSpacing"])
+
 	BottomLine:SetFrameStrata("BACKGROUND")
 	BottomLine:SetFrameLevel(2)
-	
+
 	BottomLine:CreateBackdrop(nil, Texture)
 	BottomLine.Backdrop:SetOutside()
 	BottomLine.Backdrop:CreateShadow()
@@ -138,6 +118,8 @@ function Minimap:MaxUIBottomPanels()
 		BottomLine.Backdrop:SetBackdropColor(unpack(ClassColor))
 	elseif C["General"]["ClassColorLines"]["Value"] == "BackdropColor" then 
 		BottomLine.Backdrop:SetBackdropColor(unpack(C.General.BackdropColor))
+	elseif C["General"]["ClassColorLines"]["Value"] == "Custom" then 
+		BottomLine.Backdrop:SetBackdropColor(unpack(C.General.CustomColor))
 	else
 		BottomLine.Backdrop:SetBackdropColor(0.43, 0.43, 0.43)
 	end
@@ -145,7 +127,7 @@ function Minimap:MaxUIBottomPanels()
 	if C["DataTexts"]["Bottomline"] == false then
 		BottomLine:SetAlpha(0)
 	end
-	
+
 	Minimap.BottomLine = BottomLine
 end
 
@@ -159,11 +141,11 @@ function Minimap:MaxUIDatatextCenter()
 		local AmountTop = C["DataTexts"]["AmountTopDataTexts"]
 		local spacing = 1
 		local height = 20
-		local width = ((TopLine:GetWidth() / AmountTop) -1)
+		local width = ((TopLine:GetWidth() / AmountTop))-1
 		local amount = C["DataTexts"]["AmountDataCenterDataTexts"]
 
 		local y
-		if C["General"]["thickness"] <=19 then
+		if C["General"]["thickness"] <= 19 then
 			y = 12
 		else
 			y = 6 
@@ -173,78 +155,86 @@ function Minimap:MaxUIDatatextCenter()
 		DataCenter:SetWidth(width)
 		DataCenter:SetHeight((amount * height) + ((amount+1)*spacing))
 		DataCenter:SetPoint("TOPLEFT", Minimap.TopLine, "BOTTOMLEFT", 0, -y)
-		DataCenter:SetFrameStrata("BACKGROUND")
+		DataCenter:SetFrameStrata("HIGH")
 		DataCenter:SetFrameLevel(2)
 		
-		DataCenter:CreateBackdrop(nil, Texture)
+		DataCenter:CreateBackdrop("Transparent")
 		DataCenter.Backdrop:SetOutside()
 		DataCenter.Backdrop:CreateShadow()
 		DataCenter.Backdrop:SetAlpha(C["DataTexts"]["DataCenterAlpha"])
 		DataCenter.Backdrop:SetBackdropColor(unpack(C.General.BackdropColor))
 		
 		if C["DataTexts"]["DataCenterClassLogo"] then
-			DataCenter.Logoclass = DataCenter:CreateTexture(nil, "ART")
+			DataCenter.Logoclass = DataCenter:CreateTexture(nil, "ARTWORK")
 			DataCenter.Logoclass:SetWidth(width/1.5)
 			DataCenter.Logoclass:SetHeight(width/1.5)
 			DataCenter.Logoclass:SetPoint("CENTER", DataCenter, "CENTER", 0, 0)
-				
+
 			if select(2, UnitClass('player')) == "DRUID" then
-				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\DRUID.tga]])
+				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DRUID.tga]])
 			end
-			
+
+			if select(2, UnitClass('player')) == "EVOKER" then
+				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\EVOKER.tga]])
+			end
+
 			if select(2, UnitClass('player')) == "MONK" then
-				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\MONK.tga]])
+				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MONK.tga]])
 			end
-			
+
 			if select(2, UnitClass('player')) == "ROGUE" then
-				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\ROGUE.tga]])
+				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\ROGUE.tga]])
 			end
-			
+
 			if select(2, UnitClass('player')) == "MAGE" then
-				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\MAGE.tga]])
+				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MAGE.tga]])
 			end
-			
+
 			if select(2, UnitClass('player')) == "PRIEST" then
-				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\PRIEST.tga]])
+				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PRIEST.tga]])
 			end
-			
+
 			if select(2, UnitClass('player')) == "WARLOCK" then
-				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\WARLOCK.tga]])
+				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARLOCK.tga]])
 			end
-			
+
 			if select(2, UnitClass('player')) == "SHAMAN" then
-				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\SHAMAN.tga]])
+				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\SHAMAN.tga]])
 			end
-			
+
 			if select(2, UnitClass('player')) == "HUNTER" then
-				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\HUNTER.tga]])
+				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\HUNTER.tga]])
 			end
-			
+
 			if select(2, UnitClass('player')) == "DEATHKNIGHT" then
-				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\DEATHKNIGHT.tga]])
+				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEATHKNIGHT.tga]])
 			end
-			
+
 			if select(2, UnitClass('player')) == "WARRIOR" then
-				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\WARRIOR.tga]])
+				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARRIOR.tga]])
 			end
 
 			if select(2, UnitClass('player')) == "PALADIN" then
-				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\PALADIN.tga]])
+				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PALADIN.tga]])
 			end
 
 			if select(2, UnitClass('player')) == "DEMONHUNTER" then
-				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\DEMONHUNTER.tga]])
+				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEMONHUNTER.tga]])
 			end
 		end
-		Movers:RegisterFrame(DataCenter, "Data Center")
 		
+		if C["Skins"]["DataCenterFilter"] == true then 
+			DataCenter:CreateMaxUIFilter()
+		end
+
+		Movers:RegisterFrame(DataCenter, "Data Center")
+
 		-- Animation
 		DataCenter:Hide()
 		DataCenter:SetAlpha(0)	
 		DataCenter:fadeIn(C["General"]["FaderTime"])
 		DataCenter:fadeOut(C["General"]["FaderTime"])
 
-		-- temp fix for datatext not running function from API.
 		function DataCenterFadeToggle()
 			if DataCenter:IsShown() then
 				DataCenter.fadeOut:Play()
@@ -253,10 +243,7 @@ function Minimap:MaxUIDatatextCenter()
 				DataCenter.fadeIn:Play()
 			end
 		end
-		
-		-- Combat State
-	--	RegisterStateDriver(DataCenter, "visibility", "[combat] hide; nil")
-		
+
 		Minimap.DataCenter = DataCenter
 	end	
 end
@@ -288,12 +275,18 @@ function Minimap:MaxUIBottomPanelCombatState()
 	end
 end
 
+function Minimap:MaxUIDataCenterCombatState()
+	local DataCenter = Minimap.DataCenter
+
+	if C["DataTexts"]["DataCenterCombatState"]["Value"] == "Hide" then
+		RegisterStateDriver(DataCenter, "visibility", "[combat] hide; nil")
+	end
+end
+
 ------------------------------------------------------------------------------------------
 -- execute
 ------------------------------------------------------------------------------------------
 function Minimap:Enable()
-
-	-- MaxUI
 	if (C.General.Themes.Value == "MaxUI") then
 		self:MaxUITopPanels()
 		self:MaxUIBottomPanels()
@@ -309,6 +302,10 @@ function Minimap:Enable()
 
 		if C["DataTexts"]["BottomlineCombatState"]["Value"] ~= "Nothing" then 
 			self:MaxUIBottomPanelCombatState()
+		end
+		
+		if C["DataTexts"]["DataCenterCombatState"]["Value"] ~= "Nothing" then 
+			self:MaxUIDataCenterCombatState()
 		end
 	end
 	

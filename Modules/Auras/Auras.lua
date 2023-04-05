@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-07-2021
+-- latest update: 02-10-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up BUFFS AND DEBUFFS.
@@ -11,25 +11,62 @@
 local T, C, L = Tukui:unpack()
 local Auras = T["Auras"]
 local Minimap = T.Maps.Minimap
-local baseCreateHeaders = Auras.CreateHeaders
+
+-- functions
 local baseAurasSkin = Auras.Skin
-local thickness = thickness
+local baseCreateHeaders = Auras.CreateHeaders
+local baseAurasUpdateAura = Auras.OnUpdate
 
 ------------------------------------------------------------------------------------------
 -- AURAS (BUFFS AND DEBUFFS)	
 ------------------------------------------------------------------------------------------
 function Auras:Skin()
 	baseAurasSkin(self)
+	
 	local Count = self.Count
 	local Duration = self.Duration
-	
-	Duration:SetScale(C.Auras.AurasFontSize/10)
-	Duration:ClearAllPoints()
-	Duration:SetPoint("TOP", self, "BOTTOM", 0, -2)
-	
-	Count:SetScale(C.Auras.AurasFontSize/10)
-	Count:ClearAllPoints()
-	Count:SetPoint("TOP", self, "TOP", 0, -2)
+	local Bar = self.Bar
+	local Holder = self.Holder
+
+	--if not InCombatLockdown() then
+	--	self:SetScale(C["Auras"]["AurasSize"]/100)
+	--end
+
+
+	if (C["Auras"]["Duration"]) then
+		Duration:ClearAllPoints()
+		Duration:SetFontObject(T.GetFont(C["Auras"]["DurationFont"]))
+		Duration:SetScale(C["Auras"]["DurationFontSize"]/10)
+		--Duration:SetTextColor(unpack(C["Auras"]["DurationColor"]))
+		Duration:SetPoint(C["Auras"]["DurationPosition"]["Value"], self, C["Auras"]["DurationPosition"]["Value"], C["Auras"]["DurationOffsetH"], C["Auras"]["DurationOffsetV"])
+		Duration:SetJustifyH(C["ActionBars"]["HotKeyJustifyH"]["Value"])
+	else
+		Duration:Hide()	
+	end
+
+	if (C["Auras"]["Count"]) then
+		Count:ClearAllPoints()
+		Count:SetFontObject(T.GetFont(C["Auras"]["CountFont"]))
+		Count:SetScale(C["Auras"]["CountFontSize"]/10)
+		Count:SetTextColor(unpack(C["Auras"]["CountColor"]))
+		Count:SetPoint(C["Auras"]["CountPosition"]["Value"], self, C["Auras"]["CountPosition"]["Value"], C["Auras"]["CountOffsetH"], C["Auras"]["CountOffsetV"])
+		Count:SetJustifyH(C["Auras"]["CountJustifyH"]["Value"])
+	else
+		Count:Hide()	
+	end
+
+	Holder:SetHeight(C["Auras"]["AurasBarSize"])
+	Holder.Backdrop:SetOutside()
+
+	Bar:ClearAllPoints()
+	Bar:SetInside()
+
+	self.Backdrop:SetOutside()
+
+	if C["Skins"]["AurasFilter"] == true then 
+		self:CreateMaxUIFilterInside()
+		Bar:CreateMaxUIFilter()
+	end
 end
 
 function Auras:PositionAuras()
@@ -96,11 +133,9 @@ function Auras:CombatStateAuras()
 end
 
 function Auras:CreateHeaders()
-   -- Tukui
-    baseCreateHeaders(self)
+ 	if (not C.Auras.Enable) then return	end
+   baseCreateHeaders(self)
 	
-	--- MaxUI
-	if (not C.Auras.Enable) then return	end
 	self:PositionAuras()
 	self:CombatStateAuras()
 end

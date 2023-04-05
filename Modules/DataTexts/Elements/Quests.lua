@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6 - SHADOWLANDS / TUKUI 20
--- latest update: 27-10-2020
+-- latest update: 29-12-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up QUEST DATATEXT.
@@ -21,6 +21,7 @@ local QuestWatchFrame = QuestWatchFrame
 if T.Retail then
 
 	local Update = function(self)
+		local ObjectiveTrackerFrame = ObjectiveTrackerFrame
 		if C["Quests"]["TrackerFixed"] == true then
 			ObjectiveTrackerFrame:ClearAllPoints()
 			ObjectiveTrackerFrame:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 24, -2)
@@ -31,23 +32,35 @@ if T.Retail then
 		
 		local numEntries, numQuests = C_QuestLog.GetNumQuestLogEntries()
 		self.Text:SetText(format(DataText.NameColor.."Quests: |r"..DataText.ValueColor.."%s%s".."|r", numQuests, "/25"))
+		if C["DataTexts"]["Icons"] == true then
+			self.icon = self:CreateTexture(nil, "OVERLAY")
+			self.icon:SetWidth(20)
+			self.icon:SetHeight(20)
+			self.icon:SetPoint("LEFT", self, "CENTER", 48, 1)
+			self.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\cQuest.tga]])
+			self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
+		end
 		
 		self:SetScript("OnEnter", function(self)
 			self.Text:SetText(format(DataText.HighlightColor.."Quests: |r"..DataText.HighlightColor.."%s%s".."|r", numQuests, "/25"))
+			if C["DataTexts"]["Icons"] == true then
+				self.icon:SetVertexColor(unpack(C["DataTexts"].HighlightColor))
+			end
 			GameTooltip:SetOwner(self:GetTooltipAnchor())
 			GameTooltip:AddLine("Quest Tracker:")
-			GameTooltip:AddLine("Toggle the Quest Log Tracker ", 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddLine(" ")
+			GameTooltip:AddDoubleLine("Toggle the tracker:", "Left-click", 1, 1, 1)
+			GameTooltip:AddDoubleLine("Toggle the questlog:","Right-click", 1, 1, 1)
 			GameTooltip:Show()
 		end)
 			
 		self:SetScript("OnLeave", function(self)
 			self.Text:SetText(format(DataText.NameColor.."Quests: |r"..DataText.ValueColor.."%s%s".."|r", numQuests, "/25"))
+			if C["DataTexts"]["Icons"] == true then
+				self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
+			end
 			GameTooltip:Hide()
 		end)
-	end
-
-	local OnMouseDown = function()
-		ObjectiveTrackerFrameFadeToggle()
 	end
 
 	local Enable = function(self)
@@ -55,7 +68,17 @@ if T.Retail then
 		self:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
 		self:RegisterEvent("QUEST_LOG_UPDATE")
 		self:SetScript("OnEvent", Update)
-		self:SetScript("OnMouseDown", OnMouseDown)
+		self:SetScript("OnMouseDown", function(self, btn)
+			if (btn == "RightButton") then
+				if T.BCC then 
+					ShowUIPanel(QuestLogFrame)
+				elseif T.Retail then
+					ToggleQuestLog()		
+				end
+			else
+				ObjectiveTrackerFrame:fadeToggle()
+			end
+		end)
 		self:Update()
 	end
 
@@ -73,6 +96,14 @@ else
 	local Update = function(self)
 		local numEntries, numQuests = GetNumQuestLogEntries()
 		self.Text:SetText(format(DataText.NameColor.."Quests: |r"..DataText.ValueColor.."%s%s".."|r", numQuests, "/25"))
+		if C["DataTexts"]["Icons"] == true then
+			self.icon = self:CreateTexture(nil, "OVERLAY")
+			self.icon:SetWidth(20)
+			self.icon:SetHeight(20)
+			self.icon:SetPoint("LEFT", self, "CENTER", 45, 0)
+			self.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\cQuest.tga]])
+			self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
+		end
 		
 		--if C["Quests"]["TrackerFixed"] == true then
 			--QuestWatchFrame:SetParent(self)
@@ -82,14 +113,23 @@ else
 		
 		self:SetScript("OnEnter", function(self)
 			self.Text:SetText(format(DataText.HighlightColor.."Quests: |r"..DataText.HighlightColor.."%s%s".."|r", numQuests, "/25"))
+			if C["DataTexts"]["Icons"] == true then
+				self.icon:SetVertexColor(unpack(C["DataTexts"].HighlightColor))
+			end
 			GameTooltip:SetOwner(self:GetTooltipAnchor())
 			GameTooltip:AddLine("Quest Tracker:")
-			GameTooltip:AddLine("Toggle the Quest Log Tracker ", 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddLine("Toggle either the tracker or the complete questlog")
+			GameTooltip:AddLine(" ")
+			GameTooltip:AddDoubleLine("Toggle the tracker:", "Left-click", 1, 1, 1)
+			GameTooltip:AddDoubleLine("Toggle the questlog:","Right-click", 1, 1, 1)
 			GameTooltip:Show()
 		end)
 			
 		self:SetScript("OnLeave", function(self)
 			self.Text:SetText(format(DataText.NameColor.."Quests: |r"..DataText.ValueColor.."%s%s".."|r", numQuests, "/25"))
+			if C["DataTexts"]["Icons"] == true then
+				self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
+			end
 			GameTooltip:Hide()
 		end)
 	end

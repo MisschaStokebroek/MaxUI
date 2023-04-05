@@ -1,5 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="MaxUIToolkit.lua"/>
+	<Script file="MaxUIToolkitCreate.lua"/>
+	<Script file="MaxUIToolkitSkin.lua"/>
 	<Script file="MaxUIGUI.lua"/>
 	<Script file="Commands.lua"/>
 	<Script file="Load.lua"/>

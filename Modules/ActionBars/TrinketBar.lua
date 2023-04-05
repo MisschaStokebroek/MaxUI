@@ -1,9 +1,10 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 30-10-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up TRINKET BAR.
+-- thanks to Aftermathh!
 
 ------------------------------------------------------------------------------------------
 -- SETUP
@@ -14,7 +15,7 @@ local ActionBars = T.ActionBars
 local baseEnable = ActionBars.Enable
 local Movers = T["Movers"]
 
--- WoW Globals
+-- wow
 local GetInventorySlotInfo = GetInventorySlotInfo
 local GetInventoryItemTexture = GetInventoryItemTexture
 local GetInventoryItemID = GetInventoryItemID
@@ -30,6 +31,7 @@ function ActionBars:CreateTrinketBar()
 	local spacing = C.ActionBars.ButtonSpacing
 	local slotId1, textureName1 = GetInventorySlotInfo("Trinket0Slot")
 	local slotId2, textureName2 = GetInventorySlotInfo("Trinket1Slot")
+
 	local T1texture = GetInventoryItemTexture("player", slotId1)
 	local T2texture = GetInventoryItemTexture("player", slotId2)
 	local itemId1 = GetInventoryItemID("player", slotId1) or "no trinket"
@@ -48,20 +50,28 @@ function ActionBars:CreateTrinketBar()
 	TrinketBar:SetFrameStrata("BACKGROUND")
 	TrinketBar:SetFrameLevel(5)
 	
-	TrinketBar.CreateConfigButton("Trinket1", TrinketBar, height, width, "", "Trinket 1:", itemName1, TrinketBar)
+	TrinketBar.CreateMaxUIButton("Trinket1", TrinketBar, height, width, "", "Trinket 1:", itemName1, TrinketBar)
 	Trinket1:SetPoint("TOPLEFT", TrinketBar, "TOPLEFT", spacing, -spacing)
 	Trinket1.highlight:SetVertexColor(1, 1, 1)
 	Trinket1:SetAttribute("macrotext1", "/use 13")
 	Trinket1:SetNormalTexture(T1texture)
-	Trinket1:GetNormalTexture():SetInside()
+	Trinket1:GetNormalTexture():SetAllPoints()
 
-	TrinketBar.CreateConfigButton("Trinket2", TrinketBar, height, width, "", "Trinket 2:", itemName2, TrinketBar)
+	TrinketBar.CreateMaxUIButton("Trinket2", TrinketBar, height, width, "", "Trinket 2:", itemName2, TrinketBar)
 	Trinket2:SetPoint("RIGHT", TrinketBar, "RIGHT", -spacing, 0)
 	Trinket2.highlight:SetVertexColor(1, 1, 1)
 	Trinket2:SetAttribute("macrotext1", "/use 14")
 	Trinket2:SetNormalTexture(T2texture)
-	Trinket2:GetNormalTexture():SetInside()
+	Trinket2:GetNormalTexture():SetAllPoints()
 	
+	Trinket1:GetNormalTexture():SetTexCoord(unpack(T.IconCoord))
+	Trinket2:GetNormalTexture():SetTexCoord(unpack(T.IconCoord))
+
+	if C["Skins"]["ActionBarButtonFilter"] == true then 
+		Trinket1:CreateMaxUIFilter()
+		Trinket2:CreateMaxUIFilter()
+	end
+
 	Movers:RegisterFrame(TrinketBar, "Trinket Bar")
 	self.TrinketBar = TrinketBar
 end
@@ -192,14 +202,14 @@ function ActionBars:StylingTrinketBar()
 		TrinketBar:CreateMaxUIRightEdge()
 	end
 end
-	
+
 function ActionBars:UpdateTrinketBar()
 	local slotId1, textureName1 = GetInventorySlotInfo("Trinket0Slot")
 	local slotId2, textureName2 = GetInventorySlotInfo("Trinket1Slot")
 	local T1texture = GetInventoryItemTexture("player", slotId1)
 	local T2texture = GetInventoryItemTexture("player", slotId2)
-	local itemId1 = GetInventoryItemID("player", slotId1)
-	local itemId2 = GetInventoryItemID("player", slotId2)
+	local itemId1 = GetInventoryItemID("player", slotId1) or "no trinket"
+	local itemId2 = GetInventoryItemID("player", slotId2) or "no trinket"
 	local itemName1 = GetItemInfo(itemId1)
 	local itemName2 = GetItemInfo(itemId2)
 	local start1, duration1, enable1 = GetItemCooldown(itemId1)
@@ -222,9 +232,8 @@ function ActionBars:UpdateTrinketBar()
 		Trinket2:GetNormalTexture():SetVertexColor(0.2, 0.2, 0.2)
 	end
 end
-	
+
 function ActionBars:Enable()
-	-- Tukui
 	baseEnable(self)
 
 	if C["ActionBars"]["TrinketBarEnable"] == true then 
@@ -237,6 +246,6 @@ function ActionBars:Enable()
 		self:MaxUIStyleTrinketBar()
 		self:StylingTrinketBar()
 		
-	TrinketBar:HookScript("OnUpdate", self.UpdateTrinketBar)
+		TrinketBar:SetScript("OnUpdate", self.UpdateTrinketBar)
 	end	
 end

@@ -1,6 +1,6 @@
 ﻿------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up LOSS OF CONTROL.
@@ -21,14 +21,16 @@ local baseLossControlEnable = LossControl.Enable
 -- Loss of Control
 ------------------------------------------------------------------------------------------
 function LossControl:Update()
-	-- Tukui
 	baseLossControlUpdate(self)
 
-	-- MaxUI
 	if not (C.General.Themes.Value == "MaxUI") then return end
 	self.AbilityName:SetFont(C.Medias.Font, 16)
 	self.TimeLeft.NumberText:SetFont(C.Medias.Font, 16)
 	self.TimeLeft.SecondsText:SetFont(C.Medias.Font, 16)
+
+	--if C["Skins"]["ActionBarButtonFilter"] == true then 
+	--	self.Icon:CreateMaxUIFilter() -- !! bug
+	--end
 end
 
 function LossControl:Enable()

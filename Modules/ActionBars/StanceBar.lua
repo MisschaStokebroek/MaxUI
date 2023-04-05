@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-07-2021
+-- latest update: 29-11-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up STANCE BAR.
@@ -10,6 +10,7 @@
 ------------------------------------------------------------------------------------------
 local T, C, L = Tukui:unpack()
 local ActionBars = T.ActionBars
+local baseCreateStanceBar = ActionBars.CreateStanceBar
 local baseUpdateStanceBar = ActionBars.UpdateStanceBar
 local _G = _G
 
@@ -19,11 +20,11 @@ local _G = _G
 function ActionBars:VisibilityStanceBar()
 	local StanceBar = ActionBars.Bars.Stance
 
-	if C["ActionBars"]["Stancebar"]["Value"] == "Show"  then
+	if C["ActionBars"]["Stancebar"]["Value"] == "Show" then
 		StanceBar:SetAlpha(1)
 	end
 	
-	if C["ActionBars"]["Stancebar"]["Value"] == "Hide"  then
+	if C["ActionBars"]["Stancebar"]["Value"] == "Hide" then
 		StanceBar:Kill()
 	end
 
@@ -38,7 +39,7 @@ function ActionBars:VisibilityStanceBar()
 			StanceBar:SetAlpha(C["ActionBars"]["StanceBarAlpha"])
 		end)
 		
-		for i = 1, NUM_STANCE_SLOTS do
+		for i = 1, 10 do
 			local Button = _G["StanceButton"..i]
 
 			Button:SetAlpha(C["ActionBars"]["StanceBarAlpha"])
@@ -57,12 +58,13 @@ function ActionBars:VisibilityStanceBar()
 end
 
 function ActionBars:CombatStateStanceBar()
+	local StanceBar = ActionBars.Bars.Stance
 	if C["ActionBars"]["ActionBarStanceCombatState"]["Value"] == "Hide" then
-		RegisterStateDriver(StanceBarFrame, "visibility", "[combat] hide; show")
+		RegisterStateDriver(StanceBar, "visibility", "[combat] hide; show")
 	end
 
 	if C["ActionBars"]["ActionBarStanceCombatState"]["Value"] == "Show" then
-		RegisterStateDriver(StanceBarFrame, "visibility", "[combat] show; hide")
+		RegisterStateDriver(StanceBar, "visibility", "[combat] show; hide")
 	end
 end
 
@@ -89,20 +91,28 @@ function ActionBars:LayoutStanceBar()
 	end
 	
 	-- BUTTON: Size and orientation
-	for i = 1, NUM_STANCE_SLOTS do
+	for i = 1, 10 do
 		local Button = _G["StanceButton"..i]
-		Button:SetWidth(Size)
-		Button:SetHeight(Size)
+		local FakeButton = _G["TukuiStanceActionBarButton"..i]
+		FakeButton:SetWidth(Size)
+		FakeButton:SetHeight(Size)
+
+		-- temp fix for icons not sizing correctly?
+		if T.Retail then
+			Button.IconMask:ClearAllPoints()
+			Button.IconMask:SetPoint("TOPLEFT", Button, -15, 15)
+			Button.IconMask:SetPoint("BOTTOMRIGHT", Button, 15, -15)
+		end
 		
 		if C["ActionBars"]["StancebarLayout"]["Value"] == "Vertical" then 
 			if (i ~= 1) then
-				local Previous = _G["StanceButton"..i-1]
+				local Previous = _G["TukuiStanceActionBarButton"..i-1]
 
-				Button:ClearAllPoints()
-				Button:SetPoint("TOP", Previous, "BOTTOM", 0, -Spacing)
+				FakeButton:ClearAllPoints()
+				FakeButton:SetPoint("TOP", Previous, "BOTTOM", 0, -Spacing)
 			else
-				Button:ClearAllPoints()
-				Button:SetPoint("TOPLEFT", StanceBar, "TOPLEFT", Spacing, -Spacing)
+				FakeButton:ClearAllPoints()
+				FakeButton:SetPoint("TOPLEFT", StanceBar, "TOPLEFT", Spacing, -Spacing)
 			end
 		end
 	end
@@ -114,18 +124,18 @@ function ActionBars:PositionStanceBar()
 	local LeftChatBG = ChatLeftBackground
 
 	-- basic position
-	StanceBar:EnableMouse(true)
-	StanceBar:SetMovable(true)
-	StanceBar:SetUserPlaced(true)
+	--StanceBar:EnableMouse(true)
+	--StanceBar:SetMovable(true)
+	--StanceBar:SetUserPlaced(true)
 	
-	--StanceBar:ClearAllPoints()
-	--StanceBar:SetPoint("BOTTOMLEFT", ActionBar1, "TOPLEFT", 0, 7)
+	StanceBar:ClearAllPoints()
+	StanceBar:SetPoint("BOTTOMLEFT", ActionBar1, "TOPLEFT", 0, 7)
 
 	-- layout specific anchoring
-	--if C["ActionBars"]["StancebarLayout"]["Value"] == "Vertical" then 
-	--	StanceBar:ClearAllPoints()
-	--	StanceBar:SetPoint("TOP", UIParent, "CENTER", 0, 0)
-	--end
+	if C["ActionBars"]["StancebarLayout"]["Value"] == "Vertical" then 
+		StanceBar:ClearAllPoints()
+		StanceBar:SetPoint("TOP", UIParent, "CENTER", 0, 0)
+	end
 end
 
 function ActionBars:MaxUIStyleStanceBar()
@@ -135,7 +145,7 @@ function ActionBars:MaxUIStyleStanceBar()
 
 	StanceBar:SetFrameLevel(4)
 	StanceBar:SetFrameStrata("BACKGROUND")
-	for i = 1, NUM_STANCE_SLOTS do
+	for i = 1, 10 do
 		local Button = _G["StanceButton"..i]
 		Button:SetSize(C["ActionBars"]["StanceBarButtonSize"], C["ActionBars"]["StanceBarButtonSize"])
 	end	
@@ -149,11 +159,12 @@ function ActionBars:MaxUIStyleStanceBar()
 		StanceBar.Shadow:Hide()
 		StanceBar.Shadow:SetAlpha(0)
 		StanceBar.Backdrop:SetAlpha(0)
-		for i = 1, NUM_STANCE_SLOTS do
+		for i = 1, 10 do
 			local Button = _G["StanceButton"..i]
 			Button:CreateShadow()
 		end	
 	end
+	--RegisterStateDriver(StanceBar, "visibility", "[vehicleui] hide; show")
 end
 
 function ActionBars:StylingStanceBar()
@@ -184,31 +195,44 @@ function ActionBars:StylingStanceBar()
 		StanceBar:CreateMaxUIBottomEdge()
 		StanceBar:CreateMaxUILeftEdge()
 		StanceBar:CreateMaxUIRightEdge()
-	
-	elseif C["ActionBars"]["ActionBarStanceEdges"]["Value"] == "None" then
-
 	end
 end
 
+function ActionBars:CreateStanceBar()
+	baseCreateStanceBar(self)
+
+	if InCombatLockdown() then return end
+	if (not C.ActionBars.ShapeShift) then 
+
+		for i = 1, 10 do
+			local Button = _G["StanceButton"..i]
+			Button:Kill()
+		end
+
+		return 
+	end
+
+	ActionBars:VisibilityStanceBar()
+	
+	if C["ActionBars"]["ActionBarStanceCombatState"]["Value"] ~= "Nothing" then 
+		ActionBars:CombatStateStanceBar()
+	end	
+
+	ActionBars:LayoutStanceBar()
+	ActionBars:PositionStanceBar()
+	
+	if (C.General.Themes.Value == "MaxUI") then
+		ActionBars:MaxUIStyleStanceBar()
+	end
+	
+	ActionBars:StylingStanceBar()
+end
+
 function ActionBars:UpdateStanceBar()
-	-- Tukui
 	baseUpdateStanceBar(self)
 
 	if InCombatLockdown() then return end
 	if (not C.ActionBars.ShapeShift) then return end
 
-	self.VisibilityStanceBar()
-	
-	if C["ActionBars"]["ActionBarStanceCombatState"]["Value"] ~= "Nothing" then 
-		selfCombatStateStanceBar()
-	end	
-	
-	self:LayoutStanceBar()
-	self:PositionStanceBar()
-	
-	if (C.General.Themes.Value == "MaxUI") then
-		self:MaxUIStyleStanceBar()
-	end
-	
-	self:StylingStanceBar()	
+	ActionBars:LayoutStanceBar()
 end

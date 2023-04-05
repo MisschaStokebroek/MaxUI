@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-07-2021
+-- latest update: 29-11-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up CHAT INSTALLER / RESET
@@ -11,65 +11,89 @@
 ------------------------------------------------------------------------------------------
 local T, C, L = Tukui:unpack()
 local Chat = T.Chat
-local baseSetChatFramePosition = Chat.SetChatFramePosition
-local baseInstall = Chat.Install
-local baseMoveChannels = Chat.MoveChannels
+
+-- functions
+--local baseSetChatFramePosition = Chat.SetChatFramePosition
+--local baseInstall = Chat.Install
+--local baseMoveChannels = Chat.MoveChannels
 
 ------------------------------------------------------------------------------------------
 -- BLIZZARD CHAT ANCHORING TO NEW CHAT FRAMES
 ------------------------------------------------------------------------------------------
+function Chat:SetMaxUIChatFrame1Position()
+	local LeftChatBG = T.Chat.Panels.LeftChat
+	self:SetPointBase("BOTTOMLEFT", LeftChatBG, "BOTTOMLEFT", 2, 2)
+end
+
 function Chat:SetChatFramePosition()
 	local Frame = self
 	local ID = Frame:GetID()
+	local Tab = _G["ChatFrame"..ID.."Tab"]
+	local IsMovable = Frame:IsMovable()
 	local Settings = TukuiDatabase.Variables[T.MyRealm][T.MyName].Chat.Positions["Frame" .. ID]
 
-	if Settings then
+	if Tab:IsShown() then
+		
+		-- Tukui
 		if C.General.Themes.Value == "Tukui" then
-			local Anchor1, Anchor2, X, Y, Width, Height = unpack(Settings)
+
+			if IsRightChatFound and not Frame.isDocked then
+				Chat:Dock(Frame)
+			end
 
 			if ID == 1 then
 				Frame:SetParent(T.DataTexts.Panels.Left)
 				Frame:SetUserPlaced(true)
 				Frame:ClearAllPoints()
-				Frame:SetSize(C.Chat.LeftWidth -4, C.Chat.LeftHeight - 62)
-				Frame:SetPoint("BOTTOMLEFT", T.DataTexts.Panels.Left, "TOPLEFT", 0, 2)
-
-			elseif (ID == 4) then
-				if Frame:IsShown() and not Frame.isDocked then
-					Frame:SetParent(T.DataTexts.Panels.Right)
-					Frame:SetUserPlaced(true)
-					Frame:ClearAllPoints()
-					Frame:SetSize(C.Chat.RightWidth -4, C.Chat.RightHeight - 62)
-					Frame:SetPoint("BOTTOMLEFT", T.DataTexts.Panels.Right, "TOPLEFT", 0, 2)
-
-					if C.Chat.RightChatAlignRight then
-						Frame:SetJustifyH("RIGHT")
-					end
+				Frame:SetSize(C.Chat.LeftWidth, C.Chat.LeftHeight - 62)
+				Frame:SetPoint("BOTTOMLEFT", T.DataTexts.Panels.Left, "TOPLEFT", 0, 4)
+				
+				if T.Retail then
+					hooksecurefunc(Frame, "SetPoint", Chat.SetChatFrame1Position)
 				end
 			end
-			
+
+			if ID > 1 and Settings and Settings.IsUndocked and not IsRightChatFound then
+				if Frame.isDocked then
+					Chat:Undock(Frame)
+				end
+
+				Frame:SetParent(T.DataTexts.Panels.Right)
+				Frame:SetUserPlaced(true)
+				Frame:ClearAllPoints()
+				Frame:SetSize(C.Chat.RightWidth, C.Chat.RightHeight - 62)
+				Frame:SetPoint("BOTTOMLEFT", T.DataTexts.Panels.Right, "TOPLEFT", 0, 4)
+
+				IsRightChatFound = true
+			end
+
+			if C.Chat.RightChatAlignRight and Settings and Settings.IsUndocked then
+				Frame:SetJustifyH("RIGHT")
+			end
+		
+		-- MaxUI	
 		elseif C.General.Themes.Value == "MaxUI" then
 			local LeftChatBG = T.Chat.Panels.LeftChat
 			local Height = (C["Chat"]["LeftHeight"])
 			local Width = (C["Chat"]["LeftWidth"])
 
-			-- Set default chat frame position
 			if (ID == 1) then
-				Frame:SetParent(LeftChatBG)
+				if C["Chat"]["CompleteChatBox"] then
+					Frame:SetParent(LeftChatBG)
+				end	
 				Frame:SetUserPlaced(true)
 				Frame:ClearAllPoints()
 				Frame:SetSize(C.Chat.LeftWidth -4, C.Chat.LeftHeight-25)
 				Frame:SetPoint("BOTTOMLEFT", LeftChatBG, "BOTTOMLEFT", 2, 2)
-			
-				if C["DataTexts"]["Slidable"] == true then 
-					Frame:ClearAllPoints()
-					Frame:SetSize(C.Chat.LeftWidth -4, C.Chat.LeftHeight-25)
-					Frame:SetPoint("BOTTOMLEFT", LeftChatBG, "BOTTOMLEFT", 2, 2)
+				
+				if T.Retail then
+					hooksecurefunc(Frame, "SetPoint", Chat.SetMaxUIChatFrame1Position)
 				end
 			end
 
+		-- tukz theme
 		else
-			if not Frame:IsMovable() then
+			if not Frame:IsMovable() or C.General.Themes.Value == "Tukz" then
 				return
 			end
 
@@ -84,9 +108,10 @@ function Chat:SetChatFramePosition()
 				Frame:SetJustifyH("RIGHT")
 			end
 		end
+
+		FCF_SavePositionAndDimensions(Frame)
 	end
 end
-
 
 function Chat:Reset()
 	local IsPublicChannelFound = EnumerateServerChannels()
@@ -110,10 +135,11 @@ function Chat:Reset()
 	FCF_DockFrame(ChatFrame2)
 	FCF_SetLocked(ChatFrame2, 1)
 	
-	if T.BCC then
+	if T.Classic then
 		FCF_OpenNewWindow(TRADE)
 		FCF_SetWindowName(ChatFrame3, "Trade")
 	end
+
 	FCF_SetLocked(ChatFrame3, 1)
 	FCF_DockFrame(ChatFrame3)
 	
@@ -125,8 +151,7 @@ function Chat:Reset()
 	FCF_SetLocked(ChatFrame5, 1)
 	FCF_DockFrame(ChatFrame5)
 
-
-	if T.Retail then
+	if T.Retail or T.WotLK then
 		FCF_OpenNewWindow(TRADE)
 		FCF_SetLocked(ChatFrame6, 1)
 		FCF_DockFrame(ChatFrame6)
@@ -140,7 +165,7 @@ function Chat:Reset()
 	FCF_SetChatWindowFontSize(nil, ChatFrame4, 12)
 	FCF_SetChatWindowFontSize(nil, ChatFrame5, 12)
 
-	FCF_SetWindowName(ChatFrame1, "General")
+	FCF_SetWindowName(ChatFrame1, "All")
 	FCF_SetWindowName(ChatFrame2, "Log")
 	FCF_SetWindowName(ChatFrame4, "Loot")
 	FCF_SetWindowName(ChatFrame5, "LFG")
@@ -148,8 +173,8 @@ function Chat:Reset()
 	DEFAULT_CHAT_FRAME:SetUserPlaced(true)
 
 	-- Fix a editbox texture
-	ChatEdit_ActivateChat(ChatFrame1EditBox)
-	ChatEdit_DeactivateChat(ChatFrame1EditBox)
+	--ChatEdit_ActivateChat(ChatFrame1EditBox)
+	--ChatEdit_DeactivateChat(ChatFrame1EditBox)
 
 	-- Adjust Chat Colors
 	ChangeChatColor('CHANNEL1', 254/255, 193/255, 193/255) -- General
@@ -162,13 +187,28 @@ function Chat:Reset()
 	local ChatGroup = {}
 	local Channels = {}
 	
-	for i = 1, 5 do
-		if i ~= 2 then
+	for i=1, select("#", EnumerateServerChannels()), 1 do
+		Channels[i] = select(i, EnumerateServerChannels())
+	end
+
+	-- Remove everything in first 4 chat windows
+	for i = 1, 6 do
+		if (T.Retail and i ~= 2 and i ~= 3) or (T.BCC and i ~= 2 and i ~= 6) or (T.Classic and i ~= 2 and i ~= 6) or (T.WotLK and i ~= 2 and i ~= 3) then
 			local ChatFrame = _G["ChatFrame"..i]
 
 			ChatFrame_RemoveAllMessageGroups(ChatFrame)
+			ChatFrame_RemoveAllChannels(ChatFrame)
 		end
 	end
+
+	-- Join public channels
+	for i = 1, #Channels do
+		SlashCmdList["JOIN"](Channels[i])
+	end
+
+	-- Fix a editbox texture
+	ChatEdit_ActivateChat(ChatFrame1EditBox)
+	ChatEdit_DeactivateChat(ChatFrame1EditBox)
 
 	-- CHATFRAME 1 - GENERAL
 	ChatGroup = {
@@ -239,6 +279,8 @@ function Chat:Reset()
 		ChatFrame_AddMessageGroup(_G.ChatFrame1, v)
 	end
 
+	FCF_SelectDockFrame(ChatFrame1)
+
 	-- CHATFRAME 6 - TRADE
 	ChatGroup = {
 	"SYSTEM",
@@ -304,4 +346,6 @@ function Chat:Reset()
 	for _, v in ipairs(ChatGroup) do
 		ChatFrame_AddMessageGroup(_G.ChatFrame5, v)
 	end
+
+	Chat.SetChatFramePosition(ChatFrame1)
 end

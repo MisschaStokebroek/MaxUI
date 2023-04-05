@@ -1,6 +1,6 @@
 ﻿------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 --setting up TOOLTIP.
@@ -11,6 +11,7 @@
 local T, C, L = Tukui:unpack()
 local Tooltips = T["Tooltips"]
 local baseCreateAnchor = Tooltips.CreateAnchor
+local baseTooltipSkin = Tooltips.Skin
 local baseEnable = Tooltips.Enable
 
 Tooltips.BackdropStyle = {
@@ -29,10 +30,8 @@ function Tooltips:MaxUITooltipAnchor()
 end
 
 function Tooltips:CreateAnchor()
-	-- Tukui
 	baseCreateAnchor(self)
 	
-	-- MaxUI
 	if (C.General.Themes.Value == "MaxUI") then
 		self:MaxUITooltipAnchor()
 	end	
@@ -42,45 +41,50 @@ end
 -- COLOR, BACKDROP, ...
 ------------------------------------------------------------------------------------------
 function Tooltips:MaxUITooltipStyle()
-
-	if not (C.General.Themes.Value == "MaxUI") then return end
+	
 	local HealthBar = GameTooltipStatusBar
-	local GameTooltip = GameTooltip
 	local BackdropR, BackdropG, BackdropB = unpack(C["General"]["BackdropColor"])
-	local BackdropAlpha = (C["General"]["GeneralPanelAlpha"])
-	local Backdrop = self.Backdrop
 
 	HealthBar:ClearAllPoints()
 	HealthBar:SetPoint("BOTTOMLEFT", HealthBar:GetParent(), "TOPLEFT", 1, 4)
 	HealthBar:SetPoint("BOTTOMRIGHT", HealthBar:GetParent(), "TOPRIGHT", -1, 4)
+	if C["Skins"]["TooltipFilter"] == true then 
+		HealthBar:CreateMaxUIFilter()
+	end
 
 	HealthBar.Backdrop:SetOutside(Health)
-	HealthBar.Backdrop:SetBorderColor(unpack(C.General.BorderColor))
-	HealthBar.Backdrop:SetBackdropColor(BackdropR, BackdropG, BackdropB, 1)
+	HealthBar.Backdrop:SetBorderColor(0,0,0)
+	HealthBar.Backdrop:SetBackdropColor(0,0,0)
 	
 	HealthBar.Text:SetScale(C.Tooltips.HealthFontSize/10)
 end
 
-baseTooltipSkin = Tooltips.Skin
-function Tooltips:Skin(style)
-	baseTooltipSkin(self, style)
+function Tooltips:Skin()
+	baseTooltipSkin(self)
 	
+	if not (C.General.Themes.Value == "MaxUI") then return end
 	local BackdropAlpha = (C["Tooltips"]["TooltipAlpha"])
 	if self ~= GameTooltipTooltip then
 		local Backdrop = self.Backdrop
 		Backdrop:SetAlpha(BackdropAlpha)
+		
+		if C["Skins"]["TooltipFilter"] == true then 
+			Backdrop:CreateMaxUIFilterInside()
+		end
 	end
-
 end
 ------------------------------------------------------------------------------------------
 -- HEALTHBAR POSITION
 ------------------------------------------------------------------------------------------
 function Tooltips:Enable()
-	-- Tukui
+	if not C["Tooltips"]["Enable"] then return end
 	baseEnable(self)
 
-	if not C["Tooltips"]["Enable"] then return end
-
-	-- MaxUI
+	if not (C.General.Themes.Value == "MaxUI") then return end
 	self:MaxUITooltipStyle()
+
+	if C["Tooltips"]["HideInCombat"] == true then
+		RegisterStateDriver(self, "visibility", "[combat] hide; show")
+	end
+
 end

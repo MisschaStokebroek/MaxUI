@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 --setting up RAID LAYOUT.
@@ -9,14 +9,15 @@
 -- SETUP
 ------------------------------------------------------------------------------------------
 T, C, L = Tukui:unpack()
-local TukuiUnitFrames = T.UnitFrames
+local UnitFrames = T.UnitFrames
 
 ------------------------------------------------------------------------------------------
 -- PET RAIDFRAME ATTRIBUTES
 ------------------------------------------------------------------------------------------
-function TukuiUnitFrames:GetPetRaidFramesAttributes()
+function UnitFrames:GetPetRaidFramesAttributes()
+	if InCombatLockdown() then return end -- taint problem for anchoring?
 
-	if C["UnitFrames"]["Style"]["Value"] == "MaxUI" then
+	if C["Raid"]["Style"]["Value"] == "Tukui" then
 
 		if C["Raid"]["GrowDirection"]["Value"] == "VerticalDown" then 
 			local Properties = C.Party.Enable and "custom [@raid26,exists] hide; [@raid6,exists] show; hide" or "custom [@raid26,exists] hide; [@raid1,exists] show; [@party1,exists] show; hide"
@@ -60,7 +61,7 @@ function TukuiUnitFrames:GetPetRaidFramesAttributes()
 				"maxColumns", math.ceil(40/5),
 				"point", "LEFT",
 				"unitsPerColumn", C["Raid"].MaxUnitPerColumn,
-				"columnSpacing", (C["Raid"]["VerSpacing"]),
+				"columnSpacing", (-C["Raid"]["VerSpacing"]),
 				"columnAnchorPoint", "TOP",
 				"xOffset", (C["Raid"]["HorSpacing"])
 		
@@ -111,8 +112,9 @@ function TukuiUnitFrames:GetPetRaidFramesAttributes()
 				"columnAnchorPoint", "BOTTOM",
 				"xOffset", (C["Raid"]["HorSpacing"])
 		end
-			
-	else
+
+	else -- maxui / orbs unitframes
+
 		if C["Raid"]["GrowDirection"]["Value"] == "VerticalDown" then 
 			local Properties = C.Party.Enable and "custom [@raid26,exists] hide; [@raid6,exists] show; hide" or "custom [@raid26,exists] hide; [@raid1,exists] show; [@party1,exists] show; hide"
 				return
@@ -155,7 +157,7 @@ function TukuiUnitFrames:GetPetRaidFramesAttributes()
 				"maxColumns", math.ceil(40/5),
 				"point", "LEFT",
 				"unitsPerColumn", C["Raid"].MaxUnitPerColumn,
-				"columnSpacing", (-C["Raid"]["VerSpacing"]),
+				"columnSpacing", (C["Raid"]["VerSpacing"]),
 				"columnAnchorPoint", "TOP",
 				"xOffset", (C["Raid"]["HorSpacing"])
 		
@@ -209,10 +211,11 @@ function TukuiUnitFrames:GetPetRaidFramesAttributes()
 	end		
 end
 
-function TukuiUnitFrames:GetBigPetRaidFramesAttributes()
+function UnitFrames:GetBigPetRaidFramesAttributes()
+	if InCombatLockdown() then return end -- taint problem for anchoring?
 
-	if C["UnitFrames"]["Style"]["Value"] == "MaxUI" then
-
+	if C["Raid"]["Style"]["Value"] == "Tukui" then
+		
 		if C["Raid"]["GrowDirection"]["Value"] == "VerticalDown" then 
 				local Properties = "custom [@raid26,exists] show; hide"
 				return
@@ -236,7 +239,7 @@ function TukuiUnitFrames:GetBigPetRaidFramesAttributes()
 				"columnAnchorPoint", "LEFT",
 				"yOffset", (-C["Raid"]["VerSpacing"])
 
-		elseif C["Raid"]["GrowDirection"]["Value"] == "HorizontalDown" then 
+		elseif C["Raid"]["GrowDirection"]["Value"] == "Horizontal Down" then 
 				local Properties = "custom [@raid26,exists] show; hide"
 				return
 				"TukuiRaid40Pet", 
@@ -255,7 +258,7 @@ function TukuiUnitFrames:GetBigPetRaidFramesAttributes()
 				"maxColumns", math.ceil(40/5),
 				"point", "LEFT",
 				"unitsPerColumn", C["Raid"].Raid40MaxUnitPerColumn,
-				"columnSpacing", (C["Raid"]["VerSpacing"]),
+				"columnSpacing", (-C["Raid"]["VerSpacing"]),
 				"columnAnchorPoint", "TOP",
 				"xOffset", (C["Raid"]["HorSpacing"])
 		
@@ -306,8 +309,9 @@ function TukuiUnitFrames:GetBigPetRaidFramesAttributes()
 				"columnAnchorPoint", "BOTTOM",
 				"xOffset", (C["Raid"]["HorSpacing"])
 		end
-			
-	else
+
+	else -- maxui / orbs
+
 		if C["Raid"]["GrowDirection"]["Value"] == "VerticalDown" then 
 				local Properties = "custom [@raid26,exists] show; hide"
 				return
@@ -331,7 +335,7 @@ function TukuiUnitFrames:GetBigPetRaidFramesAttributes()
 				"columnAnchorPoint", "LEFT",
 				"yOffset", (-C["Raid"]["VerSpacing"])
 
-		elseif C["Raid"]["GrowDirection"]["Value"] == "Horizontal Down" then 
+		elseif C["Raid"]["GrowDirection"]["Value"] == "HorizontalDown" then 
 				local Properties = "custom [@raid26,exists] show; hide"
 				return
 				"TukuiRaid40Pet", 
@@ -350,7 +354,7 @@ function TukuiUnitFrames:GetBigPetRaidFramesAttributes()
 				"maxColumns", math.ceil(40/5),
 				"point", "LEFT",
 				"unitsPerColumn", C["Raid"].Raid40MaxUnitPerColumn,
-				"columnSpacing", (-C["Raid"]["VerSpacing"]),
+				"columnSpacing", (C["Raid"]["VerSpacing"]),
 				"columnAnchorPoint", "TOP",
 				"xOffset", (C["Raid"]["HorSpacing"])
 		

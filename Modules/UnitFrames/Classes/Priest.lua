@@ -1,6 +1,6 @@
 ﻿------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up PRIEST.
@@ -14,29 +14,28 @@ local Class = select(2, UnitClass("player"))
 local Movers = T["Movers"]
 local basePlayer = UnitFrames.Player
 
-if (Class ~= "PRIEST") then
-	return
-end
+if (Class ~= "PRIEST") then	return end
 
 ------------------------------------------------------------------------------------------
 -- CLASS RESOURCES
 ------------------------------------------------------------------------------------------
 function UnitFrames:Player()
-	-- Tukui
 	basePlayer(self)
 	
-	-- MaxUI
 	if not T.Retail or not C.UnitFrames.ClassBar then return end
 	if not (C["UnitFrames"]["Style"]["Value"] == "MaxUI") then return end
 
+	-- elements
 	local Health = self.Health
-	--local Shadow = self.Shadow
 	local Atonement = self.Atonement
-	local ClassPowerTexture = T.GetTexture(C["ClassOptions"]["ClassPowerTexture"])
-	local PowerTexture = T.GetTexture(C["UF: Player"]["PowerTexture"])
+	local AdditionalPower = self.AdditionalPower
+
+	-- settings
 	local PowerHeight = C["UF: Player"]["PowerHeight"]
 	local PowerWidth = C["UF: Player"]["PowerWidth"]
-	local AdditionalPower = self.AdditionalPower
+
+	-- textures
+	local ClassPowerTexture = T.GetTexture(C["ClassOptions"]["ClassPowerTexture"])
 
 	-- atonement
 	if C["ClassOptions"]["PriestAtonement"] == true then
@@ -45,21 +44,28 @@ function UnitFrames:Player()
 		Atonement:SetHeight(PowerHeight-4)
 		Atonement:SetWidth(PowerWidth)
 		Atonement:SetStatusBarTexture(ClassPowerTexture)
-		Atonement:SetFrameStrata("MEDIUM")
-		Atonement:SetFrameLevel(5)
-		Movers:RegisterFrame(Atonement, "Atonement")
-		Atonement:CreateShadow()
+		Atonement:SetFrameStrata("HIGH")
+		Atonement:SetFrameLevel(6)
+		
+		Atonement.Backdrop:CreateShadow()
 		if C["General"]["ClassShadowExcludeUF"] then
-			Atonement.Shadow:SetBackdropBorderColor(0, 0, 0, .8)
+			Atonement.Backdrop.Shadow:SetBackdropBorderColor(0, 0, 0, .8)
 		end
 		
 		if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" then
 			Atonement:SetHeight(PowerWidth)
 			Atonement:SetWidth(PowerHeight-4)
 			Atonement:SetOrientation("VERTICAL")
-			Atonement:SetFrameStrata("MEDIUM")
 			Atonement:ClearAllPoints()
 			Atonement:SetPoint("BOTTOM", Health, "BOTTOMRIGHT", 0, 10)
+		end
+
+		if C["Skins"]["UnitFramesFilter"] == true then 
+			if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Horizontal" then
+				Atonement:CreateMaxUIFilter()
+			else
+				Atonement:CreateMaxUIVerticalFilter()
+			end	
 		end
 	else
 		Atonement:ClearAllPoints()

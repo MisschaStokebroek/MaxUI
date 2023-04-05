@@ -21,12 +21,11 @@ local RaidBuffs = CreateFrame("Frame")
 -- RAIDBUFFTRACKER - Basic Frame
 ------------------------------------------------------------------------------------------
 local function CreateRaidBuffsFrame()
-	local buttonsize = C["Tools"]["ToolButtonSize"]
-	local spacing = 2
+	local buttonsize = C["General"]["ButtonSize"]
+	local spacing = 3
 
 	local RBTFrame = CreateFrame("Frame", "RBTFrame", UIParent)
-	RBTFrame:CreateBackdrop("Transparent")
-	RBTFrame:CreateShadow()
+	RBTFrame:SkinMaxUIFrame()
 	RBTFrame:SetWidth(buttonsize*5 + spacing*6)
 	RBTFrame:SetHeight((buttonsize*3) + (spacing*4))
 
@@ -44,42 +43,9 @@ local function CreateRaidBuffsFrame()
 	RBTFrame:Hide()
 	RBTFrame:SetAlpha(0)
 	RBTFrame:CreateMaxUIHeader("Raid Buffs")
+	RBTFrame:CreateMaxUICloseButton(RBTFrame.MaxUIHeader)
 
 	Movers:RegisterFrame(RBTFrame, "Buff Tracker")
-
-	local RBTFrameClose = CreateFrame("Button", "RBTFrameClose", RBTFrame.MaxUIHeader)
-	RBTFrameClose:SetWidth(14)
-	RBTFrameClose:SetHeight(14)
-	RBTFrameClose:SetAlpha(0)
-	RBTFrameClose:SetPoint("RIGHT", RBTFrame.MaxUIHeader, "RIGHT", -8, 0)
-	
-	RBTFrameCloseicon = RBTFrame.MaxUIHeader:CreateTexture(nil, "OVERLAY")
-	RBTFrameCloseicon:SetPoint("RIGHT", RBTFrame.MaxUIHeader, "RIGHT", -8,0)
-	RBTFrameCloseicon:SetWidth(11)
-	RBTFrameCloseicon:SetHeight(11)
-	RBTFrameCloseicon:SetTexture([[Interface\AddOns\Tukui\Medias\Textures\Others\Close.tga]])
-
-	RBTFrameClose:SetScript("OnEnter", function(self)
-		RBTFrameCloseicon:SetVertexColor(1, 0, 0)
-	end)
-	
-	RBTFrameClose:SetScript("OnLeave", function(self)
-		RBTFrameCloseicon:SetVertexColor(1, 1, 1)
-	end)
-
-	-- Animation
-	RBTFrame:fadeIn(C["General"]["FaderTime"])
-	RBTFrame:fadeOut(C["General"]["FaderTime"])
-	RBTFrameClose:SetScript("OnMouseUp", function(self) RBTFrame:fadeToggle() end)
-
-	function RaidBuffTrackerToggle()
-	    if RBTFrame:IsShown() then
-			RBTFrame.fadeOut:Play()
-		else
-			RBTFrame:Show()
-			RBTFrame.fadeIn:Play()
-	    end
-	end
 
 	-- tooltip Anchor
 	RBTFrameAnchor = RBTFrame.MaxUIHeader
@@ -812,163 +778,117 @@ local function SetSpells()
 end
 
 local function CreateRaidBuffsButtons()
-	local buttonsize = C["Tools"]["ToolButtonSize"]
-	local spacing = 2
+	local buttonsize = C["General"]["ButtonSize"]
+	local spacing = 3
 
 	-- Button 1  Deathknight
-	RBTFrame.CreateToolButton("Spell1Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell1Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell1Frame:SetPoint("TOPLEFT", RBTFrame, "TOPLEFT", spacing, -spacing)
 	Spell1Frame.icon:SetTexture(Spell1Buff)
-	Spell1Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell1Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell1Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	if T.Retail then
 		Spell1Frame.Backdrop:SetBackdropColor(0.77, 0.12, 0.23)
 	end
 	-- Button 2 - Demonhunter
-	RBTFrame.CreateToolButton("Spell2Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell2Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell2Frame:SetPoint("LEFT", Spell1Frame, "RIGHT", spacing, 0)
 	Spell2Frame.icon:SetTexture(Spell2Buff)
-	Spell2Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell2Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell2Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	if T.Retail then
 		Spell2Frame.Backdrop:SetBackdropColor(0.64, 0.19, 0.79)
 	end
 	
 	-- Button 3 - Druid
-	RBTFrame.CreateToolButton("Spell3Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell3Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell3Frame:SetPoint("LEFT", Spell2Frame, "RIGHT", spacing, 0)
 	Spell3Frame.icon:SetTexture(Spell3Buff)
-	Spell3Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell3Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell3Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	if T.Retail then
 		Spell3Frame.Backdrop:SetBackdropColor(1.00, 0.49, 0.04)
 	end
 	
 	-- Button 4 - Hunter
-	RBTFrame.CreateToolButton("Spell4Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell4Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell4Frame:SetPoint("LEFT", Spell3Frame, "RIGHT", spacing, 0)
 	Spell4Frame.icon:SetTexture(Spell4Buff)
-	Spell4Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell4Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell4Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	if T.Retail then
 		Spell4Frame.Backdrop:SetBackdropColor(0.67, 0.83, 0.45)
 	end
 	
 	-- Button 5 - Mage
-	RBTFrame.CreateToolButton("Spell5Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell5Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell5Frame:SetPoint("LEFT", Spell4Frame, "RIGHT", spacing, 0)
 	Spell5Frame.icon:SetTexture(Spell5Buff)
-	Spell5Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell5Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell5Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	if T.Retail then
 		Spell5Frame.Backdrop:SetBackdropColor(0.41, 0.80, 0.94)
 	end
 	
 	-- Button 6 - Monk
-	RBTFrame.CreateToolButton("Spell6Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell6Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell6Frame:SetPoint("TOPLEFT", Spell1Frame, "BOTTOMLEFT", 0, -spacing)
 	Spell6Frame.icon:SetTexture(Spell6Buff)
-	Spell6Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell6Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell6Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	if T.Retail then
 		Spell6Frame.Backdrop:SetBackdropColor(0.33, 0.54, 0.52)
 	end
 	
 	-- Button 7 - Paladin
-	RBTFrame.CreateToolButton("Spell7Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell7Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell7Frame:SetPoint("LEFT", Spell6Frame, "RIGHT", spacing, 0)
 	Spell7Frame.icon:SetTexture(Spell7Buff)
-	Spell7Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell7Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell7Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	if T.Retail then
 		Spell7Frame.Backdrop:SetBackdropColor(0.96, 0.55, 0.73)
 	end
 	
 	-- Button 8 - Priest
-	RBTFrame.CreateToolButton("Spell8Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell8Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell8Frame:SetPoint("LEFT", Spell7Frame, "RIGHT", spacing, 0)
 	Spell8Frame.icon:SetTexture(Spell8Buff)
-	Spell8Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell8Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell8Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	if T.Retail then
 		Spell8Frame.Backdrop:SetBackdropColor(1, 1, 1)
 	end
 	
 	-- Button 9 - Rogue
-	RBTFrame.CreateToolButton("Spell9Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell9Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell9Frame:SetPoint("LEFT", Spell8Frame, "RIGHT", spacing, 0)
 	Spell9Frame.icon:SetTexture(Spell9Buff)
-	Spell9Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell9Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell9Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	if T.Retail then
 		Spell9Frame.Backdrop:SetBackdropColor(1, 0.96, 0.41)
 	end
 	
 	-- Button 10 - Shaman
-	RBTFrame.CreateToolButton("Spell10Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell10Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell10Frame:SetPoint("LEFT", Spell9Frame, "RIGHT", spacing, 0)
 	Spell10Frame.icon:SetTexture(Spell10Frame)
-	Spell10Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell10Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell10Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	if T.Retail then
 		Spell10Frame.Backdrop:SetBackdropColor(0.00, 0.44, 0.67)
 	end
 	-- Button 11 - Warlock
-	RBTFrame.CreateToolButton("Spell11Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell11Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell11Frame:SetPoint("TOPLEFT", Spell6Frame, "BOTTOMLEFT", 0, -spacing)
 	Spell11Frame.icon:SetTexture(Spell11Buff)
-	Spell11Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell11Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell11Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	if T.Retail then
 		Spell11Frame.Backdrop:SetBackdropColor(0.58, 0.51, 0.79)
 	end
 	
 	-- Button 12 - Warrior
-	RBTFrame.CreateToolButton("Spell12Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell12Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell12Frame:SetPoint("LEFT", Spell11Frame, "RIGHT", spacing, 0)
 	Spell12Frame.icon:SetTexture(Spell12Buff)
-	Spell12Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell12Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell12Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	if T.Retail then
 		Spell12Frame.Backdrop:SetBackdropColor(0.78, 0.61, 0.43)
 	end
 	
 	-- Button 13 - Flask or Elixir
-	RBTFrame.CreateToolButton("Spell13Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell13Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell13Frame:SetPoint("LEFT", Spell12Frame, "RIGHT", spacing, 0)
 	Spell13Frame.icon:SetTexture(Spell13Buff)
-	Spell13Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell13Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell13Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	
 	-- Button 14 - Food
-	RBTFrame.CreateToolButton("Spell14Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell14Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell14Frame:SetPoint("LEFT", Spell13Frame, "RIGHT", spacing, 0)
 	Spell14Frame.icon:SetTexture(Spell14Buff)
-	Spell14Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell14Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell14Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	
 	-- Button 15 - Rune
-	RBTFrame.CreateToolButton("Spell15Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
+	RBTFrame.CreateMaxUIButton("Spell15Frame", RBTFrame, buttonsize, buttonsize, "", "", "", RBTFrameAnchor)
 	Spell15Frame:SetPoint("LEFT", Spell14Frame, "RIGHT", spacing, 0)
 	Spell15Frame.icon:SetTexture(Spell15Buff)
-	Spell15Frame.icon:SetTexCoord(.08, .92, .08, .92)
-	Spell15Frame.icon:SetPoint("TOPLEFT", 2, -2)
-	Spell15Frame.icon:SetPoint("BOTTOMRIGHT", -2, 2)
-
 end
 
 function RaidBuffs:Enable()
@@ -998,10 +918,10 @@ local Update = function(self)
 
 		if C["DataTexts"]["Icons"] == true then
 			self.icon = self:CreateTexture(nil, "OVERLAY")
-			self.icon:SetWidth(17)
-			self.icon:SetHeight(17)
-			self.icon:SetPoint("LEFT", self, "CENTER", 60, 0)
-			self.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\menuicons\damagemeter.tga]])
+			self.icon:SetWidth(20)
+			self.icon:SetHeight(20)
+			self.icon:SetPoint("LEFT", self, "CENTER", 50, 1)
+			self.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\cBuffTracker.tga]])
 			self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
 		end
 		
@@ -1034,7 +954,7 @@ local OnMouseDown = function()
 
 		return
 	end
-	RaidBuffTrackerToggle()
+	RBTFrame:fadeToggle()
 end
 
 local Enable = function(self)

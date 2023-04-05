@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- Setting up Nameplates Extra Features.
@@ -21,21 +21,30 @@ local UnitIsUnit = UnitIsUnit
 -- NAMEPLATE EXTRA FEATURES
 ------------------------------------------------------------------------------------------
 function UnitFrames:Nameplates()
-	-- Tukui
 	baseNameplates(self)
 
-	-- MaxUI
+	-- wow
+
+	-- elements
 	local Nameplates = self
 	local Health = self.Health
-	local HealthTexture = T.GetTexture(C["NamePlates"]["HealthTexture"])
 	local Name = self.Name
 	local Highlight = self.Highlight
-	local TargetIconRight = self:CreateTexture(nil, "ART")
-	local TargetIconLeft = self:CreateTexture(nil, "ART")
-	local ThreatIcon = self:CreateTexture(nil, "ART")
 	local Castbar = self.Castbar
 	local Power = self.Power
 	local RaidIcon = self.RaidTargetIndicator
+
+	-- settings
+	local HealthTexture = T.GetTexture(C["NamePlates"]["HealthTexture"])
+
+	-- font
+
+	-- texture
+
+	-- MaxUI
+	local TargetIconRight = self:CreateTexture(nil, "BACKGROUND")
+	local TargetIconLeft = self:CreateTexture(nil, "BACKGROUND")
+	local ThreatIcon = self:CreateTexture(nil, "ARTWORK")
 
 ------------------------------------------------------------------------------------------
 -- Set NamePlate Health Prediction
@@ -75,25 +84,24 @@ function UnitFrames:Nameplates()
 			otherBar = otherHealthBar,
 			absorbBar = absorbHealthBar,
 			maxOverflow = 1,
-		}	
+		}
 	end	
 
 ------------------------------------------------------------------------------------------
 -- target indicator
 ------------------------------------------------------------------------------------------
 	if (C["NamePlates"].Enable and C["NamePlates"]["TargetIndicator"] == true) then 
-		TargetIconLeft:SetWidth(20)
-		TargetIconLeft:SetHeight(20)
-		TargetIconLeft:SetPoint("RIGHT", self, "LEFT", 2, 0)
-		TargetIconLeft:SetTexture([[Interface\AddOns\MaxUI\Medias\MaxUI\target_indicator_right.tga]])
+		TargetIconLeft:SetWidth(self:GetHeight()+4)
+		TargetIconLeft:SetHeight(self:GetHeight()+4)
+		TargetIconLeft:SetPoint("RIGHT", self, "LEFT", -2, 0)
+		TargetIconLeft:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Custom\target_indicator_right.tga]])
 		TargetIconLeft:SetVertexColor(unpack(C.NamePlates.HighlightColor))
 		TargetIconLeft:Hide()
 
-		--local TargetIconRight = self:CreateTexture(nil, "OVERLAY")
-		TargetIconRight:SetWidth(20)
-		TargetIconRight:SetHeight(20)
-		TargetIconRight:SetPoint("LEFT", self, "RIGHT", -2, 0)
-		TargetIconRight:SetTexture([[Interface\AddOns\MaxUI\Medias\MaxUI\target_indicator_left.tga]])
+		TargetIconRight:SetWidth(self:GetHeight()+4)
+		TargetIconRight:SetHeight(self:GetHeight()+4)
+		TargetIconRight:SetPoint("LEFT", self, "RIGHT", 2, 0)
+		TargetIconRight:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Custom\target_indicator_left.tga]])
 		TargetIconRight:SetVertexColor(unpack(C.NamePlates.HighlightColor))
 		TargetIconRight:Hide()
 
@@ -125,10 +133,10 @@ function UnitFrames:Nameplates()
 		local ThreatIconFrame = CreateFrame("StatusBar")
 		local Health = self.Health
 		
-		ThreatIcon:SetWidth(self:GetHeight()*1.8)
-		ThreatIcon:SetHeight(self:GetHeight()*1.8)
+		ThreatIcon:SetWidth(self:GetHeight())
+		ThreatIcon:SetHeight(self:GetHeight())
 		ThreatIcon:SetPoint("LEFT", self, "RIGHT", 18, 0)
-		ThreatIcon:SetTexture([[Interface\AddOns\MaxUI\Medias\MaxUI\threat.tga]])
+		ThreatIcon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Custom\threat.tga]])
 		ThreatIcon:Hide()
 
 		local function ThreatNamePlateUpdate()
@@ -149,19 +157,9 @@ function UnitFrames:Nameplates()
 					ThreatIcon:Show()
 					ThreatIcon:SetVertexColor(R, G, B)
 				end	
-				
-				if C["NamePlates"]["ThreatGlow"] then
-					Highlight:SetBackdropBorderColor(R, G, B)
-					Shadow:SetBackdropBorderColor(R, G, B)
-				end	
 			else
 				if C["NamePlates"]["ThreatIndicator"] then
 					ThreatIcon:Hide()
-				end
-				
-				if C["NamePlates"]["ThreatGlow"] then
-					Highlight:SetBackdropBorderColor(unpack(C.NamePlates.HighlightColor))
-					Shadow:SetBackdropBorderColor()
 				end
 			end
 		end
@@ -211,8 +209,8 @@ function UnitFrames:Nameplates()
 		Health:SetAlpha(0)
 		self.Backdrop:SetAlpha(0)
 		self.Shadow:SetAlpha(0)
-		TargetIconLeft:SetPoint("RIGHT", Name, "LEFT", 2, 0)
-		TargetIconRight:SetPoint("LEFT", Name, "RIGHT", -2, 0)
+		TargetIconLeft:SetPoint("RIGHT", Name, "LEFT", -2, 0)
+		TargetIconRight:SetPoint("LEFT", Name, "RIGHT", 2, 0)
 		ThreatIcon:SetPoint("LEFT", Name, "RIGHT", 18, 0)
 		Highlight:SetAlpha(0)
 		RaidIcon:SetAlpha(1)

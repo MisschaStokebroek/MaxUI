@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-07-2021
+-- latest update: 30-10-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up ACTION BAR 3.
@@ -51,9 +51,7 @@ function ActionBars:VisibilityAB3()
 	
 		for i = 1, Num do
 			local Button = _G["MultiBarBottomRightButton"..i]
-
 			Button:Kill()
-		
 			ActionBar3["Button"..i] = Button
 		end
 	end
@@ -71,7 +69,7 @@ function ActionBars:VisibilityAB3()
 
 		for i = 1, Num do
 			local Button = _G["MultiBarBottomRightButton"..i]
-
+		
 			Button:HookScript("OnEnter", function(self)
 				ActionBar3:SetAlpha(1)
 			end)
@@ -212,16 +210,12 @@ function ActionBars:StylingAB3()
 		ActionBar3:CreateMaxUIBottomEdge()
 		ActionBar3:CreateMaxUILeftEdge()
 		ActionBar3:CreateMaxUIRightEdge()
-	
-	elseif C["ActionBars"]["ActionBar3Edges"]["Value"] == "None" then
-
 	end
 end
 
 function ActionBars:CreateBar3()
-    -- Tukui
-    baseCreateBar3(self)
-	
+	baseCreateBar3(self)
+
 	if not C.ActionBars.BottomRightBar then return end
 
 	self:VisibilityAB3()

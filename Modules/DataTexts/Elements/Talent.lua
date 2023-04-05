@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 20-10-2022
 ------------------------------------------------------------------------------------------
 
 -- Setting up datatext for Talents.
@@ -35,9 +35,7 @@ if T.Retail then
 	local GetLootSpecialization = GetLootSpecialization
 	local SetLootSpecialization = SetLootSpecialization
 
-	------------------------------------------------------------------------------------------
 	-- BLIZZARD BUTTON
-	------------------------------------------------------------------------------------------
 	function OpenBlizzardTalentUI()
 		if not PlayerTalentFrame then
 			LoadAddOn("Blizzard_TalentUI")
@@ -51,26 +49,25 @@ if T.Retail then
 	end
 
 	function SpecTool:CreateBlizzardButtonBar()
-		local Spacing = 2
-		local buttonsize = C["Tools"]["ToolButtonSize"]
-		local TalentBar = self.TalentBar
+		local Spacing = 3
+		local buttonsize = C["General"]["ButtonSize"]
+		local SpecBar = self.SpecBar
 		
-		local BlizzardButtonBar = CreateFrame("Frame", "BlizzardButtonBar", TalentBar)
+		local BlizzardButtonBar = CreateFrame("Frame", "BlizzardButtonBar", SpecBar)
 		BlizzardButtonBar:SetSize(buttonsize*7 + Spacing *8, buttonsize + Spacing*2)
-		BlizzardButtonBar:SetPoint("TOPLEFT", TalentBar, "BOTTOMLEFT", 0, -3)
+		BlizzardButtonBar:SetPoint("TOPLEFT", SpecBar, "BOTTOMLEFT", 0, -3)
 		BlizzardButtonBar:CreateBackdrop("Transparent")
-		BlizzardButtonBar:CreateShadow()
+		BlizzardButtonBar.Backdrop:CreateShadow()
 		
-		BlizzardButtonBar.CreateToolButton("BlizzardUIButon", BlizzardButtonBar, buttonsize *7 + Spacing *6, buttonsize, "Blizzard UI", "Talents:", "Open the Blizzard Talent UI ", BlizzardButtonBar)
-		BlizzardUIButon:SetPoint("TOPLEFT", BlizzardButtonBar, "TOPLEFT", Spacing, -Spacing)
-		BlizzardUIButon:SetScript("OnMouseUp", function(self)
-			OpenBlizzardTalentUI()
+		BlizzardButtonBar.CreateMaxUIButton("BlizzardUIButton", BlizzardButtonBar, buttonsize *7 + Spacing *6, buttonsize, "Blizzard UI", "Talents:", "Open the Blizzard Talent UI ", BlizzardButtonBar)
+		BlizzardUIButton:SetPoint("TOPLEFT", BlizzardButtonBar, "TOPLEFT", Spacing, -Spacing)
+		BlizzardUIButton:SetScript("OnMouseUp", function(self)
+			--OpenBlizzardTalentUI()
+			ToggleTalentFrame()
 		end)
 	end
 
-	------------------------------------------------------------------------------------------
-	-- Talents Specs
-	------------------------------------------------------------------------------------------
+	-- TALENTS SPECS
 	function SpecTool:OnClickLeft(Button)
 		if (Button == "LeftButton") then
 			if self:GetID() ~= GetSpecialization() then
@@ -93,7 +90,7 @@ if T.Retail then
 
 	function SpecTool:SpecButtonUpdate()
 		if self:GetID() == GetSpecialization() then
-			self.CurrentSpecArrow:SetAlpha(1)
+			--self.CurrentSpecArrow:SetAlpha(1)
 			self:GetNormalTexture():SetVertexColor(1, 1, 1)
 			if C["General"]["ClassColorHeaders"]["Value"] == "Dark" then 
 				self.Backdrop:SetBorderColor(0.11, 0.11, 0.11)
@@ -107,7 +104,7 @@ if T.Retail then
 				self.Backdrop:SetBorderColor(unpack(C.General.BackdropColor))
 			end
 		else
-			self.CurrentSpecArrow:SetAlpha(0)
+			--self.CurrentSpecArrow:SetAlpha(0)
 			self:GetNormalTexture():SetVertexColor(0.2, 0.2, 0.2)
 			self.Backdrop:SetBorderColor(0, 0, 0)
 		end
@@ -123,8 +120,8 @@ if T.Retail then
 
 	function SpecTool:CreateSpecBar()
 		local GetNumSpecializations = GetNumSpecializations()
-		local Spacing = 2
-		local buttonsize = C["Tools"]["ToolButtonSize"]
+		local Spacing = 3
+		local buttonsize = C["General"]["ButtonSize"]
 
 		-- backdrop
 		local SpecBar = CreateFrame("Frame", "SpecBar", UIParent)
@@ -136,50 +133,17 @@ if T.Retail then
 			end
 		end
 		SpecBar:SetPoint("CENTER", UIParent, 0, 60)
-		SpecBar:CreateBackdrop("Transparent")
-		SpecBar:CreateShadow()
+		SpecBar:SkinMaxUIFrame()
+		SpecBar:SetFrameLevel(1)
+		SpecBar:SetFrameStrata("HIGH")
 		SpecBar:Hide()
 		SpecBar:SetAlpha(0)	
 		Movers:RegisterFrame(SpecBar, "Spec / Talent Bar")
 
 		-- header
 		SpecBar:CreateMaxUIHeader("Spec & Talents")
+		SpecBar:CreateMaxUICloseButton(SpecBar.MaxUIHeader)
 
-		local SpecBarClose = CreateFrame("Button", "SpecBarClose", SpecBar.MaxUIHeader)
-		SpecBarClose:SetWidth(14)
-		SpecBarClose:SetHeight(14)
-		SpecBarClose:SetAlpha(0)
-		SpecBarClose:SetPoint("RIGHT", SpecBar.MaxUIHeader, "RIGHT", -8, 0)
-		
-		SpecBarCloseicon = SpecBar.MaxUIHeader:CreateTexture(nil, "OVERLAY")
-		SpecBarCloseicon:SetPoint("RIGHT", SpecBar.MaxUIHeader, "RIGHT", -8,0)
-		SpecBarCloseicon:SetWidth(11)
-		SpecBarCloseicon:SetHeight(11)
-		SpecBarCloseicon:SetTexture([[Interface\AddOns\Tukui\Medias\Textures\Others\Close.tga]])
-
-		SpecBarClose:SetScript("OnEnter", function(self)
-			SpecBarCloseicon:SetVertexColor(1, 0, 0)
-		end)
-		
-		SpecBarClose:SetScript("OnLeave", function(self)
-			SpecBarCloseicon:SetVertexColor(1, 1, 1)
-		end)
-		
-		-- Animation
-		SpecBar:fadeIn(C["General"]["FaderTime"])
-		SpecBar:fadeOut(C["General"]["FaderTime"])
-		SpecBarClose:SetScript("OnMouseUp", function(self) SpecBar:fadeToggle() end)
-
-		-- temp fix for datatext not running function from API.
-		function SpecBarFadeToggle()
-			if SpecBar:IsShown() then
-				SpecBar.fadeOut:Play()
-			else
-				SpecBar:Show()
-				SpecBar.fadeIn:Play()
-			end
-		end
-		
 		-- Combat State
 		RegisterStateDriver(SpecBar, "visibility", "[combat] hide; nil")
 
@@ -191,6 +155,7 @@ if T.Retail then
 			
 			local Button = CreateFrame("Button", nil, SpecBar)
 			Button:CreateBackdrop()
+			Button.Backdrop:CreateShadow()
 
 			if GetNumSpecializations == 3 then
 				Button:SetSize((buttonsize*7 + Spacing*3) /3, (buttonsize*7 + Spacing*3) /3)
@@ -198,16 +163,24 @@ if T.Retail then
 				Button:SetSize((buttonsize*7 + Spacing*3) /4, (buttonsize*7 + Spacing*3) /4)
 			end
 
+			Button:SetID(i)
+			Button:SetNormalTexture(Icon)
+			Button:GetNormalTexture():SetInside()
+			Button:GetNormalTexture():SetTexCoord(0.07, 0.93, 0.07, 0.93)
+
+			Button:SetHighlightTexture(Icon)
+			Button:GetHighlightTexture():SetInside()
+			Button:GetHighlightTexture():SetTexCoord(0.07, 0.93, 0.07, 0.93)
+
+			if C["Skins"]["ButtonFilter"]  then
+				Button:CreateMaxUIFilterInside()
+			end
+
 			if (i == 1) then
 				Button:SetPoint("LEFT", SpecBar, Spacing+1, 0)
 			else
 				Button:SetPoint("LEFT", SpecBar.Button[i - 1], "RIGHT", Spacing, 0)
 			end
-		
-			Button:SetID(i)
-			Button:SetNormalTexture(Icon)
-			Button:GetNormalTexture():SetInside()
-			Button:SetHighlightTexture(Icon)
 		
 			Button:SetScript("OnEnter", function(self)
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 12, 0)
@@ -221,29 +194,29 @@ if T.Retail then
 				GameTooltip:Hide()
 			end)
 
-			Button.CurrentSpecArrow = Button:CreateTexture(nil, "OVERLAY")
-			Button.CurrentSpecArrow:SetPoint("CENTER", Button, "BOTTOM", 0, 0)
-			Button.CurrentSpecArrow:SetAlpha(0)
-			Button.CurrentSpecArrow:SetWidth(24)
-			Button.CurrentSpecArrow:SetHeight(12)
-			Button.CurrentSpecArrow:SetTexture([[Interface\AddOns\Tukui\Medias\Textures\Others\ArrowDown.tga]])
+			--Button.CurrentSpecArrow = Button:CreateTexture(nil, "OVERLAY")
+			--Button.CurrentSpecArrow:SetPoint("CENTER", Button, "BOTTOM", 0, 0)
+			--Button.CurrentSpecArrow:SetAlpha(0)
+			--Button.CurrentSpecArrow:SetWidth(24)
+			--Button.CurrentSpecArrow:SetHeight(12)
+			--Button.CurrentSpecArrow:SetTexture([[Interface\AddOns\Tukui\Medias\Textures\Others\ArrowDown.tga]])
 				
 			Button.CurrentLootSpecIcon = Button:CreateTexture(nil, "OVERLAY")
 			Button.CurrentLootSpecIcon:SetPoint("TOPRIGHT", Button, "TOPRIGHT", -2, -2)
-			Button.CurrentLootSpecIcon:SetAlpha(0)
+			Button.CurrentLootSpecIcon:SetVertexColor(1, 1, 0)
 			Button.CurrentLootSpecIcon:SetWidth(14)
 			Button.CurrentLootSpecIcon:SetHeight(14)
-			Button.CurrentLootSpecIcon:SetTexture([[Interface\AddOns\MaxUI\Medias\menuicons\loot.tga]])
+			Button.CurrentLootSpecIcon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\cJournal.tga]])
 
-			if C["General"]["ClassColorHeaders"]["Value"] == "Dark" then 
-				Button.CurrentSpecArrow:SetVertexColor(0.11, 0.11, 0.11)
-			elseif C["General"]["ClassColorHeaders"]["Value"] == "ClassColor" then 
-				Button.CurrentSpecArrow:SetVertexColor(unpack(ClassColor))
-			elseif C["General"]["ClassColorHeaders"]["Value"] == "Grey" then 
-				Button.CurrentSpecArrow:SetVertexColor(0.43, 0.43, 0.43)
-			else			
-				Button.CurrentSpecArrow:SetVertexColor(unpack(C.General.BackdropColor))
-			end
+			--if C["General"]["ClassColorHeaders"]["Value"] == "Dark" then 
+			--	Button.CurrentSpecArrow:SetVertexColor(0.11, 0.11, 0.11)
+			--elseif C["General"]["ClassColorHeaders"]["Value"] == "ClassColor" then 
+			--	Button.CurrentSpecArrow:SetVertexColor(unpack(ClassColor))
+			--elseif C["General"]["ClassColorHeaders"]["Value"] == "Grey" then 
+			--	Button.CurrentSpecArrow:SetVertexColor(0.43, 0.43, 0.43)
+			--else			
+			--	Button.CurrentSpecArrow:SetVertexColor(unpack(C.General.BackdropColor))
+			--end
 
 			Button:RegisterForClicks("AnyDown")
 			Button:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -263,9 +236,7 @@ if T.Retail then
 		self.SpecBar = SpecBar
 	end
 
-	------------------------------------------------------------------------------------------
-	-- Talents chosen
-	------------------------------------------------------------------------------------------
+	-- TAlENTS CHOOSEN
 	function SpecTool:UpdateTalentButtonBar(event)
 		for i = 1, MAX_TALENT_TIERS do
 			for j = 1, 3 do
@@ -274,7 +245,8 @@ if T.Retail then
 				if (Selected) then
 					SpecTool.TalentBar.Button[i]:SetNormalTexture(Icon)			
 					SpecTool.TalentBar.Button[i]:GetNormalTexture():SetInside()
-					
+					SpecTool.TalentBar.Button[i]:GetNormalTexture():SetTexCoord(0.07, 0.93, 0.07, 0.93)
+
 					SpecTool.TalentBar.Button[i]:SetScript("OnEnter", function(self)
 						if C["General"]["ClassColorHeaders"]["Value"] == "Dark" then 
 							SpecTool.TalentBar.Button[i].Backdrop:SetBorderColor(0.11, 0.11, 0.11)
@@ -301,24 +273,32 @@ if T.Retail then
 		end
 	end
 
+	-- CREATE
 	function SpecTool:CreateTalentButtonBar()
-		local Spacing = 2
-		local buttonsize = C["Tools"]["ToolButtonSize"]
+		local Spacing = 3
+		local buttonsize = C["General"]["ButtonSize"]
 		local SpecBar = self.SpecBar
 		
 		local TalentBar = CreateFrame("Frame", "TalentBar", SpecBar)
 		TalentBar:SetSize(buttonsize * 7 + Spacing *8, buttonsize + Spacing*2)
 		TalentBar:SetPoint("TOPLEFT", SpecBar, "BOTTOMLEFT", 0, -3)
 		TalentBar:CreateBackdrop("Transparent")
-		TalentBar:CreateShadow()
+		TalentBar.Backdrop:CreateShadow()
 
 		TalentBar.Button = {}
 
 		for i = 1, MAX_TALENT_TIERS do
 				local Button = CreateFrame("Button", nil, TalentBar)
 				Button:CreateBackdrop()
+				Button.Backdrop:CreateShadow()
 				Button:SetSize(buttonsize, buttonsize)
 				
+				--Button:GetNormalTexture():SetTexCoord(0.07, 0.93, 0.07, 0.93)
+					
+				if C["Skins"]["ButtonFilter"] then
+					Button:CreateMaxUIFilterInside()
+				end
+
 				if (i == 1) then
 					Button:SetPoint("LEFT", TalentBar, Spacing, 0)
 				else
@@ -339,12 +319,10 @@ if T.Retail then
 		self.TalentBar = TalentBar
 	end
 
-	------------------------------------------------------------------------------------------
 	-- EXECUTE
-	------------------------------------------------------------------------------------------
 	function SpecTool:Enable()
 		self:CreateSpecBar()
-		self:CreateTalentButtonBar()
+		--self:CreateTalentButtonBar()
 		self:CreateBlizzardButtonBar()
 	end	
 
@@ -357,6 +335,7 @@ if T.Retail then
 
 	DataText.SpecTool = SpecTool
 end
+
 ------------------------------------------------------------------------------------------
 -- TALENT DATATEXT
 ------------------------------------------------------------------------------------------
@@ -453,7 +432,7 @@ local OnMouseDown = function()
 		return
 	end
 	if T.Retail then 
-		SpecBarFadeToggle()
+		SpecBar:fadeToggle()
 	end
 end
 

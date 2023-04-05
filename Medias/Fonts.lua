@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - SHADOWLANDS / TUKUI 20
--- latest update: 15-07-2021
+-- latest update: 30-10-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up FONTS.
@@ -12,10 +12,6 @@
 -- SETUP
 ------------------------------------------------------------------------------------------
 local T, C, L = Tukui:unpack()
-
---if not IsAddOnLoaded('MaxUI') then 
---	return
---end
 
 ------------------------------------------------------------------------------------------
 -- MAXUI FONT USAGE
@@ -67,14 +63,14 @@ local function MaxUIFonts()
 	Fonts:SetFont(Tooltip_Small, STANDARD, 11) -- ??
 	
 	-- QUEST FONTS
-	Fonts:SetFont(QuestFont, STANDARD, 14) -- descriptions
-	Fonts:SetFont(QuestFont_Large, STANDARD, 16) -- ??
-	Fonts:SetFont(QuestFont_Huge, STANDARD, 20) -- headers, title, description header, rewards header
-	Fonts:SetFont(QuestFont_Outline_Huge, STANDARD, 20) -- ???
-	Fonts:SetFont(QuestFont_Super_Huge, STANDARD, 24) -- ???
-	Fonts:SetFont(QuestFont_Super_Huge_Outline, STANDARD, 24)
-	Fonts:SetFont(QuestFont_Enormous, STANDARD, 28)
-	Fonts:SetFont(QuestFont_Shadow_Small, STANDARD, 11)
+	Fonts:SetFont(QuestFont, STANDARD, 14, "") -- descriptions
+	Fonts:SetFont(QuestFont_Large, STANDARD, 16, "") -- ??
+	Fonts:SetFont(QuestFont_Huge, STANDARD, 20, "") -- headers, title, description header, rewards header
+	Fonts:SetFont(QuestFont_Outline_Huge, STANDARD, 20, "") -- ???
+	Fonts:SetFont(QuestFont_Super_Huge, STANDARD, 24, "") -- ???
+	Fonts:SetFont(QuestFont_Super_Huge_Outline, STANDARD, 24, "")
+	Fonts:SetFont(QuestFont_Enormous, STANDARD, 28, "")
+	Fonts:SetFont(QuestFont_Shadow_Small, STANDARD, 11, "")
 	
 	-- ZONE INFO CENTER SCREEN
 	Fonts:SetFont(ZoneTextString, STANDARD, 32, "OUTLINE") -- zone name when changing zone
@@ -84,19 +80,19 @@ local function MaxUIFonts()
 -- UNKNOWN USE:
 ------------------------------------------------------------------------------------------
 	-- SYSTEM FONTS, e.g. 
-	Fonts:SetFont(SystemFont_Tiny, STANDARD, 10)
-	Fonts:SetFont(SystemFont_Small, STANDARD, 10)
-	Fonts:SetFont(SystemFont_Med1, STANDARD, 12)
-	Fonts:SetFont(SystemFont_Med3, STANDARD, 13)
-	Fonts:SetFont(SystemFont_Large, STANDARD, 15)
+	Fonts:SetFont(SystemFont_Tiny, STANDARD, 10, "")
+	Fonts:SetFont(SystemFont_Small, STANDARD, 10, "")
+	Fonts:SetFont(SystemFont_Med1, STANDARD, 12, "")
+	Fonts:SetFont(SystemFont_Med3, STANDARD, 13, "")
+	Fonts:SetFont(SystemFont_Large, STANDARD, 15, "")
 
 	Fonts:SetFont(SystemFont_Outline_Small, STANDARD, 12, "OUTLINE")
 	Fonts:SetFont(SystemFont_OutlineThick_Huge2, STANDARD, 20, "THICKOUTLINE")
 	
-	Fonts:SetFont(SystemFont_Shadow_Small, STANDARD, 11)
-	Fonts:SetFont(SystemFont_Shadow_Med1, STANDARD, 12)
-	Fonts:SetFont(SystemFont_Shadow_Med3, STANDARD, 13)
-	--Fonts:SetFont(SystemFont_Shadow_Large, STANDARD, 15)
+	Fonts:SetFont(SystemFont_Shadow_Small, STANDARD, 11, "")
+	Fonts:SetFont(SystemFont_Shadow_Med1, STANDARD, 12, "")
+	Fonts:SetFont(SystemFont_Shadow_Med3, STANDARD, 13, "")
+	--Fonts:SetFont(SystemFont_Shadow_Large, STANDARD, 15, "")
 	Fonts:SetFont(SystemFont_Shadow_Huge1, STANDARD, 20, "THINOUTLINE")
 	
 	--Fonts:SetFont(SystemFont_Shadow_Outline_Huge2, STANDARD, 20, "OUTLINE")
@@ -107,9 +103,9 @@ local function MaxUIFonts()
 	Fonts:SetFont(NumberFont_OutlineThick_Mono_Small, STANDARD, 12, "OUTLINE")
 	Fonts:SetFont(NumberFont_Outline_Med, STANDARD, 13, "OUTLINE")
 	Fonts:SetFont(NumberFont_Outline_Large, STANDARD, 15, "OUTLINE")
-	Fonts:SetFont(NumberFont_Outline_Huge, STANDARD, 28, "THICKOUTLINE", 28)
-	Fonts:SetFont(NumberFont_Shadow_Small, STANDARD, 12)
-	Fonts:SetFont(NumberFont_Shadow_Med, STANDARD, 12)
+	Fonts:SetFont(NumberFont_Outline_Huge, STANDARD, 28, "THICKOUTLINE")
+	Fonts:SetFont(NumberFont_Shadow_Small, STANDARD, 12, "")
+	Fonts:SetFont(NumberFont_Shadow_Med, STANDARD, 12, "")
 	
 	-- COMBAT TEXT FONT ??
 	Fonts:SetFont(CombatTextFont, STANDARD, 50, "OUTLINE")
@@ -119,16 +115,16 @@ local function MaxUIFonts()
 	Fonts:SetFont(PVPArenaTextString, STANDARD, 22, "THINOUTLINE")
 	
 	-- FRIENDS FONT ??
-	Fonts:SetFont(FriendsFont_Normal, STANDARD, 12)
-	Fonts:SetFont(FriendsFont_Small, STANDARD, 11)
-	Fonts:SetFont(FriendsFont_Large, STANDARD, 14)
-	Fonts:SetFont(FriendsFont_UserText, STANDARD, 11)
+	Fonts:SetFont(FriendsFont_Normal, STANDARD, 12, "")
+	Fonts:SetFont(FriendsFont_Small, STANDARD, 11, "")
+	Fonts:SetFont(FriendsFont_Large, STANDARD, 14, "")
+	Fonts:SetFont(FriendsFont_UserText, STANDARD, 11, "")
 	
 	-- NAMEPLATE FONTS ???
-	Fonts:SetFont(SystemFont_NamePlateCastBar, STANDARD, 14)
-	Fonts:SetFont(SystemFont_NamePlateFixed, STANDARD, 14)
-	Fonts:SetFont(SystemFont_LargeNamePlateFixed, STANDARD, 14)
-	Fonts:SetFont(SystemFont_NamePlate, STANDARD, 14)
-	Fonts:SetFont(SystemFont_LargeNamePlate, STANDARD, 14)
+	Fonts:SetFont(SystemFont_NamePlateCastBar, STANDARD, 14, "")
+	Fonts:SetFont(SystemFont_NamePlateFixed, STANDARD, 14, "")
+	Fonts:SetFont(SystemFont_LargeNamePlateFixed, STANDARD, 14, "")
+	Fonts:SetFont(SystemFont_NamePlate, STANDARD, 14, "")
+	Fonts:SetFont(SystemFont_LargeNamePlate, STANDARD, 14, "")
 end
 MaxUIFonts()

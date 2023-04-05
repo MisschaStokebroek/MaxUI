@@ -1,6 +1,6 @@
 ﻿------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-07-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up BATTLEGROUND.
@@ -10,14 +10,18 @@
 ------------------------------------------------------------------------------------------
 local T, C, L = Tukui:unpack()
 
---if not T.Retail then return end
-
-local Movers = T["Movers"]
-local Texture = T.GetTexture(C.General.HeaderTexture)
 local DataText = T["DataTexts"]
-local baseDataTextEnable = DataText.Enable
+local Movers = T["Movers"]
+local Minimap = T.Maps.Minimap
 local UIWidgets = T.Miscellaneous.UIWidgets
+
+local baseDataTextEnable = DataText.Enable
 local baseUIWidgetsEnable = UIWidgets.Enable
+
+local Texture = T.GetTexture(C.General.HeaderTexture)
+
+local MapHeight = C["Location"]["MapHeight"]
+local MapWidth = C["Location"]["MapWidth"]
 
 ------------------------------------------------------------------------------------------
 -- Battleground Datatext
@@ -29,43 +33,49 @@ local function MaxUIBattlegroundDataText()
 	local Text3 = DataText.BGFrame.Text3
 	local BottomLine = BottomLine
 	
-	local BGFrameHolder = CreateFrame("Frame", "BGFrameHolder", UIParent)
-	BGFrameHolder:SetHeight(22) 
-	BGFrameHolder:SetWidth(350)
-	BGFrameHolder:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 28)
-	Movers:RegisterFrame(BGFrameHolder)
+	local BGFrameHolder = CreateFrame("Frame", "BGFrameHolder", BGFrame)
+	BGFrameHolder:SetHeight(90) 
+	BGFrameHolder:SetWidth(Minimap:GetWidth())
+	BGFrameHolder:SetPoint("TOP", Minimap, "BOTTOM", 0, -31)
+	BGFrameHolder:CreateMaxUIHeader("Battleground statistics")
+	Movers:RegisterFrame(BGFrameHolder, "Battleground statistics")
 	
 	BGFrame:ClearAllPoints()
 	BGFrame:SetAllPoints(BGFrameHolder)
-	BGFrame:CreateShadow()
-
 	BGFrame:SetFrameLevel(2)
 	BGFrame:SetFrameStrata("MEDIUM")
-	Text1:SetPoint("LEFT", 10, -1)
-	Text3:SetPoint("RIGHT", -10, -1)
-	
+	BGFrame.Backdrop:SetAlpha(C["General"]["GeneralPanelAlpha"])
+	BGFrame:CreateShadow()
+
+	Text1:ClearAllPoints()
+	Text1:SetPoint("TOP", BGFrame, "TOP", 0, -6)
+	Text1:SetHeight(20)
+	Text1:SetJustifyH("CENTER")
 	Text1:SetFontObject(T.GetFont(C["DataTexts"]["Font"]))
-	Text2:SetFontObject(T.GetFont(C["DataTexts"]["Font"]))
-	Text3:SetFontObject(T.GetFont(C["DataTexts"]["Font"]))
 	Text1:SetScale(C["DataTexts"]["FontSize"]/10)
+
+	Text2:ClearAllPoints()
+	Text2:SetPoint("TOP", Text1, "BOTTOM", 0, -3)
+	Text2:SetHeight(20)
+	Text2:SetJustifyH("CENTER")
+	Text2:SetFontObject(T.GetFont(C["DataTexts"]["Font"]))
 	Text2:SetScale(C["DataTexts"]["FontSize"]/10)
+
+	Text3:ClearAllPoints()
+	Text3:SetPoint("TOP", Text2, "BOTTOM", 0, -3)
+	Text3:SetHeight(20)
+	Text3:SetJustifyH("CENTER")
+	Text3:SetFontObject(T.GetFont(C["DataTexts"]["Font"]))
 	Text3:SetScale(C["DataTexts"]["FontSize"]/10)
 
-	
-	if (C["General"]["Themes"]["Value"] == "MaxUI") then 
-		-- texture
-		BGFrame.Texture = BGFrame:CreateTexture(nil, "ART")
-		BGFrame.Texture:SetInside(BGFrame)
-		BGFrame.Texture:SetTexture(Texture)
-		BGFrame.Texture:SetVertexColor(unpack(C["General"]["BackdropColor"]))
+	if C["Skins"]["BattlegroundTrackerFilter"] == true then 
+		BGFrame:CreateMaxUIFilter()
 	end
 end
 
 function DataText:Enable()
-	-- Tukui
 	baseDataTextEnable(self)
 	
-	-- MaxUI
 	if not (C.DataTexts.Battleground) then return end
 	if not (C.General.Themes.Value == "MaxUI") then return end
 	MaxUIBattlegroundDataText()
@@ -75,19 +85,19 @@ end
 -- Battleground Timer.
 ------------------------------------------------------------------------------------------
 if T.Retail then
-
 	local Timer = T.Miscellaneous.TimerTracker
 	local baseTimerUpdateBar = Timer.UpdateBar
 
 	function Timer:UpdateBar(Bar)
-		-- Tukui
 		baseTimerUpdateBar(self, Bar)
 		
-		-- MaxUI
 		if not (C.General.Themes.Value == "MaxUI") then return end
 		
 		self:SetStatusBarTexture(T.GetTexture(C["Misc"]["BarTexture"]))
 		self.Backdrop:SetAlpha(0.7)
+		if C["Skins"]["DataBarFilter"] == true then 
+			self:CreateMaxUIFilter()
+		end
 		
 		for i = 1, self:GetNumRegions() do
 			local Region = select(i, self:GetRegions())

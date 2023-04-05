@@ -1,9 +1,11 @@
 ﻿------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 30-10-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up AFK screen.
+
+-- PLAYER MODEL NOT SHOWING ANYMORE???
 
 ------------------------------------------------------------------------------------------
 -- SETUP
@@ -13,17 +15,11 @@ local AFK = T.Miscellaneous.AFK
 local baseEnable = AFK.Enable
 local ClassTextColor = T.RGBToHex(unpack(T.Colors.class[select(2, UnitClass("player"))]))
 local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
-local PlayerModelFrame = CreateFrame("Frame", PlayerModelFrame, self)
-local myPlayerModel = CreateFrame("PlayerModel", nil, PlayerModelFrame)
+local PlayerModelFrame = CreateFrame("Frame", PlayerModelFrame, AFK.BottomPanel)
+--local myPlayerModel = CreateFrame("PlayerModel", nil, AFK.BottomPanel)
 local WelcomeMessage = "Thank you for using MaxUI.\n\n Check the HELP section for slash commands.\n\nFor more information, support or\nfeedback, go to www.tukui.org,\njoin the Tukui Discord or\n\n|cff2299ffMaxUI Discord|r: https://discord.gg/vzUFmUm \n\n|cffFFFF99colored items|r = MaxUI Theme or Unitframes only. "
 
 T.MaxUIversion = GetAddOnMetadata("MaxUI", "Version")
-myPlayerModel:SetUnit('player')
-	myPlayerModel:ClearModel()
-	myPlayerModel:SetUnit("player")
-	myPlayerModel:SetFacing(1)
-	myPlayerModel:SetCamDistanceScale(1)
-	myPlayerModel:SetAlpha(1)
 
 local CharacterSpec = ""
 
@@ -70,11 +66,17 @@ function AFK:AFKPlayerInfoFrame()
 		LeftFilter:SetTexture([[Interface\AddOns\MaxUI\Medias\Textures\Overlay.tga]])
 	end
 
-	myPlayerModel:SetParent(PlayerModelFrame)
-	myPlayerModel:SetWidth(500)
-	myPlayerModel:SetHeight(UIParent:GetHeight())
-	myPlayerModel:SetPoint("BOTTOM", PlayerModelFrame, "BOTTOM", 0, -210)
-	myPlayerModel:SetRotation(0.2)
+	--myPlayerModel:SetParent(PlayerModelFrame)
+	--myPlayerModel:SetWidth(500)
+	--myPlayerModel:SetHeight(UIParent:GetHeight())
+	--myPlayerModel:SetPoint("BOTTOM", PlayerModelFrame, "BOTTOM", 0, -210)
+	
+	--myPlayerModel:SetRotation(0.2)
+	--myPlayerModel:ClearModel()
+	--myPlayerModel:SetUnit("player")
+	--myPlayerModel:SetFacing(1)
+	--myPlayerModel:SetCamDistanceScale(1)
+	--myPlayerModel:SetAlpha(0)
 
 	local Line = CreateFrame("StatusBar", "Line", PlayerModelFrame)
 	Line:CreateBackdrop()
@@ -108,57 +110,57 @@ function AFK:AFKPlayerInfoFrame()
 	CharacterDescriptionLevel:SetFontTemplate(Font, 18, 1.25, 1.25)
 	CharacterDescriptionLevel:SetText("Level: "..ClassTextColor..Level)
 
-	PlayerModelFrame.Logoclass = PlayerModelFrame:CreateTexture(nil, "ART")
+	PlayerModelFrame.Logoclass = PlayerModelFrame:CreateTexture(nil, "ARTWORK")
 	PlayerModelFrame.Logoclass:SetWidth(256)
 	PlayerModelFrame.Logoclass:SetHeight(256)
 	PlayerModelFrame.Logoclass:SetPoint("TOPLEFT", PlayerModelFrame, "TOPLEFT", -12, -122)
 
 	if select(2, UnitClass('player')) == "DRUID" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\DRUID.tga]])
+		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DRUID.tga]])
 	end
 	
 	if select(2, UnitClass('player')) == "MONK" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\MONK.tga]])
+		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MONK.tga]])
 	end
 	
 	if select(2, UnitClass('player')) == "ROGUE" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\ROGUE.tga]])
+		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\ROGUE.tga]])
 	end
 	
 	if select(2, UnitClass('player')) == "MAGE" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\MAGE.tga]])
+		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MAGE.tga]])
 	end
 	
 	if select(2, UnitClass('player')) == "PRIEST" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\PRIEST.tga]])
+		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PRIEST.tga]])
 	end
 	
 	if select(2, UnitClass('player')) == "WARLOCK" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\WARLOCK.tga]])
+		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARLOCK.tga]])
 	end
 	
 	if select(2, UnitClass('player')) == "SHAMAN" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\SHAMAN.tga]])
+		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\SHAMAN.tga]])
 	end
 	
 	if select(2, UnitClass('player')) == "HUNTER" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\HUNTER.tga]])
+		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\HUNTER.tga]])
 	end
 	
 	if select(2, UnitClass('player')) == "DEATHKNIGHT" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\DEATHKNIGHT.tga]])
+		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEATHKNIGHT.tga]])
 	end
 	
 	if select(2, UnitClass('player')) == "WARRIOR" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\WARRIOR.tga]])
+		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARRIOR.tga]])
 	end
 
 	if select(2, UnitClass('player')) == "PALADIN" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\PALADIN.tga]])
+		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PALADIN.tga]])
 	end
 
 	if select(2, UnitClass('player')) == "DEMONHUNTER" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\DEMONHUNTER.tga]])
+		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEMONHUNTER.tga]])
 	end
 
 	local CharacterDescriptionSummary = PlayerModelFrame:CreateFontString(nil, "OVERLAY")
@@ -306,14 +308,15 @@ end
 function AFK:MaxUIStyleAFKSaver()
 	local BottomPanel = AFK.BottomPanel
 	local TopPanel = AFK.PanelTop
-	local PlayerModelFrame = AFK.PlayerModelFrame
-	local RightAFKFrame = AFK.RightAFKFrame
 
 	if C["Skins"]["AFKFilter"] == true then 
-		CenterFilter = BottomPanel:CreateTexture(nil, "BACKGROUND")
-		CenterFilter:SetPoint("TOPLEFT", TopPanel, "BOTTOMLEFT", 500, 0)
-		CenterFilter:SetPoint("BOTTOMRIGHT", BottomPanel, "TOPRIGHT", -500, 0)
-		CenterFilter:SetTexture([[Interface\AddOns\MaxUI\Medias\Textures\Overlay.tga]])
+		BottomPanel = BottomPanel:CreateTexture(nil, "BACKGROUND")
+		BottomPanel:SetAllPoints()
+		BottomPanel:SetTexture([[Interface\AddOns\MaxUI\Medias\Textures\Overlay.tga]])
+		
+		TopPanel = TopPanel:CreateTexture(nil, "BACKGROUND")
+		TopPanel:SetAllPoints()
+		TopPanel:SetTexture([[Interface\AddOns\MaxUI\Medias\Textures\Overlay.tga]])
 	end
 end
 
@@ -333,13 +336,11 @@ function AFK:OnUpdate(Elapsed)
 end
 
 function AFK:Enable()
-	-- Tukui
 	baseEnable(self)
 
 	if not C.Misc.AFKSaver then return end
 	isAFK = UnitIsAFK("player")	
 
-	-- MaxUI
 	if not (C.General.Themes.Value == "MaxUI") then return end
 	self:MaxUIStyleAFKSaver()
 	self:AFKPlayerInfoFrame()

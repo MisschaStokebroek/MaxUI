@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up REPUTATION BARS.
@@ -24,6 +24,7 @@ local RepColors = FACTION_BAR_COLORS
 local RepFrameHolder = CreateFrame("Frame", "RepFrameHolder", UIParent)
 RepFrameHolder:SetHeight(22) 
 RepFrameHolder:SetWidth(200)
+RepFrameHolder:SetPoint("CENTER", UIParent, "CENTER", 0, -60)
 
 ------------------------------------------------------------------------------------------
 -- REPUTATION TOOLTIP
@@ -55,6 +56,7 @@ end
 -- REPUTATION CREATE
 ------------------------------------------------------------------------------------------
 function Reputation:Create()
+	if not (C.General.Themes.Value == "MaxUI") then return end
 	for i = 1, self.NumBars do
 		local ReputationBar = CreateFrame("StatusBar", nil, UIParent)
 
@@ -87,14 +89,21 @@ function Reputation:Create()
 		local Reputationtext = ReputationBar:CreateFontString(nil, "OVERLAY")
 		Reputationtext:SetFontObject(T.GetFont(C["DataTexts"].Font))
 		Reputationtext:SetScale(C.DataTexts.FontSize/10)
-		Reputationtext:SetPoint("RIGHT", ReputationBar, "LEFT", -6, 0)
 		Reputationtext:SetText("Rep")
 
 		Reputationpercenttext = ReputationBar:CreateFontString(nil, "OVERLAY")
 		if C["Misc"]["PercentageTag"] == true then
 			Reputationpercenttext:SetFontObject(T.GetFont(C["DataTexts"].Font))
 			Reputationpercenttext:SetScale(C.DataTexts.FontSize/10)
+		end	
+
+		if C["Misc"]["REPBarTextPlacement"]["Value"] == "Inside" then
+			Reputationpercenttext:SetPoint("RIGHT", ReputationBar, "RIGHT", -6, 0)
+			Reputationtext:SetPoint("LEFT", ReputationBar, "LEFT", 6, 0)
+		
+		elseif C["Misc"]["REPBarTextPlacement"]["Value"] == "Outside" then
 			Reputationpercenttext:SetPoint("LEFT", ReputationBar, "RIGHT", 6, 0)
+			Reputationtext:SetPoint("RIGHT", ReputationBar, "LEFT", -6, 0)
 		end	
 
 		ReputationBar:HookScript("OnEnter", function(self)
@@ -104,6 +113,10 @@ function Reputation:Create()
 		ReputationBar:HookScript("OnLeave", function(self)
 			ReputationBar.Backdrop:SetBorderColor(unpack(C["General"]["BorderColor"]))
 		end)
+		
+		if C["Skins"]["DataBarFilter"] == true then 
+			ReputationBar:CreateMaxUIFilter()
+		end
 	
 		self["ReputationBar"..i] = ReputationBar
 	end	
@@ -144,7 +157,33 @@ end
 -- REPUTATION ENABLE
 ------------------------------------------------------------------------------------------
 function Reputation:Enable()
+	if not (C.General.Themes.Value == "MaxUI") then return end
 	if not C["Misc"]["REPBarEnable"] then return end
+
+	if not C["Misc"]["REPBarDTEnable"] then
+		if C["Misc"]["REPBarTextPlacement"]["Value"] == "Inside" then
+			RepFrameHolder:SetHeight(C["Misc"]["REPBarHeight"] + 12) 
+			RepFrameHolder:SetWidth(C["Misc"]["REPBarWidth"] + 12)
+		elseif C["Misc"]["REPBarTextPlacement"]["Value"] == "Outside" then
+			RepFrameHolder:SetHeight(C["Misc"]["REPBarHeight"] + 12) 
+			RepFrameHolder:SetWidth(C["Misc"]["REPBarWidth"] + 120)
+		else
+			RepFrameHolder:SetHeight(C["Misc"]["REPBarHeight"] + 12) 
+			RepFrameHolder:SetWidth(C["Misc"]["REPBarWidth"] + 12)
+		end	
+		
+		if C["Misc"]["REPBarBackdrop"] == true then
+			RepFrameHolder:CreateBackdrop(nil, Texture)
+			RepFrameHolder.Backdrop:SetOutside()
+			RepFrameHolder.Backdrop:CreateShadow()
+			RepFrameHolder.Backdrop:SetAlpha(C["Misc"]["REPBarAlpha"])
+		end
+		Movers:RegisterFrame(RepFrameHolder, "Reputation DataBar")
+
+		if C["Misc"]["REPBarCombatState"]["Value"] == "Hide" then
+			RegisterStateDriver(RepFrameHolder, "visibility", "[combat] hide; show")
+		end
+	end
 	
 	if not self.IsCreated then
 		self:Create()
@@ -179,21 +218,22 @@ T.Miscellaneous.Reputation = Reputation
 -- REPUTATION DATATEXT
 ------------------------------------------------------------------------------------------
 local Update = function(self)
-	if not C["Misc"]["REPBarEnable"] then return end
+	if not C["Misc"]["REPBarDTEnable"] then return end
 	RepFrameHolder:ClearAllPoints()
 	RepFrameHolder:SetPoint("CENTER", self, "CENTER", 0, 0)
 	RepFrameHolder:SetParent(self)
 end
 
 local Enable = function(self)
-	if not C["Misc"]["REPBarEnable"] then return end
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["REPBarDTEnable"] then return end
 	self:Update()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:SetScript("OnEvent", self.Update)
 end
 
 local Disable = function(self)
-	if not C["Misc"]["REPBarEnable"] then return end
+	if not C["Misc"]["REPBarDTEnable"] then return end
 	self.Text:SetText("")
 	self:SetScript("OnUpdate", nil)
 end

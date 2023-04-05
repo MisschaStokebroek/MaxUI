@@ -25,12 +25,23 @@ local Update = function(self, t)
 	
 	CurrentSpeed = GetUnitSpeed("player") / 7 * 100
 	self.Text:SetText(format(TukuiDT.NameColor.."Speed: |r"..TukuiDT.ValueColor.."%d%%".."|r", CurrentSpeed))
+	if C["DataTexts"]["Icons"] == true then
+		self.icon = self:CreateTexture(nil, "OVERLAY")
+		self.icon:SetWidth(20)
+		self.icon:SetHeight(20)
+		self.icon:SetPoint("LEFT", self, "CENTER", 45, 0)
+		self.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\cTransmog.tga]])
+		self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
+	end
 	tslu = 0.5
 end
 
 local OnEnter = function(self)
 	tslu = 3
 	self.Text:SetText(format(TukuiDT.HighlightColor.."Speed: |r"..TukuiDT.HighlightColor.."%d%%".."|r", CurrentSpeed))
+	if C["DataTexts"]["Icons"] == true then
+		self.icon:SetVertexColor(unpack(C["DataTexts"].HighlightColor))
+	end
 	GameTooltip:SetOwner(self:GetTooltipAnchor())
 	GameTooltip:ClearLines()
 	GameTooltip:AddLine("Speed:")
@@ -40,6 +51,9 @@ end
 
 local OnLeave = function(self)
 	self.Text:SetText(format(TukuiDT.NameColor.."Speed: |r"..TukuiDT.ValueColor.."%d%%".."|r", CurrentSpeed))
+	if C["DataTexts"]["Icons"] == true then
+		self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
+	end
 	GameTooltip:Hide()
 end
 

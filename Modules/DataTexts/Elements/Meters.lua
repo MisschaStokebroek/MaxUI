@@ -1,6 +1,6 @@
 ﻿------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- Setting up datatext for showing and hiding damagemeters.
@@ -22,9 +22,9 @@ local Update = function(self)
 
 		if C["DataTexts"]["Icons"] == true then
 			self.icon = self:CreateTexture(nil, "OVERLAY")
-			self.icon:SetSize(17, 17)
-			self.icon:SetPoint("LEFT", self, "CENTER", 35, 0)
-			self.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\menuicons\damagemeter.tga]])
+			self.icon:SetSize(20, 20)
+			self.icon:SetPoint("LEFT", self, "CENTER", 35, 1)
+			self.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\cDPSMeter.tga]])
 			self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
 		end
 		
@@ -53,7 +53,6 @@ end
 local OnMouseDown = function()
 	if InCombatLockdown() then
 		T.Print(ERR_NOT_IN_COMBAT)
-
 		return
 	end
 	

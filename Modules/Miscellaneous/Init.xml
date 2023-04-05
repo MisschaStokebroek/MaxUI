@@ -16,4 +16,5 @@
 	<Script file="MirrorBars.lua"/>
 	<Script file="AFK.lua"/>
 	<Script file="TalkingHead.lua"/>
+	<Script file="StaticPopups.lua"/>
 </Ui>

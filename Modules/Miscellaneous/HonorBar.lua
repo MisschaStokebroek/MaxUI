@@ -24,6 +24,7 @@ local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
 Honor.HNColor = {222/255, 22/255, 22/255}
 
 local HonorFrameHolder = CreateFrame("Frame", "HonorFrameHolder", UIParent)
+HonorFrameHolder:SetPoint("CENTER", UIParent, "CENTER", 0, -90)
 HonorFrameHolder:SetHeight(22) 
 HonorFrameHolder:SetWidth(200)
 
@@ -31,6 +32,9 @@ HonorFrameHolder:SetWidth(200)
 -- HONOR TOOLTIP
 ------------------------------------------------------------------------------------------
 function Honor:SetTooltip()
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["HONORBarEnable"] then return end
+
 	local BarType = self.BarType
 	local Current, Max, Pts
 	local Level = UnitHonorLevel("player")
@@ -55,10 +59,16 @@ end
 -- HONOR CREATE 
 ------------------------------------------------------------------------------------------
 function Honor:GetHonor()
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["HONORBarEnable"] then return end
+
 	return UnitHonor("player"), UnitHonorMax("player")
 end
 
 function Honor:Create()
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["HONORBarEnable"] then return end
+
 	for i = 1, self.NumBars do
 		local HonorBar = CreateFrame("StatusBar", nil, UIParent)
 
@@ -83,22 +93,25 @@ function Honor:Create()
 		HonorBar:SetOrientation'HORIZONTAL'
 		HonorBar:SetFrameLevel(11)
 		HonorBar:SetStatusBarTexture(T.GetTexture(BarTexture))
-		
-		--HonorBar:SetScript("OnMouseDown", function(self)
-		--	TogglePVPUI()
-		--end)
 
 		local Honortext = HonorBar:CreateFontString(nil, "OVERLAY")
 		Honortext:SetFontObject(T.GetFont(C["DataTexts"].Font))
 		Honortext:SetScale(C.DataTexts.FontSize/10)
-		Honortext:SetPoint("RIGHT", HonorBar, "LEFT", -6, 0)
 		Honortext:SetText("Honor")
 
 		Honorpercenttext = HonorBar:CreateFontString(nil, "OVERLAY")
 		if C["Misc"]["PercentageTag"] == true then
 			Honorpercenttext:SetFontObject(T.GetFont(C["DataTexts"].Font))
 			Honorpercenttext:SetScale(C.DataTexts.FontSize/10)
+		end	
+
+		if C["Misc"]["HONORBarTextPlacement"]["Value"] == "Inside" then
+			Honorpercenttext:SetPoint("RIGHT", HonorBar, "RIGHT", -6, 0)
+			Honortext:SetPoint("LEFT", HonorBar, "LEFT", 6, 0)
+		
+		elseif C["Misc"]["HONORBarTextPlacement"]["Value"] == "Outside" then
 			Honorpercenttext:SetPoint("LEFT", HonorBar, "RIGHT", 6, 0)
+			Honortext:SetPoint("RIGHT", HonorBar, "LEFT", -6, 0)
 		end	
 
 		HonorBar:HookScript("OnEnter", function(self)
@@ -109,6 +122,10 @@ function Honor:Create()
 			HonorBar.Backdrop:SetBorderColor(unpack(C["General"]["BorderColor"]))
 		end)
 	
+		if C["Skins"]["DataBarFilter"] == true then 
+			HonorBar:CreateMaxUIFilter()
+		end
+		
 		self["HonorBar"..i] = HonorBar
 	end	
 		
@@ -125,6 +142,9 @@ end
 -- HONOR UPDATE 
 ------------------------------------------------------------------------------------------
 function Honor:Update()
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["HONORBarEnable"] then return end
+
 	for i = 1, self.NumBars do
 		local Bar = self["HonorBar"..i]
 		
@@ -146,7 +166,33 @@ end
 -- HONOR ENABLE/DISABLE 
 ------------------------------------------------------------------------------------------
 function Honor:Enable()
+	if not (C.General.Themes.Value == "MaxUI") then return end
 	if not C["Misc"]["HONORBarEnable"] then return end
+
+	if not C["Misc"]["HONORBarDTEnable"] then
+		if C["Misc"]["HONORBarTextPlacement"]["Value"] == "Inside" then
+			HonorFrameHolder:SetHeight(C["Misc"]["HONORBarHeight"] + 12) 
+			HonorFrameHolder:SetWidth(C["Misc"]["HONORBarWidth"] + 12)
+		elseif C["Misc"]["HONORBarTextPlacement"]["Value"] == "Outside" then
+			HonorFrameHolder:SetHeight(C["Misc"]["HONORBarHeight"] + 12) 
+			HonorFrameHolder:SetWidth(C["Misc"]["HONORBarWidth"] + 120)
+		else	
+			HonorFrameHolder:SetHeight(C["Misc"]["HONORBarHeight"] + 12) 
+			HonorFrameHolder:SetWidth(C["Misc"]["HONORBarWidth"] + 12)
+		end	
+		
+		if C["Misc"]["HONORBarBackdrop"] == true then
+			HonorFrameHolder:CreateBackdrop(nil, Texture)
+			HonorFrameHolder.Backdrop:SetOutside()
+			HonorFrameHolder.Backdrop:CreateShadow()
+			HonorFrameHolder.Backdrop:SetAlpha(C["Misc"]["HONORBarAlpha"])
+		end
+		Movers:RegisterFrame(HonorFrameHolder, "Honor DataBar")
+
+		if C["Misc"]["HONORBarCombatState"]["Value"] == "Hide" then
+			RegisterStateDriver(HonorFrameHolder, "visibility", "[combat] hide; show")
+		end
+	end
 
 	if not self.IsCreated then
 		self:Create()
@@ -181,7 +227,7 @@ T.Miscellaneous.Honor = Honor
 -- HONOR DATATEXT 
 ------------------------------------------------------------------------------------------
 local Update = function(self)
-	if not C["Misc"]["HONORBarEnable"] then return end
+	if not C["Misc"]["HONORBarDTEnable"] then return end
 	HonorFrameHolder:ClearAllPoints()
 	HonorFrameHolder:SetPoint("CENTER", self, "CENTER", 0, 0)
 	HonorFrameHolder:SetParent(self)
@@ -190,14 +236,14 @@ end
 local OnMouseDown = function()
 	if InCombatLockdown() then
 		T.Print(ERR_NOT_IN_COMBAT)
-
 		return
 	end
 	TogglePVPUI()
 end
 
 local Enable = function(self)
-	if not C["Misc"]["HONORBarEnable"] then return end
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["HONORBarDTEnable"] then return end
 	self:Update()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:SetScript("OnMouseDown", OnMouseDown)
@@ -205,7 +251,7 @@ local Enable = function(self)
 end
 
 local Disable = function(self)
-	if not C["Misc"]["HONORBarEnable"] then return end
+	if not C["Misc"]["HONORBarDTEnable"] then return end
 	self.Text:SetText("")
 	self:SetScript("OnMouseDown", nil)
 	self:SetScript("OnUpdate", nil)

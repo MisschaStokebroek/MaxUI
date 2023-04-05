@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 --setting up TAGS for UNITFRAMES.
@@ -21,6 +21,12 @@ local unpack, pairs, wipe, floor, ceil = unpack, pairs, wipe, floor, ceil
 local strfind, strmatch, strlower, strsplit = strfind, strmatch, strlower, strsplit
 local utf8lower, utf8sub, utf8len = string.utf8lower, string.utf8sub, string.utf8len
 
+
+------------------------------------------------------------------------------------------
+-- NAME TAG FUNCTIONS
+------------------------------------------------------------------------------------------
+
+-- abbreviate names
 local function Abbrev(name)
 	local letters, lastWord = '', strmatch(name, '.+%s(.+)$')
 	if lastWord then
@@ -45,6 +51,7 @@ oUF.Tags.Methods['name:abbrev'] = function(unit)
 	return name
 end
 
+-- Name coloring
 oUF.Tags.Events["MaxUI:GetNameColor"] = "UNIT_POWER_UPDATE"
 oUF.Tags.Methods["MaxUI:GetNameColor"] = function(unit)
 	local Reaction = UnitReaction(unit, "player")
@@ -66,10 +73,18 @@ oUF.Tags.Methods["MaxUI:GetNameColor"] = function(unit)
 	end
 end
 
+oUF.Tags.Events["Tukui:NameShort"] = "UNIT_NAME_UPDATE PARTY_LEADER_CHANGED GROUP_ROSTER_UPDATE"
+oUF.Tags.Methods["Tukui:NameShort"] = function(unit)
+	local Name = UnitName(unit) or "???"
+
+	return UnitFrames.UTF8Sub(Name, UnitFrames.ShortNameLength, false)
+end
 
 ------------------------------------------------------------------------------------------
 -- SETUP HEALTH TAGS
 ------------------------------------------------------------------------------------------
+
+-- health value color
 oUF.Tags.Events["MaxUI:HealthColor"] = "UNIT_HEALTH UNIT_MAXHEALTH"
 oUF.Tags.Methods["MaxUI:HealthColor"] = function(unit)
 	local r, g, b
@@ -134,6 +149,8 @@ end
 ------------------------------------------------------------------------------------------
 -- SETUP POWER TAGS
 ------------------------------------------------------------------------------------------
+
+-- power tag color
 oUF.Tags.Events["MaxUI:PowerColor"] = "UNIT_MAXPOWER UNIT_POWER_UPDATE"
 oUF.Tags.Methods["MaxUI:PowerColor"] = function(unit)
 	local r, g, b
@@ -198,3 +215,4 @@ oUF.Tags.Methods["MaxUI:CurPP"] = function(unit)
 	
 	return power
 end
+

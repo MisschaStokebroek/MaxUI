@@ -1,21 +1,22 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 01-08-2021
+-- latest update: 29-11-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up CHAT.
--- need to kill the toggle buttons
 
 ------------------------------------------------------------------------------------------
 -- SETUP
 ------------------------------------------------------------------------------------------
 local T, C, L = Tukui:unpack()
 local Chat = T.Chat
+local Movers = T["Movers"]
+
 local baseChatAddToggles = Chat.AddToggles
 local baseChatShowToggle = Chat.ShowChatFrame
 local baseChatHideToggle = Chat.HideChatFrame
 local baseAddPanels = Chat.AddPanels
-local baseSetup = Chat.Setup
+local baseChatEnable = Chat.Enable
 
 local HeaderColor = {0.43, 0.43, 0.43}
 local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
@@ -23,14 +24,44 @@ local ChatPlayerModel = CreateFrame("PlayerModel", nil, UIParent)
 ChatPlayerModel:SetUnit('player')
 
 ------------------------------------------------------------------------------------------
+-- Skin adjustments blizzard frame
+------------------------------------------------------------------------------------------
+EmoteMenu.NineSlice:StripTextures()
+ChatMenu.NineSlice:StripTextures()
+LanguageMenu.NineSlice:StripTextures()
+VoiceMacroMenu.NineSlice:StripTextures()
+
+EmoteMenu:CreateBackdrop("Transparent")
+ChatMenu:CreateBackdrop("Transparent")
+LanguageMenu:CreateBackdrop("Transparent")
+VoiceMacroMenu:CreateBackdrop("Transparent")
+
+DropDownList1MenuBackdrop:SetAlpha(0.8)
+DropDownList2MenuBackdrop:SetAlpha(0.8)
+
+------------------------------------------------------------------------------------------
 -- CHAT TAB COLORING
 ------------------------------------------------------------------------------------------
 function Chat:UpdateTabColors()
 	for i = 1, 10 do
 		local tab = _G["ChatFrame"..i.."Tab"]
-		local tabtext = _G["ChatFrame"..i.."TabText"]
+		local tabtext = _G["ChatFrame"..i.."Tab"].Text
 		tabtext:SetFontObject(T.GetFont(C["Chat"].TabFont))
 		tabtext:SetScale(C["Chat"]["TabFontSize"]/10)
+
+		if C["Chat"]["CompleteChatBox"] and (C["Chat"]["LeftChatBGCombatState"]["Value"] == "Hide") then 
+			local incombat = UnitAffectingCombat("player")
+			local holder = CreateFrame("Frame")
+			holder:RegisterEvent("PLAYER_REGEN_ENABLED")
+			holder:RegisterEvent("PLAYER_REGEN_DISABLED")
+			holder:SetScript("OnEvent", function(self, event)
+				if incombat == (event =="PLAYER_REGEN_ENABLED") then
+					tabtext:Hide()
+				else
+					tabtext:Show()
+				end
+			end)
+		end
 		
 		if(i == SELECTED_CHAT_FRAME:GetID()) then
 			tabtext:SetTextColor(1, 1, 1)
@@ -41,6 +72,8 @@ function Chat:UpdateTabColors()
 				tabtext:SetVertexColor(unpack(ClassColor))
 			elseif C["General"]["ClassColorHeaders"]["Value"] == "BackdropColor" then 
 				tabtext:SetVertexColor(unpack(C.General.BackdropColor))
+			elseif C["General"]["ClassColorHeaders"]["Value"] == "Custom" then 
+				tabtext:SetVertexColor(unpack(C.General.CustomColor))
 			else
 				tabtext:SetTextColor(unpack(HeaderColor))
 			end
@@ -60,6 +93,8 @@ function Chat:UpdateTabColors()
 					tabtext:SetVertexColor(unpack(ClassColor))
 				elseif C["General"]["ClassColorHeaders"]["Value"] == "BackdropColor" then 
 					tabtext:SetVertexColor(unpack(C.General.BackdropColor))
+				elseif C["General"]["ClassColorHeaders"]["Value"] == "Custom" then 
+					tabtext:SetVertexColor(unpack(C.General.CustomColor))
 				else
 					tabtext:SetTextColor(unpack(HeaderColor))
 				end
@@ -71,9 +106,11 @@ end
 hooksecurefunc("FCFTab_UpdateColors", Chat.UpdateTabColors)
 
 function Chat:CreateChatTabs()
+	if C["Chat"]["BackgroundOptions"]["Value"] == "None" then return end
+	
 	for i = 1, 10 do
 		local tab = _G["ChatFrame"..i.."Tab"]
-		
+
 		local ChatTabSplitter = CreateFrame("Frame", "ChatTabSplitter", tab)
 		ChatTabSplitter:SetHeight(20)
 		ChatTabSplitter:SetWidth(2)
@@ -81,6 +118,14 @@ function Chat:CreateChatTabs()
 		ChatTabSplitter:SetFrameStrata("BACKGROUND")
 		ChatTabSplitter:SetFrameLevel(4)
 		ChatTabSplitter:CreateBackdrop()
+
+		if C["Chat"]["LeftChatBGCombatState"]["Value"] == "Hide" then
+			RegisterStateDriver(ChatTabSplitter, "visibility", "[combat] hide; show")
+		end
+		
+		if 	C["Chat"]["LeftChatBGCombatState"]["Value"] == "Show" then
+			RegisterStateDriver(ChatTabSplitter, "visibility", "[combat] show; hide")
+		end
 	end
 end
 
@@ -88,11 +133,10 @@ end
 -- CHAT TOGGLE BUTTON CHANGES
 ------------------------------------------------------------------------------------------
 function Chat:AddToggles()
+	baseChatAddToggles(self)
+	
 	local LeftChatBG = T.Chat.Panels.LeftChat
 	local RightChatBG = T.Chat.Panels.RightChat
-	
-	-- Tukui
-	baseChatAddToggles(self)
 	
 	if C["General"]["Themes"]["Value"] == "MaxUI" then 
 		for i = 1, 2 do
@@ -100,11 +144,21 @@ function Chat:AddToggles()
 			if i == 1 then
 				local Button = T.Chat.Panels.LeftChatToggle
 				Button:ClearAllPoints()
-				Button:SetPoint("LEFT", LeftChatBG, "LEFT", 0, 0)
+				Button:SetHeight(C["Chat"]["LeftHeight"] - 23)
+				Button:SetFrameStrata("HIGH")
+				Button:SetPoint("BOTTOMLEFT", LeftChatBG, "BOTTOMLEFT", 0, 0)
+				if C["Skins"]["ButtonFilter"] then
+					Button:CreateMaxUIVerticalFilter()
+				end
 			else
 				local Button = T.Chat.Panels.RightChatToggle
 				Button:ClearAllPoints()
-				Button:SetPoint("RIGHT", RightChatBG, "RIGHT", 0, 0)
+				Button:SetHeight(C["Chat"]["RightHeight"] - 23)
+				Button:SetFrameStrata("HIGH")
+				Button:SetPoint("BOTTOMRIGHT", RightChatBG, "BOTTOMRIGHT", 0, 0)
+				if C["Skins"]["ButtonFilter"] then
+					Button:CreateMaxUIVerticalFilter()
+				end
 			end
 		end
 	end	
@@ -121,6 +175,7 @@ function Chat:HideChatFrame(button, id)
 			local Dock = GeneralDockManager
 
 			if id == 1 and Chat.isDocked then
+				Chat:SetParent(T.Hider)
 				Tab:SetParent(T.Hider)
 				Dock:SetParent(T.Hider)
 			elseif id == 2 and not Chat.isDocked then
@@ -139,12 +194,11 @@ function Chat:HideChatFrame(button, id)
 			Data.ChatRightHidden = true
 		end
 	else
-		baseChatHideToggle(self)
+		baseChatHideToggle(self, button, id)
 	end
 end
 
 function Chat:ShowChatFrame(button, id)
-	
 	if C["General"]["Themes"]["Value"] == "MaxUI" then 
 		local Background = id == 1 and T.Chat.Panels.LeftChat or T.Chat.Panels.RightChat
 		Background:Show()
@@ -155,6 +209,7 @@ function Chat:ShowChatFrame(button, id)
 			local Dock = GeneralDockManager
 
 			if id == 1 and Chat.isDocked then
+				Chat:SetParent(UIParent)
 				Tab:SetParent(UIParent)
 				Dock:SetParent(UIParent)
 			elseif id == 2 and not Chat.isDocked then
@@ -173,9 +228,10 @@ function Chat:ShowChatFrame(button, id)
 			Data.ChatRightHidden = false
 		end
 	else
-		baseChatShowToggle(self)	
+		baseChatShowToggle(self, button, id)	
 	end
 end
+
 ------------------------------------------------------------------------------------------
 -- CHAT EDIT BOX SHORTCUT BUTTONS
 ------------------------------------------------------------------------------------------
@@ -186,7 +242,6 @@ function Chat:CreateChatTools()
 	ChatButtons:SetWidth((7*14) + (7*4))
 	ChatButtons:SetHeight(24)
 	ChatButtons:SetFrameStrata("MEDIUM")
-	--ChatButtons:CreateBackdrop()
 	if (C.General.Themes.Value == "MaxUI") then 
 		if C["Tools"]["ChatShortcutsPosition"]["Value"] == "Topright" then
 			ChatButtons:SetPoint("BOTTOMRIGHT", LeftChatBG, "TOPRIGHT", -4, 1)
@@ -202,11 +257,20 @@ function Chat:CreateChatTools()
 			ChatButtons:SetPoint("BOTTOMLEFT", LeftChatBG, "TOPLEFT", 4, 12)
 		end	
 	end
+
+	if C["Skins"]["TooltipFilter"] == true then 
+		EmoteMenu.Backdrop:CreateMaxUIFilterInside()
+		ChatMenu.Backdrop:CreateMaxUIFilterInside()
+		LanguageMenu.Backdrop:CreateMaxUIFilterInside()
+		VoiceMacroMenu.Backdrop:CreateMaxUIFilterInside()
+	end
+
+	ChatButtons = self.ChatButtons
 end
 
 function Chat:CreateChatToolsButtons()
 	-- Say Button
-	ChatButtons.CreateConfigButton("SayButton", ChatButtons, 14, 14, "", "Open chat:", "Say (leftclick)\n|cffFF3F40Yell|r (rightclick) ",  ChatButtons)
+	ChatButtons.CreateMaxUIButton("SayButton", ChatButtons, 14, 14, "", "Open chat:", "Say (leftclick)\n|cffFF3F40Yell|r (rightclick) ",  ChatButtons)
 	SayButton:SetPoint("RIGHT", ChatButtons, "RIGHT", -4, 0)
 	SayButton:CreateShadow()
 	SayButton.Backdrop:SetBackdropColor(1,1,1)
@@ -225,7 +289,7 @@ function Chat:CreateChatToolsButtons()
 	end)
 	
 	-- Guild Button
-	ChatButtons.CreateConfigButton("GuildButton", ChatButtons, 14, 14, "", "Open chat:", "|cff3CE13FGuild|r (leftclick)\n|cff40BC40Officer|r (rightclick) ", ChatButtons)
+	ChatButtons.CreateMaxUIButton("GuildButton", ChatButtons, 14, 14, "", "Open chat:", "|cff3CE13FGuild|r (leftclick)\n|cff40BC40Officer|r (rightclick) ", ChatButtons)
 	GuildButton:SetPoint("RIGHT", SayButton, "LEFT", -4, 0)
 	GuildButton:CreateShadow()
 	GuildButton.Backdrop:SetBackdropColor(0.25, 1, 0.25)
@@ -244,7 +308,7 @@ function Chat:CreateChatToolsButtons()
 	end)
 
 	-- Party Button
-	ChatButtons.CreateConfigButton("PartyButton", ChatButtons, 14, 14, "", "Open chat:", "|cff77C8FFParty|r (any) ", ChatButtons)
+	ChatButtons.CreateMaxUIButton("PartyButton", ChatButtons, 14, 14, "", "Open chat:", "|cff77C8FFParty|r (any) ", ChatButtons)
 	PartyButton:SetPoint("RIGHT", GuildButton, "LEFT", -4, 0)
 	PartyButton:CreateShadow()
 	PartyButton.Backdrop:SetBackdropColor(0.65, 0.65, 1)
@@ -260,9 +324,9 @@ function Chat:CreateChatToolsButtons()
 	
 	-- Instance/Raid Button
 	if T.Retail then
-		ChatButtons.CreateConfigButton("InstanceButton", ChatButtons, 14, 14, "", "Open chat:", "|cffFF7D01Instance|r (any)|n|cffFF7D01Raid|r (any) ", ChatButtons)
+		ChatButtons.CreateMaxUIButton("InstanceButton", ChatButtons, 14, 14, "", "Open chat:", "|cffFF7D01Instance|r (any)|n|cffFF7D01Raid|r (any) ", ChatButtons)
 	else
-		ChatButtons.CreateConfigButton("InstanceButton", ChatButtons, 14, 14, "", "Open chat:", "|cffFF7D01Raid|r (any) ", ChatButtons)
+		ChatButtons.CreateMaxUIButton("InstanceButton", ChatButtons, 14, 14, "", "Open chat:", "|cffFF7D01Raid|r (any) ", ChatButtons)
 	end
 		
 	InstanceButton:SetPoint("RIGHT", PartyButton, "LEFT", -4, 0)
@@ -285,11 +349,13 @@ function Chat:CreateChatToolsButtons()
 		
 		elseif T.BCC then
 			ChatFrame_OpenChat("/raid ", chatFrame)
+		else
+			ChatFrame_OpenChat("/raid ", chatFrame)
 		end
 	end)
 	
 	-- Whisper Reply Button
-	ChatButtons.CreateConfigButton("WhisperButton", ChatButtons, 14, 14, "", "Open chat:", "|cffFF7EFFWhisper Target|r (leftclick)\n|cffFF7EFFReply Whisper|r (rightclick) ", ChatButtons)
+	ChatButtons.CreateMaxUIButton("WhisperButton", ChatButtons, 14, 14, "", "Open chat:", "|cffFF7EFFWhisper Target|r (leftclick)\n|cffFF7EFFReply Whisper|r (rightclick) ", ChatButtons)
 	WhisperButton:SetPoint("RIGHT", InstanceButton, "LEFT", -4, 0)
 	WhisperButton:CreateShadow()
 	WhisperButton.Backdrop:SetBackdropColor(1, 0.5, 1)
@@ -317,7 +383,7 @@ function Chat:CreateChatToolsButtons()
 	end)
 	
 	--language and emote Button
-	ChatButtons.CreateConfigButton("LanguageEmoteButton", ChatButtons, 28, 14, "", "Chat:", "Language and emotes ", ChatButtons)
+	ChatButtons.CreateMaxUIButton("LanguageEmoteButton", ChatButtons, 28, 14, "", "Chat:", "Language and emotes ", ChatButtons)
 	LanguageEmoteButton:SetPoint("RIGHT", WhisperButton, "LEFT", -4, 0)
 	LanguageEmoteButton:CreateShadow()
 	
@@ -325,7 +391,7 @@ function Chat:CreateChatToolsButtons()
 	LanguageEmoteButton.icon:SetWidth(10)
 	LanguageEmoteButton.icon:SetHeight(10)
 	LanguageEmoteButton.icon:SetPoint("CENTER", LanguageEmoteButton, "CENTER", 0, 0)
-	LanguageEmoteButton.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\menuicons\chat.tga]])
+	LanguageEmoteButton.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\Chat.tga]])
 	
 	LanguageEmoteButton:SetScript("OnMouseDown", function(self)
 		local LeftBG = T.Chat.Panels.LeftChat
@@ -350,16 +416,16 @@ function Chat:ChatBackgroundOptions()
 	local RightHeight = C["Chat"]["RightHeight"]
 
 	if C["Chat"]["BackgroundOptions"]["Value"] == "Logo" then
-		LeftChatBG.LogoMaxUI = LeftChatBG:CreateTexture(nil, "ART")
+		LeftChatBG.LogoMaxUI = LeftChatBG:CreateTexture(nil, "ARTWORK")
 		LeftChatBG.LogoMaxUI:SetAllPoints()
 		LeftChatBG.LogoMaxUI:SetTexture(T.GetTexture("MaxUI"))
 
-		RightChatBG.LogoMaxUI = RightChatBG:CreateTexture(nil, "ART")
+		RightChatBG.LogoMaxUI = RightChatBG:CreateTexture(nil, "ARTWORK")
 		RightChatBG.LogoMaxUI:SetAllPoints()
 		RightChatBG.LogoMaxUI:SetTexture(T.GetTexture("MaxUI"))
 
 	elseif C["Chat"]["BackgroundOptions"]["Value"] == "Class" then
-		LeftChatBG.Logoclass = LeftChatBG:CreateTexture(nil, "ART")
+		LeftChatBG.Logoclass = LeftChatBG:CreateTexture(nil, "ARTWORK")
 		LeftChatBG.Logoclass:SetWidth(LeftHeight)
 		LeftChatBG.Logoclass:SetHeight(LeftHeight)
 		LeftChatBG.Logoclass:SetPoint("CENTER", LeftChatBG, "CENTER", 0, 0)
@@ -369,7 +435,7 @@ function Chat:ChatBackgroundOptions()
 			LeftChatBG.Logoclass:SetHeight(LeftHeight-20)
 		end
 
-		RightChatBG.Logoclass = RightChatBG:CreateTexture(nil, "ART")
+		RightChatBG.Logoclass = RightChatBG:CreateTexture(nil, "ARTWORK")
 		RightChatBG.Logoclass:SetWidth(RightHeight)
 		RightChatBG.Logoclass:SetHeight(RightHeight)
 		RightChatBG.Logoclass:SetPoint("CENTER", RightChatBG, "CENTER", 0, 0)
@@ -380,130 +446,127 @@ function Chat:ChatBackgroundOptions()
 		end
 
 		if select(2, UnitClass('player')) == "DRUID" then
-			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\DRUID.tga]])
-			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\DRUID.tga]])
+			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DRUID.tga]])
+			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DRUID.tga]])
 		end
 		
+		if select(2, UnitClass('player')) == "EVOKER" then
+			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\EVOKER.tga]])
+			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\EVOKER.tga]])
+		end
+
 		if select(2, UnitClass('player')) == "MONK" then
-			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\MONK.tga]])
-			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\MONK.tga]])
+			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MONK.tga]])
+			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MONK.tga]])
 		end
 		
 		if select(2, UnitClass('player')) == "ROGUE" then
-			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\ROGUE.tga]])
-			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\ROGUE.tga]])
+			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\ROGUE.tga]])
+			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\ROGUE.tga]])
 		end
 		
 		if select(2, UnitClass('player')) == "MAGE" then
-			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\MAGE.tga]])
-			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\MAGE.tga]])
+			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MAGE.tga]])
+			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MAGE.tga]])
 		end
 		
 		if select(2, UnitClass('player')) == "PRIEST" then
-			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\PRIEST.tga]])
-			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\PRIEST.tga]])
+			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PRIEST.tga]])
+			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PRIEST.tga]])
 		end
 		
 		if select(2, UnitClass('player')) == "WARLOCK" then
-			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\WARLOCK.tga]])
-			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\WARLOCK.tga]])
+			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARLOCK.tga]])
+			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARLOCK.tga]])
 		end
 		
 		if select(2, UnitClass('player')) == "SHAMAN" then
-			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\SHAMAN.tga]])
-			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\SHAMAN.tga]])
+			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\SHAMAN.tga]])
+			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\SHAMAN.tga]])
 		end
 		
 		if select(2, UnitClass('player')) == "HUNTER" then
-			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\HUNTER.tga]])
-			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\HUNTER.tga]])
+			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\HUNTER.tga]])
+			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\HUNTER.tga]])
 		end
 		
 		if select(2, UnitClass('player')) == "DEATHKNIGHT" then
-			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\DEATHKNIGHT.tga]])
-			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\DEATHKNIGHT.tga]])
+			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEATHKNIGHT.tga]])
+			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEATHKNIGHT.tga]])
 		end
 		
 		if select(2, UnitClass('player')) == "WARRIOR" then
-			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\WARRIOR.tga]])
-			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\WARRIOR.tga]])
+			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARRIOR.tga]])
+			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARRIOR.tga]])
 		end
 	
 		if select(2, UnitClass('player')) == "PALADIN" then
-			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\PALADIN.tga]])
-			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\PALADIN.tga]])
+			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PALADIN.tga]])
+			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PALADIN.tga]])
 		end
 
 		if select(2, UnitClass('player')) == "DEMONHUNTER" then
-			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\DEMONHUNTER.tga]])
-			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\ClassIcons\DEMONHUNTER.tga]])
+			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEMONHUNTER.tga]])
+			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEMONHUNTER.tga]])
 		end
 	
 	elseif C["Chat"]["BackgroundOptions"]["Value"] == "Texture" then
-		LeftChatBG.Texture = LeftChatBG:CreateTexture(nil, "ART")
+		LeftChatBG.Texture = LeftChatBG:CreateTexture(nil, "OVERLAY")
 		LeftChatBG.Texture:SetAllPoints()
 		LeftChatBG.Texture:SetAlpha(C.Chat.ChattextureAlpha)
 		LeftChatBG.Texture:SetVertexColor(unpack(C.Chat.ChattextureColor))
 		LeftChatBG.Texture:SetTexture(T.GetTexture(C["Chat"]["Chattexture"]))
 
-		RightChatBG.Texture = RightChatBG:CreateTexture(nil, "ART")
+		RightChatBG.Texture = RightChatBG:CreateTexture(nil, "OVERLAY")
 		RightChatBG.Texture:SetAllPoints()
 		RightChatBG.Texture:SetAlpha(C.Chat.ChattextureAlpha)
 		RightChatBG.Texture:SetVertexColor(unpack(C.Chat.ChattextureColor))
 		RightChatBG.Texture:SetTexture(T.GetTexture(C["Chat"]["Chattexture"]))
 
 	elseif C["Chat"]["BackgroundOptions"]["Value"] == "Blank" then
+	
+	elseif C["Chat"]["BackgroundOptions"]["Value"] == "None" then
+		LeftChatBG.Backdrop:SetAlpha(0)
+		RightChatBG.Backdrop:SetAlpha(0)
+		LeftChatBG:SetAlpha(0)
+		RightChatBG:SetAlpha(0)
 
 	elseif C["Chat"]["BackgroundOptions"]["Value"] == "Character" then
 		ChatPlayerModel:SetFrameLevel(2)
 		ChatPlayerModel:SetAlpha(1)
 		ChatPlayerModel:SetPosition(2.5, 0, -0.9)
 		ChatPlayerModel:SetAllPoints(RightChatBG)
-	elseif C["Chat"]["BackgroundOptions"]["Value"] == "None" then
-		LeftChatBG:SetAlpha(0)
-		RightChatBG:SetAlpha(0)
 	end
 	
 	if C["Skins"]["ChatFilter"] == true then 
-		LeftChatBG.Filter = LeftChatBG:CreateTexture(nil, "OVERLAY")
-		LeftChatBG.Filter:SetAllPoints()
-		LeftChatBG.Filter:SetAlpha(C["Skins"]["FilterAlpha"])
-		LeftChatBG.Filter:SetTexture(T.GetTexture("Overlay"))
-
-		RightChatBG.Filter = RightChatBG:CreateTexture(nil, "OVERLAY")
-		RightChatBG.Filter:SetAllPoints()
-		RightChatBG.Filter:SetAlpha(C["Skins"]["FilterAlpha"])
-		RightChatBG.Filter:SetTexture(T.GetTexture("Overlay"))
+		LeftChatBG:CreateMaxUIFilter()
+		RightChatBG:CreateMaxUIFilter()
 	end
 end
 
-function Chat:CombatStateChat()
-	local DataTextLeft = T.DataTexts.Panels.Left
-	local DataTextRight = T.DataTexts.Panels.Right
+function Chat:CombatStateChatLeft()
 	local LeftChatBG = T.Chat.Panels.LeftChat
-	local RightChatBG = T.Chat.Panels.RightChat
-
-	if C["Chat"]["ChatBGCombatState"]["Value"] == "Hide" then
-		RegisterStateDriver(LeftChatBG, "visibility", "[combat] hide; show")
-		RegisterStateDriver(RightChatBG, "visibility", "[combat] hide; show")
-	end
-	
-	if 	C["Chat"]["ChatBGCombatState"]["Value"] == "Show" then
-		RegisterStateDriver(LeftChatBG, "visibility", "[combat] show; hide")
-		RegisterStateDriver(RightChatBG, "visibility", "[combat] show; hide")
-	end		
-
-	-- combat state datatexts (Tukui theme)
-	if C["General"]["Themes"]["Value"] == "Tukui" then 
-		if C["DataTexts"]["DataTextsCombatState"]["Value"] == "Hide" then
-			RegisterStateDriver(DataTextLeft, "visibility", "[combat] hide; show")
-			RegisterStateDriver(DataTextRight, "visibility", "[combat] hide; show")
+	if C["General"]["Themes"]["Value"] ~= "Tukz" then 
+		if C["Chat"]["LeftChatBGCombatState"]["Value"] == "Hide" then
+			RegisterStateDriver(LeftChatBG, "visibility", "[combat] hide; show")
 		end
+		
+		if 	C["Chat"]["LeftChatBGCombatState"]["Value"] == "Show" then
+			RegisterStateDriver(LeftChatBG, "visibility", "[combat] show; hide")
+		end		
+	end	
+end
 
-		if 	C["DataTexts"]["DataTextsCombatState"]["Value"] == "Show" then
-			RegisterStateDriver(DataTextLeft, "visibility", "[combat] show; hide")
-			RegisterStateDriver(DataTextRight, "visibility", "[combat] show; hide")
-		end	
+function Chat:CombatStateChatRight()
+	local RightChatBG = T.Chat.Panels.RightChat
+	if C["General"]["Themes"]["Value"] ~= "Tukz" then 
+		if C["Chat"]["RightChatBGCombatState"]["Value"] == "Hide" then
+			RegisterStateDriver(RightChatBG, "visibility", "[combat] hide; show")
+		end
+		
+		if 	C["Chat"]["RightChatBGCombatState"]["Value"] == "Show" then
+			RegisterStateDriver(RightChatBG, "visibility", "[combat] show; hide")
+		end		
 	end	
 end
 
@@ -538,22 +601,6 @@ function Chat:PositionTukui()
 			
 			TabsBGRight:ClearAllPoints()
 			TabsBGRight:SetPoint("BOTTOM", RightChatBG, "BOTTOM", 0, 6)
-		
-		-- Bottom / Basic Chat
-		elseif C["Chat"]["Position"]["Value"] == "Bottom" then
-		
-		end
-	end
-
-	-- T!7
-	if C["General"]["Themes"]["Value"] == "Tukui 17" then 
-
-		-- Top Chat
-		if C["Chat"]["Position"]["Value"] == "Top" then
-
-		-- Bottom/Basic Chat
-		elseif C["Chat"]["Position"]["Value"] == "Bottom" then
-		
 		end
 	end
 end
@@ -583,15 +630,17 @@ function Chat:MaxUIStyleChat()
 	LeftChatBG:SetHeight(LeftHeight)
 	LeftChatBG:SetWidth(LeftWidth)
 	LeftChatBG.Backdrop:SetOutside()
+	Movers:RegisterFrame(LeftChatBG, "Left Chat")
 
 	RightChatBG:SetHeight(RightHeight)
 	RightChatBG:SetWidth(RightWidth)
 	RightChatBG.Backdrop:SetOutside()
+	Movers:RegisterFrame(RightChatBG, "Right Chat")
 
 	-- Chat Left
 	LeftChatBG:SetParent(UIParent)
-	LeftChatBG:SetFrameLevel(1)
 	LeftChatBG:SetFrameStrata("BACKGROUND")
+	LeftChatBG:SetFrameLevel(1)
 
 	TabsBGLeft:ClearAllPoints()
 	TabsBGLeft.Backdrop:CreateShadow()
@@ -600,7 +649,7 @@ function Chat:MaxUIStyleChat()
 	TabsBGLeft:SetPoint("TOP", LeftChatBG, "TOP", 0, 0)
 	TabsBGLeft:SetFrameLevel(3)
 
-	TabsBGLeft.Tex = TabsBGLeft:CreateTexture(nil, "ART")
+	TabsBGLeft.Tex = TabsBGLeft:CreateTexture(nil, "ARTWORK")
 	TabsBGLeft.Tex:SetInside(TabsBGLeft)
 	TabsBGLeft.Tex:SetTexture(T.GetTexture(C.General.HeaderTexture))
 	TabsBGLeft.Tex:SetVertexColor(unpack(HeaderColor))
@@ -610,8 +659,14 @@ function Chat:MaxUIStyleChat()
 		TabsBGLeft.Tex:SetVertexColor(unpack(ClassColor))
 	elseif C["General"]["ClassColorHeaders"]["Value"] == "BackdropColor" then 
 		TabsBGLeft.Tex:SetVertexColor(unpack(C.General.BackdropColor))
+	elseif C["General"]["ClassColorHeaders"]["Value"] == "Custom" then 
+		TabsBGLeft.Tex:SetVertexColor(unpack(C.General.CustomColor))
 	else
 		TabsBGLeft.Tex:SetVertexColor(0.43, 0.43, 0.43)
+	end
+
+	if C["Skins"]["HeaderFilter"] == true then 
+		TabsBGLeft:CreateMaxUIFilter()
 	end
 
 	DataTextLeft:SetWidth(LeftWidth+2)
@@ -619,16 +674,17 @@ function Chat:MaxUIStyleChat()
 
 	-- Chat Right
 	RightChatBG:SetParent(UIParent)
-	RightChatBG:SetFrameLevel(1)
 	RightChatBG:SetFrameStrata("BACKGROUND")
+	RightChatBG:SetFrameLevel(1)
 
 	TabsBGRight:ClearAllPoints()
 	TabsBGRight.Backdrop:CreateShadow()
 	TabsBGRight:SetWidth(RightWidth)
 	TabsBGRight:SetHeight(20)
 	TabsBGRight:SetPoint("TOP", RightChatBG, "TOP", 0, 0)
+	TabsBGRight:SetFrameLevel(3)
 
-	TabsBGRight.Tex = TabsBGRight:CreateTexture(nil, "ART")
+	TabsBGRight.Tex = TabsBGRight:CreateTexture(nil, "ARTWORK")
 	TabsBGRight.Tex:SetInside(TabsBGRight)
 	TabsBGRight.Tex:SetTexture(T.GetTexture(C.General.HeaderTexture))
 	TabsBGRight.Tex:SetVertexColor(unpack(HeaderColor))
@@ -638,8 +694,14 @@ function Chat:MaxUIStyleChat()
 		TabsBGRight.Tex:SetVertexColor(unpack(ClassColor))
 	elseif C["General"]["ClassColorHeaders"]["Value"] == "BackdropColor" then 
 		TabsBGRight.Tex:SetVertexColor(unpack(C.General.BackdropColor))
+	elseif C["General"]["ClassColorHeaders"]["Value"] == "Custom" then 
+		TabsBGRight.Tex:SetVertexColor(unpack(C.General.CustomColor))
 	else
 		TabsBGRight.Tex:SetVertexColor(0.43, 0.43, 0.43)
+	end
+
+	if C["Skins"]["HeaderFilter"] == true then 
+		TabsBGRight:CreateMaxUIFilter()
 	end
 
 	DataTextRight:SetWidth(RightWidth)
@@ -674,7 +736,7 @@ function Chat:MaxUIStyleChat()
 		LeftChatBG:SetPoint("BOTTOMLEFT", BottomLine, "TOPLEFT", 0, y)
 		RightChatBG:SetPoint("BOTTOMRIGHT", BottomLine, "TOPRIGHT", 0, y)
 		
-		DataTextLeft:SetPoint("TOP", LeftChatBG, "TOP", 0, 0)
+		DataTextLeft:SetPoint("TOP", LeftChatBG, "BOTTOM", 0, 0)
 		DataTextRight:SetPoint("TOP", RightChatBG, "BOTTOM", 0, 0)
 	end
 	
@@ -689,10 +751,8 @@ function Chat:MaxUIStyleChat()
 end
 
 function Chat:AddPanels()
-	-- Tukui
 	baseAddPanels(self)
-	
-	-- MaxUI
+
 	self:ChatBackgroundOptions()
 	if C["Tools"]["ChatShortcuts"] == true then
 		self:CreateChatTools()
@@ -703,8 +763,12 @@ function Chat:AddPanels()
 		self:CreateChatTabs()
 	end
 	
-	if C["Chat"]["ChatBGCombatState"]["Value"] ~= "Nothing" then 
-		self:CombatStateChat()
+	if (C["Chat"]["LeftChatBGCombatState"]["Value"] ~= "Nothing") then
+		self:CombatStateChatLeft()
+	end
+
+	if (C["Chat"]["RightChatBGCombatState"]["Value"] ~= "Nothing") then 
+		self:CombatStateChatRight()
 	end	
 	
 	if C["General"]["Themes"]["Value"] == "MaxUI" then 
@@ -712,6 +776,35 @@ function Chat:AddPanels()
 	else
 		self:PositionTukui()
 	end	
+end
+
+function Chat:Enable()
+    baseChatEnable(self)
+    
+    local EditBox = ChatFrame1EditBox
+	local TabsBGLeft = T.Chat.Panels.LeftChatTabs 
+
+	if C["Skins"]["ChatFilter"] == true then 
+		EditBox:CreateMaxUIFilter()
+	end
+    
+	EditBox:ClearAllPoints()
+	EditBox.Backdrop:ClearAllPoints()
+	EditBox.Backdrop:SetOutside(EditBox)
+
+	if C["Chat"]["UnlinkEditBox"] then 
+	 	Movers:RegisterFrame(EditBox, "Chat Input")
+		
+		EditBox:SetSize(400, 20)
+	    EditBox:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 120)
+	    EditBox.Backdrop:CreateShadow()
+
+	   -- ChatButtons:ClearAllPoints()
+	   -- ChatButtons:SetPoint("BOTTOMRIGHT", EditBox, "TOPRIGHT", 0, 3)
+	    --ChatButtons:SetParent(EditBox)
+	else
+	    EditBox:SetAllPoints(TabsBGLeft)
+	end
 end
 
 ------------------------------------------------------------------------------------------

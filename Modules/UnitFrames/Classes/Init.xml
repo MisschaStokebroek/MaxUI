@@ -2,6 +2,7 @@
 
 	<Script file="ComboBar.lua"/>
 	<Script file="RegenTicker.lua"/>
+	<Script file="EmpoweredCasting.lua"/>
 	<Script file="Warrior.lua"/>
 	<Script file="Warlock.lua"/>
 	<Script file="Priest.lua"/>
@@ -14,5 +15,6 @@
 	<Script file="Deathknight.lua"/>
 	<Script file="Monk.lua"/>
 	<Script file="Demonhunter.lua"/>
+	<Script file="Evoker.lua"/>
 
 </Ui>

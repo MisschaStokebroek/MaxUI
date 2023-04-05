@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<!-- MAXUI Data Text -->
+	<!-- MAXUI ADDED ELEMENTS -->
 	<Script file="Elements\Avoidance.lua"/>
 	<Script file="Elements\Calltoarms.lua"/>
 	<Script file="Elements\Chat.lua"/>
@@ -16,9 +16,9 @@
 	<Script file="Elements\RaidTools.lua"/>
 	<Script file="Elements\Speed.lua"/>
 	<Script file="Elements\Talent.lua"/>
-	<Script file="Elements\UIConfig.lua"/>
 	<Script file="Elements\Xcoordinate.lua"/>
 	<Script file="Elements\Ycoordinate.lua"/>
 	
+	<!-- MAXUI DATATEXT MODULE -->
 	<Script file="DataTexts.lua"/>
 </Ui>

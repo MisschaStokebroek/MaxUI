@@ -1,6 +1,6 @@
 ﻿------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up COMBOBAR.
@@ -11,36 +11,51 @@
 local T, C, L = Tukui:unpack()
 local UnitFrames = T["UnitFrames"]
 local Class = select(2, UnitClass("player"))
-local basePlayer = UnitFrames.Player
 local Movers = T["Movers"]
-local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
+local basePlayer = UnitFrames.Player
 
 ------------------------------------------------------------------------------------------
 -- CLASS RESOURCES
 ------------------------------------------------------------------------------------------
 function UnitFrames:Player()
-	-- Tukui
 	basePlayer(self)
 
-	-- MaxUI
-	if not (C["UnitFrames"]["Style"]["Value"] == "MaxUI") then return end
+	if not C.UnitFrames.ClassBar then return end
+	if C.ClassOptions.ClassPowerStyle.Value ~= "MaxUI" then return end
+
+	-- elements
 	local Health = self.Health
 	ComboPointsBar = self.ComboPointsBar
-	local ClassPowerTexture = T.GetTexture(C["ClassOptions"]["ClassPowerTexture"])
+
+	-- settings
 	local ClassPowerHeight = C["ClassOptions"]["ClassPowerHeight"]
 	local ClassPowerWidth = C["ClassOptions"]["ClassPowerWidth"]
 	local ClassPowerSpace = C["ClassOptions"]["ClassPowerSpace"]
+
+	-- textures
+	local ClassPowerTexture = T.GetTexture(C["ClassOptions"]["ClassPowerTexture"])
 	
 	-- combopoints and bar
-	if C.UnitFrames.ComboBar == true then
-	
+	if C.UnitFrames.ComboBar == true then	
 		if (Class == "ROGUE" or Class == "DRUID") then
 		
-			-- bar/anchor
-			ComboPointsBar:SetFrameLevel(15)
-			ComboPointsBar:SetAlpha(1)
+			ComboPointsBar:SetFrameStrata("MEDIUM")
+			ComboPointsBar:SetFrameLevel(5)
 			ComboPointsBar.Backdrop:SetAlpha(0)
-			Movers:RegisterFrame(ComboPointsBar, "Combo Points")
+
+			if C["ClassOptions"]["ClassPowerBackdrop"] then
+				ComboPointsBar.Backdrop:SetAlpha(1)
+				ComboPointsBar.Backdrop:SetBackdropColor(0.11, 0.11, 0.11, 0.7)
+				ComboPointsBar.Backdrop:CreateShadow()
+			
+				if C["Skins"]["UnitFramesFilter"] == true then 
+					ComboPointsBar.Backdrop:CreateMaxUIFilter()
+				end
+			end
+		
+			if C["ClassOptions"]["ClassPowerMover"] then
+				Movers:RegisterFrame(ComboPointsBar, "Combo Points")
+			end
 
 			-- position/acnhor
 			ComboPointsBar:ClearAllPoints()
@@ -51,79 +66,57 @@ function UnitFrames:Player()
 			end
 
 			-- size according to orientation
-			if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" then
-				ComboPointsBar:SetSize((ClassPowerWidth), (6*ClassPowerHeight)+(5*ClassPowerSpace))
-				if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Horizontal" then
-					ComboPointsBar:SetSize((6*ClassPowerWidth)+(5*ClassPowerSpace), ClassPowerHeight)
-				end
+			if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Horizontal" then
+				ComboPointsBar:SetSize((6*ClassPowerWidth)+(6*ClassPowerSpace)+6, ClassPowerHeight+6)
 			else
-				ComboPointsBar:SetSize((6*ClassPowerWidth)+(5*ClassPowerSpace), ClassPowerHeight)
-				if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Vertical" then
-					ComboPointsBar:SetSize((ClassPowerWidth), (6*ClassPowerHeight)+(5*ClassPowerSpace))
-				end
+				ComboPointsBar:SetSize(ClassPowerWidth+6, (6*ClassPowerHeight)+(5*ClassPowerSpace)+6)
 			end
 
 			-- each point
-			for i = 1, 6 do
+			for i = 1, 7 do
+				ComboPointsBar[i].Size7Points = ClassPowerWidth
 				ComboPointsBar[i].Size6Points = ClassPowerWidth
 				ComboPointsBar[i].Size5Points = ClassPowerWidth
 
-				ComboPointsBar[i]:ClearAllPoints()
-				ComboPointsBar[i]:CreateBackdrop(0,0,0,1)
+				ComboPointsBar[i]:SetFrameStrata("MEDIUM")
+				ComboPointsBar[i]:SetFrameLevel(7)
+				ComboPointsBar[i]:SetHeight(ClassPowerHeight)
+				ComboPointsBar[i]:SetWidth(ClassPowerWidth)
+				ComboPointsBar[i]:SetStatusBarTexture(ClassPowerTexture)
+
+				ComboPointsBar[i]:CreateBackdrop()
 				ComboPointsBar[i].Backdrop:SetOutside(ComboPointsBar[i])
 				ComboPointsBar[i].Backdrop:CreateShadow()
+				
 				if C["General"]["ClassShadowExcludeUF"] then
 					ComboPointsBar[i].Backdrop.Shadow:SetBackdropBorderColor(0, 0, 0, .8)
 				end
-				ComboPointsBar[i]:SetHeight(ClassPowerHeight)
-				ComboPointsBar[i]:SetStatusBarTexture(ClassPowerTexture)
 
-				if i == 1 then
-					if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" then
-						if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Horizontal" then
-							ComboPointsBar[i]:SetPoint("LEFT", ComboPointsBar, "LEFT", 0, 0)
-							ComboPointsBar[i]:SetHeight(ClassPowerHeight)
-							ComboPointsBar[i]:SetWidth(ClassPowerWidth)
-						else
-							ComboPointsBar[i]:SetPoint("BOTTOM", ComboPointsBar, "BOTTOM", 0, 0)
-							ComboPointsBar[i]:SetHeight(ClassPowerHeight)
-							ComboPointsBar[i]:SetWidth(ClassPowerWidth)
-						end
+				if C["Skins"]["UnitFramesFilter"] == true then 
+					if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Horizontal" then
+						ComboPointsBar[i]:CreateMaxUIFilter()
 					else
-						if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Vertical" then
-							ComboPointsBar[i]:SetPoint("BOTTOM", ComboPointsBar, "BOTTOM", 0, 0)
-							ComboPointsBar[i]:SetHeight(ClassPowerHeight)
-							ComboPointsBar[i]:SetWidth(ClassPowerWidth)
-						else
-							ComboPointsBar[i]:SetPoint("LEFT", ComboPointsBar, "LEFT", 0, 0)
-							ComboPointsBar[i]:SetHeight(ClassPowerHeight)
-							ComboPointsBar[i]:SetWidth(ClassPowerWidth)
-						end
+						ComboPointsBar[i]:CreateMaxUIVerticalFilter()
+					end	
+				end
+
+				ComboPointsBar[i]:ClearAllPoints()
+				if i == 1 then
+					if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Horizontal" then
+						ComboPointsBar[i]:SetPoint("LEFT", ComboPointsBar, "LEFT", 3, 0)
+					else
+						ComboPointsBar[i]:SetPoint("BOTTOM", ComboPointsBar, "BOTTOM", 0, 3)
 					end
 				else
-					if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" then
-						if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Horizontal" then
-							ComboPointsBar[i]:SetPoint("LEFT", ComboPointsBar[i-1], "RIGHT", ClassPowerSpace, 0)
-							ComboPointsBar[i]:SetHeight(ClassPowerHeight)
-							ComboPointsBar[i]:SetWidth(ClassPowerWidth)
-						else
-							ComboPointsBar[i]:SetPoint("BOTTOMLEFT", ComboPointsBar[i-1], "TOPLEFT", -0, ClassPowerSpace)
-							ComboPointsBar[i]:SetHeight(ClassPowerHeight)
-							ComboPointsBar[i]:SetWidth(ClassPowerWidth)
-						end
+					if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Horizontal" then
+						ComboPointsBar[i]:SetPoint("LEFT", ComboPointsBar[i-1], "RIGHT", ClassPowerSpace, 0)
 					else
-						if C["ClassOptions"]["ClassResourcesOrientation"]["Value"] == "Vertical" then
-							ComboPointsBar[i]:SetPoint("BOTTOMLEFT", ComboPointsBar[i-1], "TOPLEFT", -0, ClassPowerSpace)
-							ComboPointsBar[i]:SetHeight(ClassPowerHeight)
-							ComboPointsBar[i]:SetWidth(ClassPowerWidth)
-						else
-							ComboPointsBar[i]:SetPoint("LEFT", ComboPointsBar[i-1], "RIGHT", ClassPowerSpace, 0)
-							ComboPointsBar[i]:SetHeight(ClassPowerHeight)
-							ComboPointsBar[i]:SetWidth(ClassPowerWidth)
-						end
+						ComboPointsBar[i]:SetPoint("BOTTOM", ComboPointsBar[i-1], "TOP", -0, ClassPowerSpace)
 					end
 				end
 			end
 		end
+	else
+		ComboPointsBar:ClearAllPoints()
 	end
 end

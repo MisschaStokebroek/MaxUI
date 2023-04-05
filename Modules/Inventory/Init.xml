@@ -1,4 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="Inventory.lua"/>
 	<Script file="Loot.lua"/>
+	<Script file="GroupLoot.lua"/>
 </Ui>

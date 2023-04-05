@@ -24,10 +24,8 @@ local function MaxUIDurability()
 end
 
 function Durability:Enable()
-	-- Tukui
 	baseDurabilityEnable(self)
 	
-	-- MaxUI
 	if not (C.General.Themes.Value == "MaxUI") then return end
 	MaxUIDurability()	
 end

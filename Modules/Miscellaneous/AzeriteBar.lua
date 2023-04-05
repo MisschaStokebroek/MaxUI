@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-07-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up AZERITE BAR
@@ -24,6 +24,7 @@ local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
 Azerite.AZColor = {229 / 255, 204 / 255, 127 / 255}
 
 local AzeriteFrameHolder = CreateFrame("Frame", "AzeriteFrameHolder", UIParent)
+AzeriteFrameHolder:SetPoint("CENTER", UIParent, "CENTER", 0, -30)
 AzeriteFrameHolder:SetHeight(22) 
 AzeriteFrameHolder:SetWidth(200)
 
@@ -31,6 +32,9 @@ AzeriteFrameHolder:SetWidth(200)
 -- AZERITE TOOLTIP
 ------------------------------------------------------------------------------------------
 function Azerite:SetTooltip()
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["AZERITEBarEnable"] then return end
+
 	local AzeriteItems = C_AzeriteItem.FindActiveAzeriteItem()
 	
 	if not AzeriteItems then return end
@@ -59,6 +63,9 @@ end
 -- AZERITE CREATE
 ------------------------------------------------------------------------------------------
 function Azerite:GetAzerite()
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["AZERITEBarEnable"] then return end
+
 	local AzeriteItems = C_AzeriteItem.FindActiveAzeriteItem()
 	
 	if not AzeriteItems then return end
@@ -70,6 +77,9 @@ function Azerite:GetAzerite()
 end
 
 function Azerite:Create()
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["AZERITEBarEnable"] then return end
+
 	for i = 1, self.NumBars do
 		local AzeriteBar = CreateFrame("StatusBar", nil, UIParent)
 
@@ -98,10 +108,9 @@ function Azerite:Create()
 		local Azeritetext = AzeriteBar:CreateFontString(nil, "OVERLAY")
 		Azeritetext:SetFontObject(T.GetFont(C["DataTexts"].Font))
 		Azeritetext:SetScale(C.DataTexts.FontSize/10)
-		Azeritetext:SetPoint("RIGHT", AzeriteBar, "LEFT", -6, 0)
 		Azeritetext:SetText("Azerite")
 
-		NoAzeritetext = self:CreateFontString(nil, "OVERLAY")
+		NoAzeritetext = AzeriteBar:CreateFontString(nil, "OVERLAY")
 		NoAzeritetext:SetFontObject(T.GetFont(C["DataTexts"].Font))
 		NoAzeritetext:SetScale(C.DataTexts.FontSize/10)
 		NoAzeritetext:SetPoint("CENTER", AzeriteBar, "CENTER", 0, 0)
@@ -111,7 +120,15 @@ function Azerite:Create()
 		if C["Misc"]["PercentageTag"] == true then
 			Azeritepercenttext:SetFontObject(T.GetFont(C["DataTexts"].Font))
 			Azeritepercenttext:SetScale(C.DataTexts.FontSize/10)
+		end	
+
+		if C["Misc"]["ANIMABarTextPlacement"]["Value"] == "Inside" then
+			Azeritepercenttext:SetPoint("RIGHT", AzeriteBar, "RIGHT", -6, 0)
+			Azeritetext:SetPoint("LEFT", AzeriteBar, "LEFT", 6, 0)
+		
+		elseif C["Misc"]["ANIMABarTextPlacement"]["Value"] == "Outside" then
 			Azeritepercenttext:SetPoint("LEFT", AzeriteBar, "RIGHT", 6, 0)
+			Azeritetext:SetPoint("RIGHT", AzeriteBar, "LEFT", -6, 0)
 		end	
 
 		AzeriteBar:HookScript("OnEnter", function(self)
@@ -122,6 +139,10 @@ function Azerite:Create()
 			AzeriteBar.Backdrop:SetBorderColor(unpack(C["General"]["BorderColor"]))
 		end)
 	
+		if C["Skins"]["DataBarFilter"] == true then 
+			AzeriteBar:CreateMaxUIFilter()
+		end
+		
 		self["AzeriteBar"..i] = AzeriteBar
 	end	
 		
@@ -139,6 +160,9 @@ end
 -- AZERITE UPDATE
 ------------------------------------------------------------------------------------------
 function Azerite:Update()
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["AZERITEBarEnable"] then return end
+
 	local AzeriteItem = C_AzeriteItem.FindActiveAzeriteItem()
 	for i = 1, self.NumBars do
 
@@ -156,9 +180,9 @@ function Azerite:Update()
 				Azeritepercenttext:SetText("".. floor(Current / Max * 100) .."%")
 			end
 		else
-			Bar:Hide()
-			NoAzeritetext:SetText("No Azerite")
-			NoAzeritetext:Show() -- showing in combat
+			--Bar:Hide()
+			--NoAzeritetext:SetText("No Azerite")
+			--NoAzeritetext:Show() -- showing in combat
 		end	
 	end	
 end
@@ -167,7 +191,33 @@ end
 -- AZERITE ENABLE / DISABLE
 ------------------------------------------------------------------------------------------
 function Azerite:Enable()
+	if not (C.General.Themes.Value == "MaxUI") then return end
 	if not C["Misc"]["AZERITEBarEnable"] then return end
+
+	if not C["Misc"]["AZERITEBarDTEnable"] then
+		if C["Misc"]["AZERITEBarTextPlacement"]["Value"] == "Inside" then
+			AzeriteFrameHolder:SetHeight(C["Misc"]["AZERITEBarHeight"] + 12) 
+			AzeriteFrameHolder:SetWidth(C["Misc"]["AZERITEBarWidth"] + 12)
+		elseif C["Misc"]["HONORBarTextPlacement"]["Value"] == "Outside" then
+			AzeriteFrameHolder:SetHeight(C["Misc"]["AZERITEBarHeight"] + 12) 
+			AzeriteFrameHolder:SetWidth(C["Misc"]["AZERITEBarWidth"] + 120)
+		else	
+			AzeriteFrameHolder:SetHeight(C["Misc"]["AZERITEBarHeight"] + 12) 
+			AzeriteFrameHolder:SetWidth(C["Misc"]["AZERITEBarWidth"] + 12)
+		end	
+		
+		if C["Misc"]["AZERITEBarBackdrop"] == true then
+			AzeriteFrameHolder:CreateBackdrop(nil, Texture)
+			AzeriteFrameHolder.Backdrop:SetOutside()
+			AzeriteFrameHolder.Backdrop:CreateShadow()
+			AzeriteFrameHolder.Backdrop:SetAlpha(C["Misc"]["AZERITEBarAlpha"])
+		end
+		Movers:RegisterFrame(AzeriteFrameHolder, "Azerite DataBar")
+		
+		if C["Misc"]["AZERITEBarCombatState"]["Value"] == "Hide" then
+			RegisterStateDriver(AzeriteFrameHolder, "visibility", "[combat] hide; show")
+		end
+	end
 
 	if not self.IsCreated then
 		self:Create()
@@ -202,21 +252,22 @@ T.Miscellaneous.Azerite = Azerite
 -- AZERITE DATATEXT 
 ------------------------------------------------------------------------------------------
 local Update = function(self)
-	if not C["Misc"]["AZERITEBarEnable"] then return end
+	if not C["Misc"]["AZERITEBarDTEnable"] then return end
 	AzeriteFrameHolder:ClearAllPoints()
 	AzeriteFrameHolder:SetPoint("CENTER", self, "CENTER", 0, 0)
 	AzeriteFrameHolder:SetParent(self)
 end
 
 local Enable = function(self)
-	if not C["Misc"]["AZERITEBarEnable"] then return end
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C["Misc"]["AZERITEBarDTEnable"] then return end
 	self:Update()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:SetScript("OnEvent", self.Update)
 end
 
 local Disable = function(self)
-	if not C["Misc"]["AZERITEBarEnable"] then return end
+	if not C["Misc"]["AZERITEBarDTEnable"] then return end
 	self.Text:SetText("")
 	self:SetScript("OnUpdate", nil)
 end

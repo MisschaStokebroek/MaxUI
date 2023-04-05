@@ -9,7 +9,6 @@
 -- SETUP
 ------------------------------------------------------------------------------------------
 local T, C, L = Tukui:unpack()
-local Movers = T["Movers"]
 local Miscellaneous = T["Miscellaneous"]
 local Errors = Miscellaneous.Errors
 local baseErrorSpeechEnable = Errors.Enable
@@ -20,7 +19,7 @@ local baseErrorSpeechEnable = Errors.Enable
 function Errors:Enable()
 	baseErrorSpeechEnable(self)
 	
-	UIErrorsFrame:SetFont(C.Medias.Font, C.Misc.UIErrorSize)
+	UIErrorsFrame:SetFont(C.Medias.Font, C.Misc.UIErrorSize, "")
 
 	if C["Misc"]["ErrorSpeechEnable"] == false then
 		UIErrorsFrame:Kill()

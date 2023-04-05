@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-07-2021
+-- latest update: 30-10-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up ACTION BAR 5.
@@ -34,7 +34,9 @@ function ActionBars:SizingAB5()
 	ActionBar5:SetHeight((Size * NumRow) + (Spacing * (NumRow + 1)))
 
 	for i = 1, Num do
-		local Button = _G["MultiBarLeftButton"..i]
+		local ButtonName = "MultiBarLeftButton"..i
+		Button = _G[ButtonName]
+
 		Button:SetSize(Size, Size)
 	end
 end
@@ -51,9 +53,7 @@ function ActionBars:VisibilityAB5()
 		
 		for i = 1, Num do
 			local Button = _G["MultiBarLeftButton"..i]
-
 			Button:Kill()
-		
 			ActionBar5["Button"..i] = Button
 		end
 	end
@@ -103,8 +103,6 @@ function ActionBars:PositionAB5()
 	local ActionBar3 = ActionBars.Bars.Bar3
 	local ActionBar4 = ActionBars.Bars.Bar4
 	local ActionBar5 = ActionBars.Bars.Bar5
-	local RightChatBG = Chat.Panels.RightChat
-	local LeftChatBG = Chat.Panels.LeftChat
 
 	-- Healer
 	if C["Layout"]["LayoutRole"]["Value"] == "Healer" then
@@ -220,16 +218,12 @@ function ActionBars:StylingAB5()
 		ActionBar5:CreateMaxUIBottomEdge()
 		ActionBar5:CreateMaxUILeftEdge()
 		ActionBar5:CreateMaxUIRightEdge()
-	
-	elseif C["ActionBars"]["ActionBar5Edges"]["Value"] == "None" then
-
 	end
 end
 
 function ActionBars:CreateBar5()
-    -- Tukui
     baseCreateBar5(self)
-
+	
 	if not C.ActionBars.LeftBar then return end
 
 	self:VisibilityAB5()

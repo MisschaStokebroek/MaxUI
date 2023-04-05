@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up MAPS DATATEXT.
@@ -11,18 +11,27 @@
 local T, C, L = unpack(Tukui) 
 local DataText = T["DataTexts"]
 local Misc = T["Miscellaneous"]
-local Movers = T["Movers"]
 
 ------------------------------------------------------------------------------------------
--- GAME MENU DATATEXT
+-- MAPS DATATEXT
 ------------------------------------------------------------------------------------------
 local Update = function(self)
-	--if C["DataTexts"]["DataCenter"] == false then return end
 	
 	self.Text:SetFormattedText("%s", DataText.NameColor .. "Map|r")
+	if C["DataTexts"]["Icons"] == true then
+		self.icon = self:CreateTexture(nil, "OVERLAY")
+		self.icon:SetWidth(20)
+		self.icon:SetHeight(20)
+		self.icon:SetPoint("LEFT", self, "CENTER", 32, 0)
+		self.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\cLocation.tga]])
+		self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
+	end
 	
 	self:SetScript("OnEnter", function(self)
 		self.Text:SetFormattedText("%s", DataText.HighlightColor .. "Map|r")
+		if C["DataTexts"]["Icons"] == true then
+			self.icon:SetVertexColor(unpack(C["DataTexts"].HighlightColor))
+		end
 		GameTooltip:SetOwner(self:GetTooltipAnchor())
 		GameTooltip:AddLine("Map:")
 		GameTooltip:AddDoubleLine("Toggle the minimap:", "Left-click", 1, 1, 1)
@@ -32,6 +41,9 @@ local Update = function(self)
 	
 	self:SetScript("OnLeave", function(self)
 		self.Text:SetFormattedText("%s", DataText.NameColor .. "Map|r")
+		if C["DataTexts"]["Icons"] == true then
+			self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
+		end
 		GameTooltip:Hide()
 	end)
 end
@@ -44,7 +56,7 @@ local OnMouseDown = function(self, button)
 			return
 		end
 		
-		MinimapFadeToggle()
+		Minimap:fadeToggle()
 	end
 	
 	if button == "RightButton" then

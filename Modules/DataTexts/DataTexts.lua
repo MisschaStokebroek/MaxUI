@@ -1,18 +1,18 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up DATA TEXT FIELDS.
--- NOTE: overwriting Tukui code instead of adding to it. Can't figure out another way to do it so far.
 
 ------------------------------------------------------------------------------------------
 -- SETUP
 ------------------------------------------------------------------------------------------
 local T, C, L = Tukui:unpack()
-local Chat = T["Chat"]
 local DataTexts = T["DataTexts"]
-local Minimap = T.Maps.Minimap
+local baseDataTextsCreateAnchors = DataTexts.CreateAnchors
+local baseDataTextsAddDefaults = DataTexts.AddDefaults
+local baseDataTextsToggleDataPositions = DataTexts.ToggleDataPositions
 
 ------------------------------------------------------------------------------------------
 -- SET DATA FOR DT'S, FUNCTION OVERRRIDES
@@ -40,33 +40,11 @@ local SetData = function(self, object)
 	local Spacing = 1
 	local PanelSize = 20
 	
-	local AmountBottom
-	if C["DataTexts"]["Bottomline"] == false then 
-		AmountBottom = 0
-	else
-		AmountBottom = C["DataTexts"]["AmountBottomDataTexts"]
-	end	
-	
-	local AmountTop
-	if C["DataTexts"]["Topline"] == false then 
-		AmountTop = 0
-	else
-		AmountTop = C["DataTexts"]["AmountTopDataTexts"]
-	end
-	
-	local AmountDataCenter
-	if C["DataTexts"]["DataCenter"] == false then 
-		AmountDataCenter = 0
-	else
-		AmountDataCenter = C["DataTexts"]["AmountDataCenterDataTexts"]	
-	end
-	
+	local AmountBottom = C["DataTexts"]["AmountBottomDataTexts"] or 0
+	local AmountTop = C["DataTexts"]["AmountTopDataTexts"] or 0
+	local AmountDataCenter = C["DataTexts"]["AmountDataCenterDataTexts"] or 0
 	local TotalAmount = AmountBottom + AmountTop + AmountDataCenter
 	self.NumAnchors = AmountBottom + AmountTop + AmountDataCenter
-	
-	if C["DataTexts"]["DataCenter"] == false then 
-		local AmountDataCenter = 0
-	end
 
 	-- Set the new data text
 	self.Data = object
@@ -109,7 +87,6 @@ end
 -- MAXUI DT'S
 ------------------------------------------------------------------------------------------
 function DataTexts:CreateAnchors()
-	local Panels = T.DataTexts.Panels
 	local BottomLine = BottomLine
 	local TopLine = TopLine
 	local DataCenter = DataCenter
@@ -119,80 +96,24 @@ function DataTexts:CreateAnchors()
 	
 	-- Tukui
 	if C["General"]["Themes"]["Value"] ~= "MaxUI" then 
-		DataTextLeft = T.DataTexts.Panels.Left
-		DataTextRight = T.DataTexts.Panels.Right
-		MinimapDataText = T.DataTexts.Panels.Minimap
+		baseDataTextsCreateAnchors(self)
 
-		if (MinimapDataText) then
-			self.NumAnchors = self.NumAnchors + 1
-		end
-		
-		for i = 1, self.NumAnchors do
-			local Frame = CreateFrame("Button", nil, UIParent)
-			local DataWidth = (DataTextLeft:GetWidth() / 3) - 1
-
-			if i >= 4 and i <= 6 then
-				DataWidth = (DataTextRight:GetWidth() / 3) - 1
-			end
-
-			Frame:SetWidth(DataWidth)
-			Frame:SetHeight(DataTextLeft:GetHeight() - 2)
-			Frame:SetFrameLevel(DataTextLeft:GetFrameLevel() + 1)
-			Frame:SetFrameStrata("HIGH")
-			Frame:EnableMouse(false)
-			Frame.SetData = SetData
-			Frame.RemoveData = RemoveData
-			Frame.Num = i
-
-			Frame.Tex = Frame:CreateTexture()
-			Frame.Tex:SetAllPoints()
-			Frame.Tex:SetColorTexture(0.2, 1, 0.2, 0)
-
-			self.Anchors[i] = Frame
-
-			if (i == 1) then
-				Frame:SetPoint("LEFT", DataTextLeft, 1, 0)
-			elseif (i == 4) then
-				Frame:SetPoint("LEFT", DataTextRight, 1, 0)
-			elseif (i == 7) then
-				Frame:SetPoint("CENTER", MinimapDataText, 0, 0)
-				Frame:SetWidth(MinimapDataText:GetWidth() - 2)	
-				Frame:SetHeight(MinimapDataText:GetHeight() - 2)	
-			else
-				Frame:SetPoint("LEFT", self.Anchors[i-1], "RIGHT", 1, 0)
-			end
-		end
-	
 	-- MaxUI
 	elseif C["General"]["Themes"]["Value"] == "MaxUI" then 
 		
-		local AmountBottom
-		if C["DataTexts"]["Bottomline"] == false then 
-			AmountBottom = 0
-		else
-			AmountBottom = C["DataTexts"]["AmountBottomDataTexts"]
-		end	
-		
-		local AmountTop
-		if C["DataTexts"]["Topline"] == false then 
-			AmountTop = 0
-		else
-			AmountTop = C["DataTexts"]["AmountTopDataTexts"]
-		end
-		
-		local AmountDataCenter
-		if C["DataTexts"]["DataCenter"] == false then 
-			AmountDataCenter = 0
-		else
-			AmountDataCenter = C["DataTexts"]["AmountDataCenterDataTexts"]	
-		end
-		
+		local AmountBottom = C["DataTexts"]["AmountBottomDataTexts"] or 0
+		local AmountTop = C["DataTexts"]["AmountTopDataTexts"] or 0
+		local AmountDataCenter = C["DataTexts"]["AmountDataCenterDataTexts"] or 0
 		local TotalAmount = AmountBottom + AmountTop + AmountDataCenter
 		self.NumAnchors = AmountBottom + AmountTop + AmountDataCenter
 		
 		for i = 1, self.NumAnchors do
 			local Frame = CreateFrame("Button", nil, UIParent)
-			Frame:SetHeight(20)
+			if C["General"]["thickness"] >= 20 then
+				Frame:SetHeight(C["General"]["thickness"])
+			else
+				Frame:SetHeight(20)
+			end
 			Frame:SetFrameStrata("HIGH")
 			Frame:EnableMouse(false)
 			Frame.SetData = SetData
@@ -204,27 +125,46 @@ function DataTexts:CreateAnchors()
 
 			-- bottom panel
 			if ( (i >= 1 and i <= AmountBottom) and (C["DataTexts"]["Bottomline"] == true)) then
-				Frame:SetFrameLevel(BottomLine:GetFrameLevel() -1)
-				Frame:SetWidth((BottomLine:GetWidth() / AmountBottom) -1)
+				Frame:SetParent(BottomLine)
+				Frame:SetFrameLevel(BottomLine:GetFrameLevel() +10)
+				Frame:SetWidth((BottomLine:GetWidth() / AmountBottom))
 				if (i == 1) then
 					Frame:SetPoint("LEFT", BottomLine, "LEFT", 0, 0)
 				elseif (i >= 2 and i <= AmountBottom) then
-					Frame:SetPoint("LEFT", self.Anchors[i-1], "RIGHT", 1, 0)
-				end	
+					Frame:SetPoint("LEFT", self.Anchors[i-1], "RIGHT", 0, 0)
+				end
+
+				if (C["Skins"]["DataTextFilter"] == true --[[and C["General"]["thickness"] >= 20]]) then 
+					Frame:CreateMaxUIFilter()
+					Frame.Filter:ClearAllPoints()
+					Frame.Filter:SetWidth((BottomLine:GetWidth() / AmountBottom))
+					Frame.Filter:SetHeight(C["General"]["thickness"])
+					Frame.Filter:SetPoint("CENTER", Frame, "CENTER", 0, 0)
+				end
 			
 			-- toppanel
 			elseif ((i >= (AmountBottom + 1) and i <= (AmountBottom + AmountTop)) and (C["DataTexts"]["Topline"]== true)) then
-				Frame:SetFrameLevel(TopLine:GetFrameLevel() +1)
-				Frame:SetWidth((TopLine:GetWidth() / AmountTop) -1)
+				Frame:SetParent(TopLine)
+				Frame:SetFrameLevel(TopLine:GetFrameLevel() +10)
+				Frame:SetWidth((TopLine:GetWidth() / AmountTop))
 				if (i == AmountBottom + 1) then
 					Frame:SetPoint("LEFT", TopLine, "LEFT", 0, 0)
 				elseif (i >= (AmountBottom + 2) and i <= (AmountBottom + AmountTop)) then
-					Frame:SetPoint("LEFT", self.Anchors[i-1], "RIGHT", 1, 0)
+					Frame:SetPoint("LEFT", self.Anchors[i-1], "RIGHT", 0, 0)
+				end
+				
+				if (C["Skins"]["DataTextFilter"] == true --[[and C["General"]["thickness"] >= 20]]) then 
+					Frame:CreateMaxUIFilter()
+					Frame.Filter:ClearAllPoints()
+					Frame.Filter:SetWidth((BottomLine:GetWidth() / AmountBottom))
+					Frame.Filter:SetHeight(C["General"]["thickness"])
+					Frame.Filter:SetPoint("CENTER", Frame, "CENTER", 0, 0)
 				end
 			
 			-- DataCenter
 			elseif ((i >= AmountBottom + AmountTop + 1) and (C["DataTexts"]["DataCenter"] == true)) then
-				Frame:SetFrameLevel(DataCenter:GetFrameLevel() +1)
+				Frame:SetParent(DataCenter)
+				Frame:SetFrameLevel(DataCenter:GetFrameLevel() +10)
 				Frame:SetWidth(DataCenter:GetWidth()-2)
 				if (i == AmountBottom + AmountTop + 1) then
 					Frame:SetPoint("TOPLEFT", DataCenter, "TOPLEFT", 1, -1)
@@ -241,42 +181,17 @@ end
 ------------------------------------------------------------------------------------------
 local GetTooltipAnchor = function(self)
 	local Position = self.Position
+	local MinimapDataText = T.DataTexts.Panels.Minimap
 	local BottomLine = BottomLine
 	local TopLine = TopLine
 	local From
 	
-	local AmountBottom
-	if C["DataTexts"]["Bottomline"] == false then 
-		AmountBottom = 0
-	else
-		AmountBottom = C["DataTexts"]["AmountBottomDataTexts"]
-	end	
-	
-	local AmountTop
-	if C["DataTexts"]["Topline"] == false then 
-		AmountTop = 0
-	else
-		AmountTop = C["DataTexts"]["AmountTopDataTexts"]
-	end
-	
-	local AmountDataCenter
-	if C["DataTexts"]["DataCenter"] == false then 
-		AmountDataCenter = 0
-	else
-		AmountDataCenter = C["DataTexts"]["AmountDataCenterDataTexts"]	
-	end
-	
-	local TotalAmount = AmountBottom + AmountTop + AmountDataCenter
-	self.NumAnchors = AmountBottom + AmountTop + AmountDataCenter
-	
-	if C["DataTexts"]["DataCenter"] == false then 
-		local AmountDataCenter = 0
-	end
-
+	-- MaxUI datatext Tooltip
 	if (C.General.Themes.Value == "MaxUI") then
-		local AmountBottom = C["DataTexts"]["AmountBottomDataTexts"]
-		local AmountTop = C["DataTexts"]["AmountTopDataTexts"]
-		 local AmountDataCenter = C["DataTexts"]["AmountDataCenterDataTexts"]
+		local AmountBottom = C["DataTexts"]["AmountBottomDataTexts"] or 0
+		local AmountTop = C["DataTexts"]["AmountTopDataTexts"] or 0
+		local AmountDataCenter = C["DataTexts"]["AmountDataCenterDataTexts"] or 0
+		local TotalAmount = AmountBottom + AmountTop + AmountDataCenter
 
 		if (Position >= 1 and Position <= AmountBottom) then
 			Anchor = "ANCHOR_CURSOR"
@@ -287,10 +202,9 @@ local GetTooltipAnchor = function(self)
 		elseif (Position >= (AmountBottom + AmountTop +1) and Position <= (TotalAmount) ) then
 			Anchor = C["DataTexts"]["TooltipAnchor"]["Value"]
 			From = DataCenter
---			Y = -20
 		end
 		
-	return From, Anchor, X, Y
+		return From, Anchor, X, Y
 
 	else
 
@@ -306,7 +220,7 @@ local GetTooltipAnchor = function(self)
 			Anchor = "ANCHOR_TOPRIGHT"
 			From = T.Chat.Panels.RightChat
 		elseif (Position == 7 and MinimapDataText) then
-			Anchor = "ANCHOR_BOTTOMLEFT"
+			Anchor = "ANCHOR_BOTTOM"
 			Y = (-5)
 			From = MinimapDataText
 		end
@@ -326,89 +240,113 @@ end
 -- DEFAULTS
 ------------------------------------------------------------------------------------------
 function DataTexts:AddDefaults()
-	
-	local AmountBottom
-	if C["DataTexts"]["Bottomline"] == false then 
-		AmountBottom = 0
-	else
-		AmountBottom = C["DataTexts"]["AmountBottomDataTexts"]
-	end	
-	
-	local AmountTop
-	if C["DataTexts"]["Topline"] == false then 
-		AmountTop = 0
-	else
-		AmountTop = C["DataTexts"]["AmountTopDataTexts"]
-	end
-	
-	local AmountDataCenter
-	if C["DataTexts"]["DataCenter"] == false then 
-		AmountDataCenter = 0
-	else
-		AmountDataCenter = C["DataTexts"]["AmountDataCenterDataTexts"]	
-	end
-	
-	local TotalAmount = AmountBottom + AmountTop + AmountDataCenter
-	
 	-- MaxUI
 	if C["General"]["Themes"]["Value"] == "MaxUI" then 
 		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts = {}
-		
-		-- bottomline 1-9
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Guild"] = {true, 1}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Friends"] = {true, 2}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Voice Chat"] = {true, 3}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Game Menu|r"] = {true, 5}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Buff Tracker|r"] = {true, 7}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Raid Tools|r"] = {true, 8}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Gold"] = {true, 9}
-		
-		-- topline 10-18
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Data Center|r"] = {true, 10}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Quests|r"] = {true, 11}
-		if T.Retail then
-			TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Missions|r"] = {true, 12}
-		end
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99X Coordinate|r"] = {true, 13}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Location|r"] = {true, 14}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Y Coordinate|r"] = {true, 15}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Move Speed|r"] = {true, 16}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Time"] = {true, 17}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["System"] = {true, 18}
-	
-		-- datacenter 19-27
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Character"] = {true, 19}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Talents|r"] = {true, 20}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Armor"] = {true, 21}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Crit"] = {true, 22}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Power"] = {true, 23}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Regen"] = {true, 24}
-		--TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["DPS"] = {true, 25}
-		--TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["HPS"] = {true, 26}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Experience|r"] = {true, 27}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Reputation|r"] = {true, 28}
-		
-		if T.Retail then
-			TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Honor|r"] = {true, 29}
-			TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Anima|r"] = {true, 30}
+
+		local AmountBottom = C["DataTexts"]["AmountBottomDataTexts"] or 0
+		local AmountTop = C["DataTexts"]["AmountTopDataTexts"] or 0
+		local AmountDataCenter = C["DataTexts"]["AmountDataCenterDataTexts"] or 0
+		local TotalAmount = AmountBottom + AmountTop + AmountDataCenter
+
+		for i = 1, TotalAmount do
+			if i == 1 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Guild"] = {true, i}
+			elseif i == 2 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Friends"] = {true, i}
+			elseif i == 3 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Voice Chat"] = {true, i}
+			elseif i == 4 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Chat / Emotes|r"] = {true, i}
+			elseif i == 5 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Game Menu|r"] = {true, i}
+			elseif i == 6 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Move Speed|r"] = {true, i}
+			elseif i == 7 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Buff Tracker|r"] = {true, i}
+			elseif i == 8 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Raid Tools|r"] = {true, i}
+			elseif i == 9 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Gold"] = {true, i}
+			elseif i == 10 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Data Center|r"] = {true, i}
+			elseif i == 11 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Quests|r"] = {true, i}
+			elseif i == 12 then
+				if T.Retail then
+					TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Missions|r"] = {true, i}
+				end
+			elseif i == 13 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99X Coordinate|r"] = {true, i}
+			elseif i == 14 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Location|r"] = {true, i}
+			elseif i == 15 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Y Coordinate|r"] = {true, i}
+			elseif i == 16 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Time"] = {true, i}
+			elseif i == 17 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["System"] = {true, i}
+			elseif i == 18 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Maps|r"] = {true, i}
+			elseif i == 19 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Character"] = {true, i}
+			elseif i == 20 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Talents|r"] = {true, i}
+			elseif i == 21 then
+
+			elseif i == 22 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Experience|r"] = {true, i}
+			elseif i == 23 then
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Reputation|r"] = {true, i}
+			elseif i == 24 then
+				if T.Retail then
+					TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Honor|r"] = {true, i}
+				end
+			elseif i == 25 then
+				if T.Retail then
+					TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Anima|r"] = {true, i}
+				end
+			elseif i == 26 then
+				if T.Retail then
+					TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Azerite|r"] = {true, i}
+				end
+			end
 		end
 
 	-- Tukui
 	else
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts = {}
-
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Guild"] = {true, 1}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Character"] = {true, 2}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Friends"] = {true, 3}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["System"] = {true, 4}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["MicroMenu"] = {true, 5}
-		TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Gold"] = {true, 6}
-		
-		if UnitLevel("player") == MAX_PLAYER_LEVEL then
-			TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Time"] = {true, 7}
-		else
-			-- Better as default for xp'ing fast
-			TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["Coords"] = {true, 7}
-		end
+		baseDataTextsAddDefaults(self)
 	end	
+end
+
+------------------------------------------------------------------------------------------
+-- TOGGLE FUNCTION
+------------------------------------------------------------------------------------------
+local Active = false
+local Anchors = DataTexts.Anchors
+
+function DataTexts:ToggleDataPositions()
+	baseDataTextsToggleDataPositions(self)
+
+	if Active then
+		for i = 1, self.NumAnchors do
+			local Frame = Anchors[i]
+			Frame.Tex:SetColorTexture(0.2, 1, 0.2, 0)
+		end
+		Active = false
+	else
+		for i = 1, self.NumAnchors do
+			local Frame = Anchors[i]
+
+			Frame.Tex:SetColorTexture(0.2, 1, 0.2, 0.2)
+			
+			Frame:SetScript("OnEnter", function(self)
+				Frame.Tex:SetColorTexture(1, 1, 0, 0.2)
+			end)
+			Frame:SetScript("OnLeave", function(self)
+				Frame.Tex:SetColorTexture(0.2, 1, 0.2, 0.2)
+			end)
+		end
+		Active = true
+	end
 end

@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-10-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up TARGET OF TARGET FRAME.
@@ -10,8 +10,8 @@
 ------------------------------------------------------------------------------------------
 local T, C, L = Tukui:unpack()
 local UnitFrames = T.UnitFrames
-local baseToT = UnitFrames.TargetOfTarget
 local Movers = T["Movers"]
+local baseToT = UnitFrames.TargetOfTarget
 
 ------------------------------------------------------------------------------------------
 -- TARGET of TARGET FRAME SETUP
@@ -20,9 +20,6 @@ local function CreateUnits()
 	local ToT = UnitFrames.Units.TargetOfTarget
 	local Target = UnitFrames.Units.Target
 	
-------------------------------------------------------------------------------------------
--- TARGET of TARGET FRAME disable
-------------------------------------------------------------------------------------------
 	if not C["UnitFrames"]["Enable"] == true then return end
 
 	if C["UF: ToT"]["Enable"] ~= true then
@@ -55,7 +52,7 @@ local function CreateUnits()
 	-- melee or tank
 	elseif (C["Layout"]["LayoutRole"]["Value"] == "Melee") or (C["Layout"]["LayoutRole"]["Value"] == "Tank") then 
 		ToT:ClearAllPoints()
-		if C["UF: Pet"]["PortraitStyle"]["Value"] == "Side" then
+		if C.UnitFrames.Portrait == true and C["UF: ToT"]["PortraitStyle"]["Value"] == "Side" then
 			ToT:SetPoint("TOPLEFT", Target, "TOPRIGHT", 82, 0)
 		else
 			ToT:SetPoint("TOPLEFT", Target, "TOPRIGHT", 60, 0)
@@ -64,7 +61,7 @@ local function CreateUnits()
 	-- healing 
 	elseif C["Layout"]["LayoutRole"]["Value"] == "Healer" then 
 		ToT:ClearAllPoints()
-		if C["UF: Pet"]["PortraitStyle"]["Value"] == "Side" then
+		if C.UnitFrames.Portrait == true and C["UF: ToT"]["PortraitStyle"]["Value"] == "Side" then
 			ToT:SetPoint("TOPLEFT", Target, "TOPRIGHT", 82, 0)
 		else
 			ToT:SetPoint("TOPLEFT", Target, "TOPRIGHT", 60, 0)
@@ -75,86 +72,118 @@ local function CreateUnits()
 		
 		if C["Layout"]["LayoutAB"]["Value"] == "Single" or C["Layout"]["LayoutAB"]["Value"] == "Double" then
 			ToT:ClearAllPoints()
-			if C["UF: Pet"]["PortraitStyle"]["Value"] == "Side" then
+			if C.UnitFrames.Portrait == true and C["UF: ToT"]["PortraitStyle"]["Value"] == "Side" then
 				ToT:SetPoint("TOPLEFT", Target, "TOPRIGHT", 82, 0)
 			else
 				ToT:SetPoint("TOPLEFT", Target, "TOPRIGHT", 60, 0)
 			end	
 		end
-		
-	-- center chat
-	elseif C["Layout"]["LayoutRole"]["Value"] == "CenterChat" then 
-
-	end
+	end	
 
 	if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" and C["UnitFrames"]["Style"]["Value"] == "MaxUI" then
 		ToT:ClearAllPoints()
-		ToT:SetPoint("LEFT", Target, "RIGHT", 70, 10)
+		ToT:SetPoint("LEFT", Target, "RIGHT", 70, 20)
 	end
 end	
 hooksecurefunc(UnitFrames, "CreateUnits", CreateUnits)
 
 ------------------------------------------------------------------------------------------
--- TARGET of TARGET FRAME - MaxUI THEME
+-- TARGET of TARGET FRAME GENERAL (MAXUI AND TUKUI)
 ------------------------------------------------------------------------------------------
 function UnitFrames:TargetOfTarget()
-	-- tukui
 	baseToT(self)
 	
-	-- MaxUI
+	-- wow
+
+	-- elements
 	local Panel = self.Panel
-	local Health = self.Health
 	local Name = self.Name
-	local Panel = self.Panel
-	local RaidIcon = self.RaidTargetIndicator
+	local Health = self.Health
 	local myBar = self.HealthPrediction.myBar
 	local otherBar = self.HealthPrediction.otherBar
 	local absorbBar = self.HealthPrediction.absorbBar
 	local Buffs = self.Buffs
 	local Debuffs = self.Debuffs
-	
+	local RaidIcon = self.RaidTargetIndicator
+	local Portrait
+	local PortraitBackdrop
+	local PortraitShadow
+
+	-- settings
 	local HealthHeight = C["UF: ToT"]["HealthHeight"]
 	local HealthWidth = C["UF: ToT"]["HealthWidth"]
 	local PowerHeight = C["UF: ToT"]["PowerHeight"]
 	local PowerWidth = C["UF: ToT"]["PowerWidth"]
+	local RoleIconSize = C["UF: ToT"]["RoleIconSize"]
+	local RaidIconSize = C["UF: ToT"]["RaidIconSize"]
+
+	-- font
 	local NameFont = T.GetFont(C["UF: ToT"]["NameFont"])
 	local HealthFont = T.GetFont(C["UF: ToT"]["HealthFont"])
 	local PowerFont = T.GetFont(C["UF: ToT"]["PowerFont"])
 	local HealthFontSize = C["UF: ToT"]["HealthFontSize"]/10
 	local NameFontSize = C["UF: ToT"]["NameFontSize"]/10
 	local PowerFontSize = C["UF: ToT"]["PowerFontSize"]/10
+
+	-- texture
 	local HealthTexture = T.GetTexture(C["UF: ToT"]["HealthTexture"])
 	local PowerTexture = T.GetTexture(C["UF: ToT"]["PowerTexture"])
-	local RoleIconSize = C["UF: ToT"]["RoleIconSize"]
-	local RaidIconSize = C["UF: ToT"]["RaidIconSize"]
 
+	-- MaxUI
 	local Power = CreateFrame("StatusBar", nil, Health)
-	Power.Background = Power:CreateTexture(nil, "BORDER")
 
 ------------------------------------------------------------------------------------------
 -- PORTRAIT STYLE
 ------------------------------------------------------------------------------------------
-	local Portrait = CreateFrame("PlayerModel", nil, Health)
-	self.Portrait = Portrait
+	if C.UnitFrames.Portrait then
+		Portrait = CreateFrame("Frame", nil, self)
 
-	if C["UF: ToT"]["PortraitStyle"]["Value"] == "None" then
-
-	elseif C["UF: ToT"]["PortraitStyle"]["Value"] == "Side" then
-		Portrait:SetPoint("RIGHT", Health, "LEFT", -8, 0)
-		Portrait:SetWidth(HealthHeight)
-		Portrait:SetHeight(HealthHeight-2)
-		Portrait:CreateBackdrop()
-		Portrait.Backdrop:SetOutside(Portrait)
-		Portrait.Backdrop:CreateShadow()
-		if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" then
-			Portrait:Kill()
+		if C.UnitFrames.Portrait2D then
+			Portrait.Texture = Portrait:CreateTexture(nil, "OVERLAY")
+			Portrait.Texture:SetTexCoord(0.1,0.9,0.1,0.9)
+		else
+			Portrait.Texture = CreateFrame("PlayerModel", nil, Portrait)
 		end
-			
-	elseif C["UF: ToT"]["PortraitStyle"]["Value"] == "Overlay" then
-		Portrait:SetAllPoints()
-		Portrait:SetFrameLevel(3)
-		Portrait:SetAlpha(C["UF: ToT"]["PortraitOverlayAlpha"])
+
+		Portrait:SetSize(35, 35)
+		Portrait:SetPoint("RIGHT", self, "LEFT", -10, 0)
+		Portrait:CreateBackdrop()
+		Portrait:CreateShadow()
+
+		Portrait.Backdrop:SetOutside()
+
+		Portrait.Texture:SetAllPoints(Portrait)
+
+		self.Portrait = Portrait.Texture
+		self.Portrait.Backdrop = Portrait.Backdrop
+		self.Portrait.Shadow = Portrait.Shadow
 	end
+	
+	if C.UnitFrames.Portrait == true then
+		Portrait = self.Portrait
+		PortraitBackdrop = self.Portrait.Backdrop
+		PortraitShadow = self.Portrait.Shadow
+
+		if (C.UnitFrames.Portrait == true and C["UF: ToT"]["PortraitStyle"]["Value"] == "None") then
+			Portrait:Kill()
+			PortraitBackdrop:Kill()
+			PortraitShadow:Kill()
+
+		elseif C["UF: ToT"]["PortraitStyle"]["Value"] == "Overlay" then
+			Portrait:ClearAllPoints()
+			Portrait:SetParent(Health)
+			PortraitBackdrop:Kill()
+			PortraitShadow:Kill()
+			
+			if C.UnitFrames.Portrait2D then
+				Portrait:Kill()
+			else
+				Portrait:SetAllPoints()
+				Portrait:SetFrameLevel(4)
+			end
+			Portrait:SetAlpha(C["UF: ToT"]["PortraitOverlayAlpha"])
+		end
+	end	
 
 ------------------------------------------------------------------------------------------
 -- COLOR THEME
@@ -222,292 +251,400 @@ function UnitFrames:TargetOfTarget()
 	end
 
 ------------------------------------------------------------------------------------------
--- MaxUI UF STYLE
+-- MaxUI UF STYLE BASIC
 ------------------------------------------------------------------------------------------
-	if C["UnitFrames"]["Style"]["Value"] == "MaxUI" then
+	if C["UnitFrames"]["Style"]["Value"] ~= "MaxUI" then return end
 
-		-- health
-		Health:SetStatusBarTexture(HealthTexture)
-		Health:SetInside(self)
+	-- infopanel
+	Panel:Hide()
+	Panel:SetFrameStrata(self:GetFrameStrata())
+	Panel:SetFrameLevel(self:GetFrameLevel()+1)
 
-		Health:CreateBackdrop()
-		Health.Backdrop:SetBackdropColor(0, 0, 0, 0)
-		Health.Backdrop:SetOutside(Health)
+	-- Name
+	Name:ClearAllPoints()
+	Name:SetPoint("TOPLEFT", Health, "BOTTOMLEFT", 0, -10)
+	Name:SetParent(Health)
+	Name:SetJustifyH("LEFT")
+	Name:SetFontObject(NameFont)
+	Name:SetScale(NameFontSize)
+	self:Tag(Name, C["UF: ToT"]["NameTag"]["Value"]) 
 
-		if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" then
-			Health:SetOrientation("VERTICAL")
+	-- health
+	Health:SetFrameStrata("MEDIUM")
+	Health:SetFrameLevel(1)
+	Health:SetStatusBarTexture(HealthTexture)
+	Health:SetInside(self)
+
+	Health:CreateBackdrop()
+	Health.Backdrop:SetBackdropColor(0, 0, 0, 0)
+	Health.Backdrop:SetOutside(Health)
+
+	-- health value
+	Health.Value = Health:CreateFontString(nil, "OVERLAY")
+	Health.Value:SetFontObject(HealthFont)
+	Health.Value:SetScale(HealthFontSize)
+	self:Tag(Health.Value, C["UF: ToT"]["HealthTag"]["Value"])
+
+	-- health percentage
+	local HPpercentage
+	if C["UF: ToT"]["PercentageTags"] == true then
+		HPpercentage = Health:CreateFontString(nil, "OVERLAY")
+		HPpercentage:SetAlpha(1)
+		HPpercentage:SetFontObject(HealthFont)
+		HPpercentage:SetScale(HealthFontSize)
+		self:Tag(HPpercentage, "[perhp]%")
+	end
+
+	-- Healcomm
+	if C.UnitFrames.HealComm then
+		myBar:SetWidth(HealthWidth)
+		otherBar:SetWidth(HealthWidth)
+		absorbBar:SetWidth(HealthWidth)
+	end
+
+	-- power
+	Power:SetFrameStrata("MEDIUM")
+	Power:SetFrameLevel(3)
+	Power:SetStatusBarTexture(PowerTexture)
+	
+	Power:CreateBackdrop()
+	Power.Backdrop:SetOutside(Power)
+	Power.Backdrop:CreateShadow()
+	if C["General"]["ClassShadowExcludeUF"] then
+		Power.Backdrop.Shadow:SetBackdropBorderColor(0, 0, 0, .8)
+	end
+
+	Power.Background = Power:CreateTexture(nil, "BORDER")
+	Power.Background:SetTexture(PowerTexture)
+	Power.Background:SetAllPoints(Power)
+	Power.Background.multiplier = C.UnitFrames.StatusBarBackgroundMultiplier / 100
+
+	-- power value
+	Power.Value = Power:CreateFontString(nil, "OVERLAY")
+	Power.Value:SetFontObject(PowerFont)
+	Power.Value:SetScale(PowerFontSize)
+	self:Tag(Power.Value, C["UF: ToT"]["PowerTag"]["Value"])
+
+	self.Power = Power
+	self.Power.bg = Power.Background
+	Power.frequentUpdates = true
+	Power.colorPower = true
+	Power.PostUpdate = nil
+
+	-- power percentage
+	local MPpercentage
+	if C["UF: ToT"]["PercentageTags"] == true then
+		MPpercentage = Power:CreateFontString(nil, "OVERLAY")
+		MPpercentage:SetAlpha(1)
+		MPpercentage:SetFontObject(PowerFont)
+		MPpercentage:SetScale(PowerFontSize)
+		self:Tag(MPpercentage, "[perpp]%")
+	end
+
+	-- portrait
+	if C.UnitFrames.Portrait == true and C["UF: ToT"]["PortraitStyle"]["Value"] == "Side" then
+		Portrait:ClearAllPoints()
+		Portrait:SetParent(Health)
+		Portrait.Backdrop:SetOutside(Portrait)
+		Portrait.Backdrop:CreateShadow()
+		PortraitShadow:Kill()
+	end
+
+		-- Debuffs
+	if (C.UnitFrames.TOTAuras) then
+		if C["UF: ToT"]["Debuffs"] == true then
+			-- Debuffs anchorframe
+			Debuffs:ClearAllPoints()
+			Debuffs:SetParent(Health)
+			
+			-- Debuffs icons
+			Debuffs.size = C["UF: ToT"]["DebuffSize"]
+			Debuffs.num = C["UF: ToT"]["DebuffNumber"]
+			Debuffs.numRow = C["UF: ToT"]["DebuffNumberRows"]
+			Debuffs.spacing = C["UF: ToT"]["DebuffSpacing"]
+			Debuffs.PostCreateIcon = UnitFrames.PostCreateAura
+			Debuffs.PostUpdateIcon = UnitFrames.PostUpdateAura
+			Debuffs.onlyShowPlayer = C["UF: ToT"].OnlySelfDebuffs
+			Movers:RegisterFrame(Debuffs, "ToT Debuffs")
+		else
+			Debuffs.num = 0
 		end
+	end
 		
-		Health.Value = Health:CreateFontString(nil, "OVERLAY")
+	-- Buffs	
+	if (C.UnitFrames.TOTAuras) then
+		if C["UF: ToT"]["Buffs"] == true then
+			Buffs:ClearAllPoints()
+			Buffs:SetFrameStrata(self:GetFrameStrata())
+			Buffs:SetParent(Health)
+			
+			-- Buffs icons
+			Buffs.size = C["UF: ToT"]["BuffSize"]
+			Buffs.num = C["UF: ToT"]["BuffNumber"]
+			Buffs.numRow = C["UF: ToT"]["BuffNumberRows"]
+			Buffs.spacing = C["UF: ToT"]["BuffSpacing"]
+			Buffs.PostCreateIcon = UnitFrames.PostCreateAura
+			Buffs.PostUpdateIcon = UnitFrames.PostUpdateAura
+			Buffs.PostUpdate = UnitFrames.UpdateBuffsHeaderPosition
+			Buffs.onlyShowPlayer = C["UF: ToT"]["OnlySelfBuffs"]
+
+			Movers:RegisterFrame(Buffs, "ToT Buffs")
+			
+			if C["UF: ToT"]["BuffsToTCombatState"]["Value"] == "Show" then
+				RegisterStateDriver(Buffs, "visibility", "[combat] show;hide")
+			end	
+			
+			if C["UF: ToT"]["BuffsToTCombatState"]["Value"] == "Hide" then
+				RegisterStateDriver(Buffs, "visibility", "[combat] hide;show")
+			end	
+		else
+			Buffs.num = 0
+		end
+	end
+
+	-- raid icon
+	if C["UF: ToT"]["RaidIcon"] == true then
+		RaidIcon:ClearAllPoints()
+		RaidIcon:SetDrawLayer("OVERLAY", 7)
+		RaidIcon:SetWidth(RaidIconSize)
+		RaidIcon:SetHeight(RaidIconSize)
+	else
+		RaidIcon:Hide()
+	end
+
+	-- roll icon
+	local GroupRoleIndicator
+	if T.Retail then
+		if C["UF: ToT"]["RoleIcon"] == true then
+			GroupRoleIndicator = Health:CreateTexture(nil, "OVERLAY")
+			GroupRoleIndicator:SetWidth(RoleIconSize)
+			GroupRoleIndicator:SetHeight(RoleIconSize)
+
+			if C["UnitFrames"]["Roles"]["Value"] == "MaxUI Style" or C["UnitFrames"]["Roles"]["Value"] == "Elvui Style" then
+				GroupRoleIndicator.Override = UnitFrames.SetGridGroupRole
+			end
+			self.GroupRoleIndicator = GroupRoleIndicator
+		end
+	end
+
+	-- highlighting
+	self:HookScript("OnEnter", function(self)
+		Health.Backdrop:SetBorderColor(Health:GetStatusBarColor())
+		Power.Backdrop:SetBorderColor(Power:GetStatusBarColor())
+	end)
+
+	self:HookScript("OnLeave", function(self)
+		Health.Backdrop:SetBorderColor(unpack(C["General"]["BorderColor"]))
+		Power.Backdrop:SetBorderColor(unpack(C["General"]["BorderColor"]))
+	end)
+
+------------------------------------------------------------------------------------------
+-- MaxUI UF STYLE HORIZONTAL
+------------------------------------------------------------------------------------------
+	if C["UnitFrames"]["HorVer"]["Value"] == "Horizontal" then
+
+		-- health value
 		Health.Value:SetPoint("RIGHT", Health, "RIGHT", -2, 0)
 		Health.Value:SetJustifyH("RIGHT")
-		Health.Value:SetFontObject(HealthFont)
-		Health.Value:SetScale(HealthFontSize)
-		self:Tag(Health.Value, C["UF: ToT"]["HealthTag"]["Value"])
-		
+
+		-- health percentage
+		if C["UF: ToT"]["PercentageTags"] == true then
+			HPpercentage:SetPoint("LEFT", Health, "Right", 2, 0)
+			HPpercentage:SetJustifyH("LEFT")
+		end
+
 		-- power
 		Power:SetPoint("LEFT", Health, "BOTTOMLEFT", 6, 0)
 		Power:SetHeight(PowerHeight)
 		Power:SetWidth(PowerWidth)
-		Power:SetFrameLevel(8)
-		Power:SetFrameStrata("MEDIUM")
-		Power:SetStatusBarTexture(PowerTexture)
-		Power:CreateBackdrop()
-		Power.Backdrop:SetOutside(Power)
-		Power.Backdrop:CreateShadow()
-		if C["General"]["ClassShadowExcludeUF"] then
-			Power.Backdrop.Shadow:SetBackdropBorderColor(0, 0, 0, .8)
-		end
-		
-		Power.Background:SetTexture(PowerTexture)
-		Power.Background:SetAllPoints(Power)
-		Power.Background.multiplier = C.UnitFrames.StatusBarBackgroundMultiplier / 100
-		
-		Power.Value = Power:CreateFontString(nil, "OVERLAY")
+
+		-- power value
 		Power.Value:SetPoint("RIGHT", Power, "RIGHT", -4, 0)
-		Power.Value:SetFontObject(PowerFont)
-		Power.Value:SetScale(PowerFontSize)
 		Power.Value:SetJustifyH("RIGHT")
-		self:Tag(Power.Value, C["UF: ToT"]["PowerTag"]["Value"])
-		
-		self.Power = Power
-		self.Power.bg = Power.Background
-		Power.frequentUpdates = true
-		Power.colorPower = true
-		Power.PostUpdate = nil
-		
-		-- infopanel
-		Panel:SetAlpha(0)
-		
-		-- Name
-		Name:SetParent(Health)
-		Name:SetFontObject(NameFont)
-		Name:SetScale(NameFontSize)
-		Name:SetPoint("TOPLEFT", Health, "BOTTOMLEFT", 0, -10)
-		Name:SetJustifyH("LEFT")
-		self:Tag(Name, C["UF: ToT"]["NameTag"]["Value"]) 
 
-		-- percentage tag adjustments
+		-- power percentage
 		if C["UF: ToT"]["PercentageTags"] == true then
-			local HPpercentage = Health:CreateFontString(nil, "OVERLAY")
-			HPpercentage:SetPoint("LEFT", Health, "Right", 2, 0)
-			HPpercentage:SetAlpha(1)
-			HPpercentage:SetJustifyH("LEFT")
-			HPpercentage:SetFontObject(HealthFont)
-			HPpercentage:SetScale(HealthFontSize)
-			self:Tag(HPpercentage, "[perhp]%")
-			
-			if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" then
-				HPpercentage:ClearAllPoints()
-				HPpercentage:SetPoint("BOTTOM", Health, "TOP", 2, 4)
-				HPpercentage:SetJustifyH("CENTER")
-			end
-			
-			local MPpercentage = Power:CreateFontString(nil, "OVERLAY")
 			MPpercentage:SetPoint("LEFT", Power, "RIGHT", 2, 0)
-			MPpercentage:SetAlpha(1)
 			MPpercentage:SetJustifyH("LEFT")
-			MPpercentage:SetFontObject(PowerFont)
-			MPpercentage:SetScale(PowerFontSize)
-			self:Tag(MPpercentage, "[perpp]%")
-			
-			if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" then
-				MPpercentage:ClearAllPoints()
-				MPpercentage:SetPoint("BOTTOM", Power, "TOP", -2, 4)
-				MPpercentage:SetJustifyH("CENTER")
-			end
-		end
-
-		-- raid icon
-		if C["UF: ToT"]["RoleIcon"] == true then
-			RaidIcon:ClearAllPoints()
-			RaidIcon:SetWidth(RaidIconSize)
-			RaidIcon:SetHeight(RaidIconSize)
-			RaidIcon:SetPoint("LEFT", Name, "RIGHT", 26, 0)
-		else
-			RaidIcon:Hide()
 		end
 		
-		-- roll icon
-		if T.Retail then
-			if C["UF: ToT"]["RoleIcon"] == true then
-				local GroupRoleIndicator = Health:CreateTexture(nil, "OVERLAY")
-			
-				if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" then
-					GroupRoleIndicator:SetPoint("TOP", Health, "BOTTOM", 0, -4)
-					GroupRoleIndicator:SetWidth(RoleIconSize)
-					GroupRoleIndicator:SetHeight(RoleIconSize)
-				else
-					GroupRoleIndicator:SetPoint("LEFT", Name, "RIGHT", 0, 0)
-					GroupRoleIndicator:SetHeight(RoleIconSize)
-					GroupRoleIndicator:SetWidth(RoleIconSize)
-				end
-
-				if C["UnitFrames"]["Roles"]["Value"] == "MaxUI Style" or C["UnitFrames"]["Roles"]["Value"] == "Elvui Style" then
-					GroupRoleIndicator.Override = UnitFrames.SetGridGroupRole
-				end
-				self.GroupRoleIndicator = GroupRoleIndicator
-			end
-		end
-		
-		-- adjustments for Vertical Unitframes
-		if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" then
-			Power:ClearAllPoints()
-			Power:SetPoint("BOTTOM", Health, "BOTTOMRIGHT", 0, 10)
-			Power:SetHeight(PowerWidth)
-			Power:SetWidth(PowerHeight)
-			Power:SetOrientation("VERTICAL")
-			
-			Name:ClearAllPoints()
-			Name:SetPoint("TOPLEFT", Health, "BOTTOMLEFT", 0, -10)
-			
-			RaidIcon:ClearAllPoints()
-			RaidIcon:SetPoint("BOTTOM", Power, "TOP", 0, 16)
-			
-			Health.Value:ClearAllPoints()
-			Health.Value:SetPoint("TOPLEFT", Name, "BOTTOMLEFT", 4, -4)
-			Health.Value:SetJustifyH("LEFT")
-			Power.Value:ClearAllPoints()
-			Power.Value:SetPoint("TOPLEFT", Health.Value, "BOTTOMLEFT", -0, -4)
+		-- portrait
+		if C.UnitFrames.Portrait == true and C["UF: ToT"]["PortraitStyle"]["Value"] == "Side" then
+			Portrait:SetPoint("RIGHT", Health, "LEFT", -8, 0)
+			Portrait:SetWidth(HealthHeight)
+			Portrait:SetHeight(HealthHeight-2)
 		end
 
-		-- highlighting
-		self:HookScript("OnEnter", function(self)
-			Health.Backdrop:SetBorderColor(Health:GetStatusBarColor())
-			Power.Backdrop:SetBorderColor(Power:GetStatusBarColor())
-		end)
-
-		self:HookScript("OnLeave", function(self)
-			Health.Backdrop:SetBorderColor(unpack(C["General"]["BorderColor"]))
-			Power.Backdrop:SetBorderColor(unpack(C["General"]["BorderColor"]))
-		end)
-		
-		-- Healcomm Bars adjustments
-		if C.UnitFrames.HealComm then
-			myBar:SetWidth(HealthWidth)
-			otherBar:SetWidth(HealthWidth)
-			absorbBar:SetWidth(HealthWidth)
-			myBar:SetAlpha(C["UnitFrames"]["HealCommAlpha"])
-			otherBar:SetAlpha(C["UnitFrames"]["HealCommAlpha"])
-			absorbBar:SetAlpha(C["UnitFrames"]["HealCommAlpha"])
-
-			if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" then
-				myBar:SetOrientation("VERTICAL")
-				myBar:SetWidth(HealthHeight)
-				myBar:SetHeight(HealthWidth)
-				myBar:SetStatusBarTexture(HealthTexture)
-				myBar:ClearAllPoints()
-				myBar:SetPoint("BOTTOM", Health:GetStatusBarTexture(), "TOP", 0, 0)
-
-				otherBar:SetOrientation("VERTICAL")
-				otherBar:SetWidth((HealthHeight))
-				otherBar:SetHeight(HealthWidth)
-				otherBar:SetStatusBarTexture(HealthTexture)
-				otherBar:ClearAllPoints()
-				otherBar:SetPoint("BOTTOM", myBar:GetStatusBarTexture(), "TOP", 0, 0)
-
-				absorbBar:SetOrientation("VERTICAL")
-				absorbBar:SetWidth((HealthHeight))
-				absorbBar:SetHeight(HealthWidth)
-				absorbBar:SetStatusBarTexture(HealthTexture)
-				absorbBar:ClearAllPoints()
-				absorbBar:SetPoint("BOTTOM", Health:GetStatusBarTexture(), "TOP", 0, 0)
-			end
-		end
-		
-		-- Buffs and Debuffs
+		-- Debuffs
 		if (C.UnitFrames.TOTAuras) then
-		
-			-- Debuffs
 			if C["UF: ToT"]["Debuffs"] == true then
-				-- Debuffs anchorframe
-				Debuffs:ClearAllPoints()
 				Debuffs:SetPoint("BOTTOMLEFT", Health, "TOPLEFT", 2, 14)
-				Debuffs:SetParent(Health)
 				Debuffs:SetHeight(C["UF: ToT"]["DebuffSize"]*C["UF: ToT"]["DebuffNumberRows"])
 				Debuffs:SetWidth(HealthWidth)
 				
-				-- Debuffs icons
-				Debuffs.size = C["UF: ToT"]["DebuffSize"]
-				Debuffs.num = C["UF: ToT"]["DebuffNumber"]
-				Debuffs.numRow = C["UF: ToT"]["DebuffNumberRows"]
-				Debuffs.spacing = C["UF: ToT"]["DebuffSpacing"]
-				Debuffs.initialAnchor = "TOPLEFT"
+				Debuffs.initialAnchor = "BOTTOMLEFT"
 				Debuffs["growth-y"] = "UP"
 				Debuffs["growth-x"] = "RIGHT"
-				Debuffs.PostCreateIcon = UnitFrames.PostCreateAura
-				Debuffs.PostUpdateIcon = UnitFrames.PostUpdateAura
-				Debuffs.onlyShowPlayer = C["UF: ToT"].OnlySelfDebuffs
-				Movers:RegisterFrame(Debuffs, "ToT Debuffs")
-
-				if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" then
-					Debuffs.initialAnchor = "BOTTOMLEFT"
-					Debuffs["growth-y"] = "RIGHT"
-					Debuffs["growth-x"] = "UP"
-					Debuffs:ClearAllPoints()
-					Debuffs:SetHeight(HealthWidth)
-					Debuffs:SetWidth(C["UF: ToT"]["DebuffSize"]*C["UF: ToT"]["DebuffNumberRows"])
-					Debuffs:SetPoint("BOTTOMLEFT", Health, "BOTTOMRIGHT", 14, 0)
-				end
-			else
-				Debuffs.num = 0
 			end
-			
-			-- Buffs
-			if C["UF: ToT"]["Buffs"] == true then
-				Buffs:ClearAllPoints()
-				Buffs:SetFrameStrata(self:GetFrameStrata())
-				Buffs:SetParent(Health)
-				Buffs:SetHeight(C["UF: ToT"]["BuffSize"]*C["UF: ToT"]["BuffNumberRows"])
-				Buffs:SetWidth(C["UF: ToT"]["HealthWidth"])
-				
-				-- Buffs icons
-				Buffs.size = C["UF: ToT"]["BuffSize"]
-				Buffs.num = C["UF: ToT"]["BuffNumber"]
-				Buffs.numRow = C["UF: ToT"]["BuffNumberRows"]
-				Buffs.spacing = C["UF: ToT"]["BuffSpacing"]
-				Buffs.initialAnchor = "TOPLEFT"
-				Buffs["growth-y"] = "UP"
-				Buffs["growth-x"] = "RIGHT"
-				Buffs.PostCreateIcon = UnitFrames.PostCreateAura
-				Buffs.PostUpdateIcon = UnitFrames.PostUpdateAura
-				Buffs.PostUpdate = UnitFrames.UpdateBuffsHeaderPosition
-				Buffs.onlyShowPlayer = C["UF: ToT"]["OnlySelfBuffs"]
+		end
 
-				-- Buffs anchorframe
+		-- Buffs	
+		if (C.UnitFrames.TOTAuras) then
+			if C["UF: ToT"]["Buffs"] == true then
 				if C["UF: ToT"]["Debuffs"] == true then
 					Buffs:SetPoint("BOTTOMLEFT", Debuffs, "TOPLEFT", 0, 14)
 				else
 					Buffs:SetPoint("BOTTOMLEFT", Health, "TOPLEFT", 2, 42)
 				end
-
-				if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" then
-					Buffs.initialAnchor = "BOTTOMLEFT"
-					Buffs["growth-y"] = "RIGHT"
-					Buffs["growth-x"] = "UP"
-					Buffs:SetHeight(HealthWidth)
-					Buffs:SetWidth(C["UF: ToT"]["BuffSize"]*C["UF: ToT"]["BuffNumberRows"])
-					
-					-- Buffs anchorframe
-					if C["UF: ToT"]["Debuffs"] == true then
-						Buffs:SetPoint("BOTTOMLEFT", Debuffs, "BOTTOMRIGHT", 8, 0)
-					else
-						Buffs:SetPoint("BOTTOMLEFT", Health, "BOTTOMRIGHT", 14, 0)
-					end
-				end
+				Buffs:SetHeight(C["UF: ToT"]["BuffSize"]*C["UF: ToT"]["BuffNumberRows"])
+				Buffs:SetWidth(C["UF: ToT"]["HealthWidth"])
 				
-				Movers:RegisterFrame(Buffs, "ToT Buffs")
-				
-				if C["UF: ToT"]["BuffsToTCombatState"]["Value"] == "Show" then
-					RegisterStateDriver(Buffs, "visibility", "[combat] show;hide")
-				end	
-				
-				if C["UF: ToT"]["BuffsToTCombatState"]["Value"] == "Hide" then
-					RegisterStateDriver(Buffs, "visibility", "[combat] hide;show")
-				end	
-			else
-				Buffs.num = 0
+				Buffs.initialAnchor = "BOTTOMLEFT"
+				Buffs["growth-y"] = "UP"
+				Buffs["growth-x"] = "RIGHT"
 			end
 		end
+
+		-- raid icon
+		if C["UF: ToT"]["RaidIcon"] == true then
+			RaidIcon:SetPoint("LEFT", Name, "RIGHT", 26, 0)
+		end
+
+		-- roll icon
+		if T.Retail then
+			if C["UF: ToT"]["RoleIcon"] == true then
+				GroupRoleIndicator:SetPoint("LEFT", Name, "RIGHT", 0, 0)
+			end
+		end
+
+		-- filter
+		if C["Skins"]["UnitFramesFilter"] == true then 
+			Health:CreateMaxUIFilter()
+			Power:CreateMaxUIFilter()
+		end
 	end
-end
+
+------------------------------------------------------------------------------------------
+-- MaxUI UF STYLE VERTICAL
+------------------------------------------------------------------------------------------
+	if C["UnitFrames"]["HorVer"]["Value"] == "Vertical" then
+
+		-- health
+		Health:SetOrientation("VERTICAL")
+
+		-- health value
+		Health.Value:ClearAllPoints()
+		Health.Value:SetPoint("TOPLEFT", Name, "BOTTOMLEFT", 0, -4)
+		Health.Value:SetJustifyH("LEFT")
+
+		-- health percentage
+		if C["UF: ToT"]["PercentageTags"] == true then
+			HPpercentage:SetPoint("BOTTOM", Health, "TOP", 2, 4)
+			HPpercentage:SetJustifyH("CENTER")
+		end
+
+		-- healcomm
+		if C.UnitFrames.HealComm then
+			myBar:SetOrientation("VERTICAL")
+			myBar:SetWidth(HealthHeight-2)
+			myBar:SetHeight(HealthWidth)
+			myBar:SetStatusBarTexture(HealthTexture)
+			myBar:ClearAllPoints()
+			myBar:SetPoint("BOTTOM", Health:GetStatusBarTexture(), "TOP", 0, 0)
+
+			otherBar:SetOrientation("VERTICAL")
+			otherBar:SetWidth(HealthHeight-2)
+			otherBar:SetHeight(HealthWidth)
+			otherBar:SetStatusBarTexture(HealthTexture)
+			otherBar:ClearAllPoints()
+			otherBar:SetPoint("BOTTOM", myBar:GetStatusBarTexture(), "TOP", 0, 0)
+
+			absorbBar:SetOrientation("VERTICAL")
+			absorbBar:SetWidth(HealthHeight-2)
+			absorbBar:SetHeight(HealthWidth)
+			absorbBar:SetStatusBarTexture(HealthTexture)
+			absorbBar:ClearAllPoints()
+			absorbBar:SetPoint("BOTTOM", Health:GetStatusBarTexture(), "TOP", 0, 0)
+		end
+
+		-- power
+		--Power:ClearAllPoints()
+		Power:SetPoint("BOTTOM", Health, "BOTTOMRIGHT", 0, 10)
+		Power:SetHeight(PowerWidth)
+		Power:SetWidth(PowerHeight)
+		Power:SetOrientation("VERTICAL")
+
+		-- power value
+		--Power.Value:ClearAllPoints()
+		Power.Value:SetPoint("TOPLEFT", Health.Value, "BOTTOMLEFT", -0, -4)
+
+		-- power percentage
+		if C["UF: ToT"]["PercentageTags"] == true then
+			MPpercentage:SetPoint("BOTTOM", Power, "TOP", -2, 4)
+			MPpercentage:SetJustifyH("CENTER")
+		end
+		
+		-- portrait
+		if C.UnitFrames.Portrait == true and C["UF: ToT"]["PortraitStyle"]["Value"] == "Side" then
+			Portrait:SetPoint("TOP", Health, "BOTTOM", 0, -10)
+			Portrait:SetWidth(HealthHeight-2)
+			if C.UnitFrames.Portrait2D then
+				Portrait:SetHeight(HealthHeight-2)
+			else
+				Portrait:SetHeight(8 + C["UF: ToT"]["NameFontSize"] + C["UF: ToT"]["HealthFontSize"] +C["UF: ToT"]["PowerFontSize"])
+			end
+
+			Name:ClearAllPoints()
+			Name:SetPoint("TOPLEFT", Portrait, "TOPRIGHT", 4, 0)
+		end
+
+		-- Debuffs
+		if (C.UnitFrames.TOTAuras) then
+			if C["UF: ToT"]["Debuffs"] == true then
+				Debuffs.initialAnchor = "BOTTOMLEFT"
+				Debuffs["growth-y"] = "UP"
+				Debuffs["growth-x"] = "RIGHT"
+
+				Debuffs:SetHeight(HealthWidth)
+				Debuffs:SetWidth(C["UF: ToT"]["DebuffSize"]*C["UF: ToT"]["DebuffNumberRows"])
+				Debuffs:SetPoint("BOTTOMLEFT", Health, "BOTTOMRIGHT", 14, 0)
+			end
+		end
+
+		-- Buffs	
+		if (C.UnitFrames.TOTAuras) then
+			if C["UF: ToT"]["Buffs"] == true then
+				if C["UF: ToT"]["Debuffs"] == true then
+					Buffs:SetPoint("BOTTOMLEFT", Debuffs, "BOTTOMRIGHT", 8, 0)
+				else
+					Buffs:SetPoint("BOTTOMLEFT", Health, "BOTTOMRIGHT", 14, 0)
+				end
+				Buffs:SetHeight(HealthWidth)
+				Buffs:SetWidth(C["UF: ToT"]["BuffSize"]*C["UF: ToT"]["BuffNumberRows"])
+
+				Buffs.initialAnchor = "BOTTOMLEFT"
+				Buffs["growth-y"] = "UP"
+				Buffs["growth-x"] = "RIGHT"
+			end
+		end
+
+		-- raid icon
+		if C["UF: ToT"]["RaidIcon"] == true then
+			--RaidIcon:ClearAllPoints()
+			RaidIcon:SetPoint("BOTTOM", Power, "TOP", 0, 16)
+		end
+
+		-- roll icon
+		if T.Retail then
+			if C["UF: ToT"]["RoleIcon"] == true then
+				GroupRoleIndicator:SetPoint("TOP", Health, "BOTTOM", 0, -4)
+			end
+		end
+
+		-- filter
+		if C["Skins"]["UnitFramesFilter"] == true then 
+			Health:CreateMaxUIVerticalFilter()
+			Power:CreateMaxUIVerticalFilter()
+		end
+	end		
+end	

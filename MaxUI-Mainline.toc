@@ -1,8 +1,8 @@
-## Interface: 90200
+## Interface: 100005
 ## Author: Maximvs
-## Version: 6.521
+## Version: 6.700
 ## Title:MaxUI
-## Notes: MaxUI, edit for Tukui 20 and World of Warcraft. See tukui.org for more information.
+## Notes: MaxUI, edit for Tukui 20 and World of Warcraft Retail. See tukui.org for more information.
 ## RequiredDeps: Tukui
 ## OptionalDeps: ProjectAzilroka, AddOnSkins, LibSharedMedia-3.0
 ## Thanks to: Tukz, Hydra, Darth Predator, Azilroka, Blazeflack and all other members of Tukui.org community.
@@ -14,9 +14,10 @@ Libs\Init.xml
 Libs\UTF8.xml
 Core\Init.xml
 Config\Init.xml
-Skins\CoreAPI.lua
-Skins\Retail\Init.xml
+
 Skins\Addons\Init.xml
+Skins\Blizzard\Init.xml
+Skins\Tukui\Init.xml
 
 Modules\Panels\Init.xml
 Modules\ChatFrames\Init.xml
@@ -33,4 +34,3 @@ Modules\UnitFrames\Units\Init.xml
 Modules\Tooltips\Init.xml
 Modules\Inventory\Init.xml
 Modules\ScrollingCombatText\Init.xml
-

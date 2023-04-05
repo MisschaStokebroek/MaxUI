@@ -1,9 +1,10 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-07-2021
+-- latest update: 30-10-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up Layouts.
+-- need to add settings for ab 6 7 8 in different layouts....
 
 ------------------------------------------------------------------------------------------
 -- SETUP
@@ -44,6 +45,12 @@ T.LoadActionBarLayouts = function()
 			C["ActionBars"]["Bar4NumButtons"] = 12
 			C["ActionBars"]["Bar5ButtonsPerRow"] = 4
 			C["ActionBars"]["Bar5NumButtons"] = 12
+			C["ActionBars"]["Bar6ButtonsPerRow"] = 4
+			C["ActionBars"]["Bar6NumButtons"] = 12
+			C["ActionBars"]["Bar7ButtonsPerRow"] = 4
+			C["ActionBars"]["Bar7NumButtons"] = 12
+			C["ActionBars"]["Bar8ButtonsPerRow"] = 12
+			C["ActionBars"]["Bar8NumButtons"] = 12
 		
 		elseif C["Layout"]["LayoutAB"]["Value"] == "Single" then
 			C["ActionBars"]["Bar1ButtonsPerRow"] = 4

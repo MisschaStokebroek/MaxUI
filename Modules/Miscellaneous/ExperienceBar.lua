@@ -16,7 +16,7 @@ local baseCreate = Experience.Create
 local baseUpdate = Experience.Update
 local baseEnable = Experience.Enable
 local baseDisplayMenu = Experience.DisplayMenu
-
+local Movers = T["Movers"]
 
 local Class = select(2, UnitClass("player"))
 local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
@@ -29,6 +29,7 @@ Experience.NumBars = 2
 local XPFrameHolder = CreateFrame("Frame", "XPFrameHolder", UIParent)
 XPFrameHolder:SetHeight(22) 
 XPFrameHolder:SetWidth(200)
+XPFrameHolder:SetPoint("CENTER", UIParent, "CENTER", 0, -120)
 
 function Experience:DisplayMenu()
 	if (C.General.Themes.Value == "MaxUI") then return end
@@ -39,15 +40,13 @@ end
 -- EXPERIENCE TOOLTIP
 ------------------------------------------------------------------------------------------
 function Experience:SetTooltip()
-	-- Tukui
 	baseSetTooltip(self)
 	
-	local BarType = self.BarType
-	local Current, Max, Pts
-
-	-- MaxUI
 	if not (C.General.Themes.Value == "MaxUI") then return end
 	if not C.Misc.ExperienceEnable then return end
+
+	local BarType = self.BarType
+	local Current, Max, Pts
 
 	GameTooltip:SetOwner(self, "ANCHOR_CURSOR", 0, 8)
 
@@ -78,11 +77,10 @@ end
 -- EXPERIENCE CREATE ADJUST
 ------------------------------------------------------------------------------------------
 function Experience:Create()
-	-- Tukui
 	baseCreate(self)
 	
-	-- MaxUI
 	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C.Misc.ExperienceEnable then return end
 
 	local XPBar = self.XPBar1
 	local XPBar2 = self.XPBar2
@@ -92,12 +90,8 @@ function Experience:Create()
 	local BarTexture = C["Misc"]["XPBarTexture"]
 	local PlayerLevel = UnitLevel("player")
 
-	if not C.Misc.ExperienceEnable then	return end
-
-	if (C.General.Themes.Value == "MaxUI") then
-		XPBar:ClearAllPoints()
-		XPBar2:ClearAllPoints()
-	end	
+	XPBar:ClearAllPoints()
+	XPBar2:ClearAllPoints()
 	
 	XPBar:ClearAllPoints()
 	XPBar:SetParent(XPFrameHolder)
@@ -110,25 +104,31 @@ function Experience:Create()
 	XPBar:SetFrameLevel(11)
 	XPBar:SetStatusBarTexture(T.GetTexture(BarTexture))
 	
-	XPtext = XPFrameHolder:CreateFontString(nil, "OVERLAY")
+	XPtext = XPBar:CreateFontString(nil, "OVERLAY")
 	XPtext:SetFontObject(T.GetFont(C["DataTexts"].Font))
 	XPtext:SetScale(C.DataTexts.FontSize/10)
-	XPtext:SetPoint("RIGHT", XPBar, "LEFT", -6, 0)
 	XPtext:SetText("Exp")
 
-	if PlayerLevel == MAX_PLAYER_LEVEL then
-		XPtext:ClearAllPoints()
-		XPtext:SetPoint("CENTER", XPFrameHolder, "CENTER", 0, 0)
-	end
+	--if PlayerLevel == MAX_PLAYER_LEVEL then
+		--XPtext:ClearAllPoints()
+		--XPtext:SetPoint("CENTER", XPBar, "CENTER", 0, 0)
+	--end
 
 	XPpercenttext = XPBar:CreateFontString(nil, "OVERLAY")
 	if C["Misc"]["PercentageTag"] == true then
 		XPpercenttext:SetFontObject(T.GetFont(C["DataTexts"].Font))
 		XPpercenttext:SetScale(C.DataTexts.FontSize/10)
-		XPpercenttext:SetPoint("LEFT", XPBar, "RIGHT", 6, 0)
 	end	
 
-	RestedBar:SetFrameLevel(10)
+	if C["Misc"]["XPBarTextPlacement"]["Value"] == "Inside" then
+		XPpercenttext:SetPoint("RIGHT", XPBar, "RIGHT", -6, 0)
+		XPtext:SetPoint("LEFT", XPBar, "LEFT", 6, 0)
+	
+	elseif C["Misc"]["HONORBarTextPlacement"]["Value"] == "Outside" then
+		XPpercenttext:SetPoint("LEFT", XPBar, "RIGHT", 6, 0)
+		XPtext:SetPoint("RIGHT", XPBar, "LEFT", -6, 0)
+	end	
+
 	RestedBar:SetParent(XPBar)
 	RestedBar:SetStatusBarTexture(T.GetTexture(BarTexture))
 	RestedBar:SetAlpha(0.5)
@@ -141,6 +141,10 @@ function Experience:Create()
 		XPBar.Backdrop:SetBorderColor(unpack(C["General"]["BorderColor"]))
 	end)
 	
+	if C["Skins"]["DataBarFilter"] == true then 
+		XPBar:CreateMaxUIFilter()
+	end
+	
 	XPBar2:Kill()
 end
 
@@ -148,44 +152,70 @@ end
 -- EXPERIENCE UPDATE
 ------------------------------------------------------------------------------------------
 function Experience:Update()
-	-- Tukui
 	baseUpdate(self)
 
 	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C.Misc.ExperienceEnable then return end
 
 	local PlayerLevel = UnitLevel("player")
 	local Current, Max = self:GetExperience()
-	local Current, Max = Experience:GetExperience()
-	local PlayerLevel = UnitLevel("player")
 	local XPBar = self.XPBar1
 
 	if C["Misc"]["PercentageTag"] == true then
 		XPpercenttext:SetText("".. floor(Current / Max * 100) .."%")
 	end	
 
-	if PlayerLevel == MAX_PLAYER_LEVEL then
-		XPpercenttext:Hide()
-		XPtext:SetText("Max level reached")
-		XPBar:Hide()
-	end
+	--if PlayerLevel == MAX_PLAYER_LEVEL then
+		--XPpercenttext:Hide()
+		--XPtext:SetText("Max level reached")
+		--XPtext:SetPoint("CENTER", XPBar, "CENTER", 0, 0)
+		--XPBar:Hide()
+	--end
 end
 
 ------------------------------------------------------------------------------------------
 -- EXPERIENCE ENABLE/DISABLE
 ------------------------------------------------------------------------------------------
 function Experience:Enable()
-	if not C.Misc.ExperienceEnable then return end
-	if not C["Misc"]["XPBarEnable"] then return end
+
+	if (C.General.Themes.Value == "MaxUI") then
+	if not C.Misc.ExperienceEnable then return end -- tukui
+	if not C["Misc"]["XPBarEnable"] then return end -- maxui
+		
+		if not C["Misc"]["XPBarDTEnable"] then
+			if C["Misc"]["XPBarTextPlacement"]["Value"] == "Inside" then
+				XPFrameHolder:SetHeight(C["Misc"]["XPBarHeight"] + 12) 
+				XPFrameHolder:SetWidth(C["Misc"]["XPBarWidth"] + 12)
+			elseif C["Misc"]["HONORBarTextPlacement"]["Value"] == "Outside" then
+				XPFrameHolder:SetHeight(C["Misc"]["XPBarHeight"] + 12) 
+				XPFrameHolder:SetWidth(C["Misc"]["XPBarWidth"] + 120)
+			else	
+				XPFrameHolder:SetHeight(C["Misc"]["XPBarHeight"] + 12) 
+				XPFrameHolder:SetWidth(C["Misc"]["XPBarWidth"] + 12)
+			end	
+			
+			if C["Misc"]["XPBarBackdrop"] == true and (C.General.Themes.Value == "MaxUI") then
+				XPFrameHolder:CreateBackdrop(nil, Texture)
+				XPFrameHolder.Backdrop:SetOutside()
+				XPFrameHolder.Backdrop:CreateShadow()
+				XPFrameHolder.Backdrop:SetAlpha(C["Misc"]["XPBarAlpha"])
+			end
+			Movers:RegisterFrame(XPFrameHolder, "Experience DataBar")
+			
+			if C["Misc"]["XPBarCombatState"]["Value"] == "Hide" then
+				RegisterStateDriver(XPFrameHolder, "visibility", "[combat] hide; show")
+			end
+		end
 	
-	-- Tukui
-	baseEnable(self)
+		baseEnable(self)
+	end
 end
 
 ------------------------------------------------------------------------------------------
 -- EXPERIENCE DATATEXT 
 ------------------------------------------------------------------------------------------
 local Update = function(self)
-	if not C.Misc.ExperienceEnable then return end
+	if not C.Misc.XPBarDTEnable then return end
 
 	XPFrameHolder:ClearAllPoints()
 	XPFrameHolder:SetPoint("CENTER", self, "CENTER", 0, 0)
@@ -193,12 +223,15 @@ local Update = function(self)
 end
 
 local Enable = function(self)
+	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not C.Misc.XPBarDTEnable then return end
 	self:Update()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:SetScript("OnEvent", self.Update)
 end
 
 local Disable = function(self)
+	if not C.Misc.XPBarDTEnable then return end
 	self.Text:SetText("")
 	self:SetScript("OnUpdate", nil)
 end

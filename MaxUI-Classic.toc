@@ -1,6 +1,6 @@
-## Interface: 11402
+## Interface: 11403
 ## Author: Maximvs
-## Version: 6.521
+## Version: 6.700
 ## Title:MaxUI
 ## Notes: MaxUI, edit for Tukui 20 and World of Warcraft - Classic Era/Season of Mastery. See tukui.org for more information.
 ## RequiredDeps: Tukui
@@ -14,9 +14,6 @@ Libs\Init.xml
 Libs\UTF8.xml
 Core\Init.xml
 Config\Init.xml
-Skins\CoreAPI.lua
-Skins\Classic\Init.xml
-Skins\Addons\Init.xml
 
 Modules\Panels\Init.xml
 Modules\ChatFrames\Init.xml
@@ -33,4 +30,3 @@ Modules\UnitFrames\Units\Init.xml
 Modules\Tooltips\Init.xml
 Modules\Inventory\Init.xml
 Modules\ScrollingCombatText\Init.xml
-

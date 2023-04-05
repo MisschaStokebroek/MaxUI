@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- Setting up datatext for Durability.
@@ -36,6 +36,15 @@ local Update = function(self)
 	else
 		self.Text:SetFormattedText("%s %s", DataText.NameColor .. RESISTANCE0_NAME .. "|r", DataText.ValueColor .. "100" .. "%|r")
 	end
+
+	if C["DataTexts"]["Icons"] == true then
+		self.icon = self:CreateTexture(nil, "OVERLAY")
+		self.icon:SetWidth(20)
+		self.icon:SetHeight(20)
+		self.icon:SetPoint("LEFT", self, "CENTER", 45, 0)
+		self.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\cDura.tga]])
+		self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
+	end
 end
 
 local OnEnter = function(self)
@@ -61,6 +70,10 @@ local OnEnter = function(self)
 	else
 		self.Text:SetFormattedText("%s %s", DataText.HighlightColor .. RESISTANCE0_NAME .. "|r", DataText.HighlightColor .. "100" .. "%|r")
 	end
+
+	if C["DataTexts"]["Icons"] == true then
+		self.icon:SetVertexColor(unpack(C["DataTexts"].HighlightColor))
+	end
 end
 
 local OnLeave = function(self)
@@ -69,6 +82,10 @@ local OnLeave = function(self)
 		self.Text:SetFormattedText("%s %s", DataText.NameColor .. RESISTANCE0_NAME .. "|r", DataText.ValueColor .. floor(L.DataText.Slots[1][3] * 100) .. "%|r")
 	else
 		self.Text:SetFormattedText("%s %s", DataText.NameColor .. RESISTANCE0_NAME .. "|r", DataText.ValueColor .. "100" .. "%|r")
+	end
+	
+	if C["DataTexts"]["Icons"] == true then
+		self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
 	end
 end
 

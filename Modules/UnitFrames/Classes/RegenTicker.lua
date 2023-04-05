@@ -1,9 +1,11 @@
 ﻿------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
--- setting up DRUID.
+-- setting up MANAREGENTICKER.
+
+-- NEED TO TEST FOR BCC AND CLASSIC
 
 ------------------------------------------------------------------------------------------
 -- SETUP
@@ -22,11 +24,11 @@ local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
 -- CLASS RESOURCES
 ------------------------------------------------------------------------------------------
 function UnitFrames:Player()
-	-- Tukui
 	basePlayer(self)
 
-	-- MaxUI
 	if not (C["UnitFrames"]["Style"]["Value"] == "MaxUI") then return end
+	
+	-- elements
 	local EnergyManaRegen = self.EnergyManaRegen
 
 	-- energy/mana ticker

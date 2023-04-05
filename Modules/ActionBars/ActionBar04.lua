@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-07-2021
+-- latest update: 30-10-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up ACTION BAR 4.
@@ -51,9 +51,7 @@ function ActionBars:VisibilityAB4()
 
 		for i = 1, Num do
 			local Button = _G["MultiBarRightButton"..i]
-
 			Button:Kill()
-		
 			ActionBar4["Button"..i] = Button
 		end
 	end
@@ -207,18 +205,13 @@ function ActionBars:StylingAB4()
 		ActionBar4:CreateMaxUIBottomEdge()
 		ActionBar4:CreateMaxUILeftEdge()
 		ActionBar4:CreateMaxUIRightEdge()
-	
-	elseif C["ActionBars"]["ActionBar4Edges"]["Value"] == "None" then
-
 	end
 end
 
 function ActionBars:CreateBar4()
-    
-	if not C["ActionBars"]["RightBar"] then return end
-	
-	-- Tukui
     baseCreateBar4(self)
+
+	if not C["ActionBars"]["RightBar"] then return end
 	
 	self:VisibilityAB4()
 

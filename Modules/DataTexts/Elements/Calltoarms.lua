@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- Setting up datatext for Call to Arms.
@@ -83,6 +83,15 @@ local Update = function(self)
 			self.Text:SetText(DataText.NameColor..LOOKING_FOR_DUNGEON.."|r")
 		end
 	end
+
+	if C["DataTexts"]["Icons"] == true then
+		self.icon = self:CreateTexture(nil, "OVERLAY")
+		self.icon:SetWidth(20)
+		self.icon:SetHeight(20)
+		self.icon:SetPoint("LEFT", self, "CENTER", 52, 1)
+		self.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\cCallToArms.tga]])
+		self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
+	end
 end
 
 local OnEnter = function(self)
@@ -92,6 +101,10 @@ local OnEnter = function(self)
 
 	local AllUnavailable = true
 	local NumCTA = 0
+
+	if C["DataTexts"]["Icons"] == true then
+		self.icon:SetVertexColor(unpack(C["DataTexts"].HighlightColor))
+	end
 
 	for i = 1, GetNumRandomDungeons() do
 		local ID, Name = GetLFGRandomDungeonInfo(i)
@@ -143,6 +156,9 @@ end
 
 local OnLeave = function(self)
 	self:Update()
+	if C["DataTexts"]["Icons"] == true then
+		self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
+	end
 	GameTooltip:Hide()
 end
 

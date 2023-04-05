@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 01-08-2021
+-- latest update: 10-01-2023
 ------------------------------------------------------------------------------------------
 
 -- extending the configuration menu for Tukui and MaxUI, additional options and settings.
@@ -14,206 +14,218 @@ local GUI = T["GUI"]
 -- MaxUI Welcome
 T.version = GetAddOnMetadata("Tukui", "Version")
 T.MaxUIversion = GetAddOnMetadata("MaxUI", "Version")
-local MaxUIVersion = "version "..T.MaxUIversion..""
-local TukuiVersion = "version "..T.version..""
-local GameVersion = GameVersion
+local MaxUIVersion = "|cffFFFF99version:|r "..T.MaxUIversion..""
+local TukuiVersion = "|cffFFFF99version:|r "..T.version..""
+local GameVersion
 if T.Retail then
-	GameVersion	= "|cffFFFF99~Retail~|r" 
+	GameVersion	= "|cffFFFF99Retail|r" 
 elseif T.BCC then
-	GameVersion	= "|cffFFFF99~The Burning Crusade Classic~|r" 
+	GameVersion	= "|cffFFFF99The Burning Crusade Classic|r" 
+elseif T.WotLK then	
+	GameVersion	= "|cffFFFF99Wrath of the Lich King Classic|r" 
+elseif T.Classic then	
+	GameVersion	= "|cffFFFF99Classic Era / Season of Mastery|r" 
 else
-	GameVersion	= "|cffFFFF99~Classic Era~|r" 
+	GameVersion	= "|cffFFFF99World of Warcraft|r" 
 end
-
-local WelcomeMessage = "Thank you for using MaxUI.\n\n Check the HELP section for slash commands.\n\nFor more information, support or\nfeedback, go to www.tukui.org,\njoin the Tukui Discord or\n\n|cff2299ffMaxUI Discord|r: https://discord.gg/vzUFmUm \n\n|cffFFFF99colored items|r = MaxUI Theme or Unitframes only. "
-
--- media
-local Texture = C.Medias.Normal
-local HeaderColor = {0.43, 0.43, 0.43}
-local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
-local HexClassColor = T.RGBToHex(unpack(T.Colors.class[T.MyClass]))
-
-------------------------------------------------------------------------------------------
--- EXTRA HEADER/FOOTER
-------------------------------------------------------------------------------------------
-local HeaderText = "Global User Interface"
-
-local function ExtendedGUI()	
-
-	-- fade duration
-	TukuiGUI.FadeIn:SetDuration(C["General"]["FaderTime"])
-	TukuiGUI.FadeOut:SetDuration(C["General"]["FaderTime"])
-	
-	-- reposition
-	TukuiGUI:ClearAllPoints()
-	TukuiGUI:SetFrameStrata("TOOLTIP")
-	TukuiGUI:SetPoint("TOP", UIParent, "TOP", 0, -28)
-
-	-- header
-	if C["General"]["ClassColorHeaders"]["Value"] == "Dark" then 
-		TukuiGUI.Header.Backdrop:SetBackdropColor(0.11, 0.11, 0.11)
-	elseif C["General"]["ClassColorHeaders"]["Value"] == "ClassColor" then 
-		TukuiGUI.Header.Backdrop:SetBackdropColor(unpack(ClassColor))
-	elseif C["General"]["ClassColorHeaders"]["Value"] == "BackdropColor" then 
-		TukuiGUI.Header.Backdrop:SetBackdropColor(unpack(C.General.BackdropColor))
-	else
-		TukuiGUI.Header.Backdrop:SetBackdropColor(0.43, 0.43, 0.43)
-	end
-	
-	TukuiGUI.Header.Label:SetText(HeaderText)
-	
-	TukuiGUI.Header:SetScript("OnEnter", function(self)
-		if C["General"]["ClassColorHeaders"]["Value"] == "Dark" then 
-			TukuiGUI.Header.Label:SetTextColor(0.43, 0.43, 0.43)
-			TukuiGUI.Header.Backdrop:SetBorderColor(0.43, 0.43, 0.43)
-		elseif C["General"]["ClassColorHeaders"]["Value"] == "ClassColor" then 
-			TukuiGUI.Header.Label:SetTextColor(unpack(ClassColor))
-			TukuiGUI.Header.Backdrop:SetBorderColor(unpack(ClassColor))
-		elseif C["General"]["ClassColorHeaders"]["Value"] == "BackdropColor" then 
-			TukuiGUI.Header.Label:SetTextColor(unpack(C.General.BackdropColor))
-			TukuiGUI.Header.Backdrop:SetBorderColor(unpack(C.General.BackdropColor))
-		else
-			TukuiGUI.Header.Label:SetTextColor(0.43, 0.43, 0.43)
-			TukuiGUI.Header.Backdrop:SetBorderColor(0.43, 0.43, 0.43)
-		end
-	end)
-	
-	TukuiGUI.Header:SetScript("OnLeave", function(self)
-		TukuiGUI.Header.Label:SetTextColor(1, 1, 1)
-		TukuiGUI.Header.Backdrop:SetBorderColor(unpack(C["General"]["BorderColor"]))
-	end)
-	
-	TukuiGUI.Header:RegisterForDrag("LeftButton")
-	TukuiGUI.Header:SetScript("OnDragStart", function() TukuiGUI:StartMoving() end)
-	TukuiGUI.Header:SetScript("OnDragStop", function() TukuiGUI:StopMovingOrSizing() end)
-
-	-- bottom drag
-	TukuiGUI.Bottom = CreateFrame("Frame", nil, TukuiGUI)
-	TukuiGUI.Bottom:CreateBackdrop(nil, Texture)
-	TukuiGUI.Bottom:CreateShadow()
-	TukuiGUI.Bottom:SetFrameStrata("DIALOG")
-	TukuiGUI.Bottom:SetWidth(TukuiGUI.Header:GetWidth())
-	TukuiGUI.Bottom:SetHeight(22)
-	TukuiGUI.Bottom:SetPoint("TOP", TukuiGUI, "BOTTOM", 0, -19)
-		if C["General"]["ClassColorHeaders"]["Value"] == "Dark" then 
-			TukuiGUI.Bottom.Backdrop:SetBackdropColor(0.11, 0.11, 0.11)
-		elseif C["General"]["ClassColorHeaders"]["Value"] == "ClassColor" then 
-			TukuiGUI.Bottom.Backdrop:SetBackdropColor(unpack(ClassColor))
-		elseif C["General"]["ClassColorHeaders"]["Value"] == "BackdropColor" then 
-			TukuiGUI.Bottom.Backdrop:SetBackdropColor(unpack(C.General.BackdropColor))
-		else
-			TukuiGUI.Bottom.Backdrop:SetBackdropColor(0.43, 0.43, 0.43)
-		end
-
-	--button mouseaction (mousover or click)
-	TukuiGUI.Bottom:SetScript("OnEnter", function(self)
-		if C["General"]["ClassColorHeaders"]["Value"] == "Dark" then 
-			TukuiGUI.Bottom.Backdrop:SetBorderColor(0.43, 0.43, 0.43)
-		elseif C["General"]["ClassColorHeaders"]["Value"] == "ClassColor" then 
-			TukuiGUI.Bottom.Backdrop:SetBorderColor(unpack(ClassColor))
-		elseif C["General"]["ClassColorHeaders"]["Value"] == "BackdropColor" then 
-			TukuiGUI.Bottom.Backdrop:SetBorderColor(unpack(C.General.BackdropColor))
-		else
-			TukuiGUI.Bottom.Backdrop:SetBorderColor(0.43, 0.43, 0.43)
-		end
-	end)
-	
-	TukuiGUI.Bottom:SetScript("OnLeave", function(self)
-		TukuiGUI.Bottom.Backdrop:SetBorderColor(unpack(C["General"]["BorderColor"]))
-	end)
-
-	TukuiGUI.Bottom:RegisterForDrag("LeftButton")
-	TukuiGUI.Bottom:SetScript("OnDragStart", function() TukuiGUI:StartMoving() end)
-	TukuiGUI.Bottom:SetScript("OnDragStop", function() TukuiGUI:StopMovingOrSizing() end)
-
-	TukuiGUI.Close.Label:Hide()
-	
-	TukuiGUI.CloseIcon = TukuiGUI.Header:CreateTexture(nil, "ART")
-	TukuiGUI.CloseIcon:SetWidth(11)
-	TukuiGUI.CloseIcon:SetHeight(11)
-	TukuiGUI.CloseIcon:SetPoint("RIGHT", TukuiGUI.Header, "RIGHT", -8, 0)
-	TukuiGUI.CloseIcon:SetTexture([[Interface\AddOns\Tukui\Medias\Textures\Others\Close.tga]])
-	
-	TukuiGUI.Close:SetScript("OnEnter", function(self)
-		TukuiGUI.CloseIcon:SetVertexColor(1, 0, 0)
-	end)
-	
-	TukuiGUI.Close:SetScript("OnLeave", function(self)
-		TukuiGUI.CloseIcon:SetVertexColor(1, 1, 1)
-	end)
-end	
-hooksecurefunc(GUI, "Enable", ExtendedGUI)
+local version, build, date, tocversion = GetBuildInfo()
 
 ------------------------------------------------------------------------------------------
 -- WELCOME WINDOW
 ------------------------------------------------------------------------------------------
 local MaxUIWelcome = function(self)
-	local Window = self:CreateWindow("   |cffFFFF99MaxUI|r   ", true)
+	local Window = self:CreateWindow("MaxUI", true)
+
+	Window:CreateWindowLogo("All", GameVersion)
+	Window:CreateSpacer("All", 2)
+	Window:CreateSpacer("All", 3)
+	Window:CreateSpacer("All", 4)
+	Window:CreateSpacer("All", 5)
+	Window:CreateExplanationText("All", 6, "Thank you for using MaxUI. Check the HELP section for slash commands.")
+	Window:CreateExplanationText("All", 7, "For more information, support or feedback, go to www.tukui.org,")
+	Window:CreateExplanationText("All", 8, "join the Tukui Discord or MaxUI Discord: |cff2299ffhttps://discord.gg/vzUFmUm|r")
+	Window:CreateExplanationText("All", 9, "|cffFFFF99colored items|r only work with the MaxUI Theme, Style or Unitframes.")
+	Window:CreateSpacer("All", 10)
 	
-	Window.Logomaxui = Window:CreateTexture(nil, "OVERLAY")
-	Window.Logomaxui:SetWidth(Window:GetWidth()-4)
-	Window.Logomaxui:SetHeight((Window:GetWidth()-4)/2)
-	Window.Logomaxui:SetPoint("TOP", Window, "TOP", 0, -4)
-	Window.Logomaxui:SetTexture(T.GetTexture("MaxUI"))
+	local GameVersionArt = CreateFrame("Frame", "GameVersionArt", Window)
+	GameVersionArt:SetPoint("BOTTOM", Window, "BOTTOM", 0, 48)
+	GameVersionArt:SetSize(Window:GetWidth()-48, Window:GetWidth()-48)
+	GameVersionArt:CreateBackdrop("Transparent")
+	GameVersionArt:EnableMouse(false)
+	GameVersionArt:CreateShadow()
 
-	Window.LogoGameVersionBG = Window:CreateTexture(nil, "ART")
-	Window.LogoGameVersionBG:SetInside(Window)
-	Window.LogoGameVersionBG:SetAlpha(0.4)
+	GameVersionArt.ArtBG = GameVersionArt:CreateTexture(nil, "ARTWORK")
+	GameVersionArt.ArtBG:SetInside(GameVersionArt)
+	GameVersionArt.ArtBG:SetAlpha(0.7)
 
-	if T.Retail then
-		Window.LogoGameVersionBG:SetTexture(T.GetTexture("RetailBG"))
-	elseif T.BCC then
-		Window.LogoGameVersionBG:SetTexture(T.GetTexture("BCCBG"))
+	GameVersionArt.logo = GameVersionArt:CreateTexture(nil, "OVERLAY")
+	GameVersionArt.logo:SetPoint("TOP", GameVersionArt, "TOP")
+	GameVersionArt.logo:SetSize(200, 100)
+	GameVersionArt.logo:SetAlpha(1)
+
+		GameVersionArt.WoWVersiontext = GameVersionArt:CreateFontString(nil, "OVERLAY")
+		GameVersionArt.WoWVersiontext:SetFont(C.Medias.Font, 12)
+		GameVersionArt.WoWVersiontext:SetPoint("TOP", GameVersionArt.logo, "BOTTOM", 0, 4)
+		GameVersionArt.WoWVersiontext:SetTextColor(1, 1, 1)
+		GameVersionArt.WoWVersiontext:SetShadowColor(0, 0, 0)
+		GameVersionArt.WoWVersiontext:SetShadowOffset(1, -1)
+		GameVersionArt.WoWVersiontext:SetText(version)	
+		
+		if tocversion >= 10000 and tocversion <= 19999 then
+			GameVersionArt.logo:SetTexture(T.GetTexture("yLogoClassic"))
+		elseif tocversion >= 20000 and tocversion <= 29999 then
+			GameVersionArt.logo:SetTexture(T.GetTexture("yLogoBurningCrusade"))
+		elseif tocversion >= 30000 and tocversion <= 39999 then
+			GameVersionArt.logo:SetTexture(T.GetTexture("yLogoWotLK"))
+		elseif tocversion >= 40000 and tocversion <= 49999 then
+			GameVersionArt.logo:SetTexture(T.GetTexture("yLogoCataclysm"))
+		elseif tocversion >= 50000 and tocversion <= 59999 then
+			GameVersionArt.logo:SetTexture(T.GetTexture("yLogoMistsOfPandaria"))
+		elseif tocversion >= 60000 and tocversion <= 69999 then
+			GameVersionArt.logo:SetTexture(T.GetTexture("yLogoWarlordsOfDraenor"))
+		elseif tocversion >= 70000 and tocversion <= 79999 then
+			GameVersionArt.logo:SetTexture(T.GetTexture("yLogoLegion"))
+		elseif tocversion >= 80000 and tocversion <= 89999 then
+			GameVersionArt.logo:SetTexture(T.GetTexture("yLogoBattleForAzeroth"))
+		elseif tocversion >= 90000 and tocversion <= 99999 then
+			GameVersionArt.logo:SetTexture(T.GetTexture("yLogoShadowlands"))
+		elseif tocversion >= 100000 and tocversion <= 109999 then
+			GameVersionArt.logo:SetTexture(T.GetTexture("yLogoDragonflight"))
+		end
+
+	if C["ConfigMenu"]["EnableCustomBG"] == false then
+		if tocversion >= 10000 and tocversion <= 19999 then
+			GameVersionArt.ArtBG:SetTexture(T.GetTexture("zClassicBG"))
+		elseif tocversion >= 20000 and tocversion <= 29999 then
+			GameVersionArt.ArtBG:SetTexture(T.GetTexture("zBurningCrusadeBG"))
+		elseif tocversion >= 30000 and tocversion <= 39999 then
+			GameVersionArt.ArtBG:SetTexture(T.GetTexture("zWotLKBG"))
+		elseif tocversion >= 40000 and tocversion <= 49999 then
+			GameVersionArt.ArtBG:SetTexture(T.GetTexture("zCataclysmBG"))
+		elseif tocversion >= 50000 and tocversion <= 59999 then
+			GameVersionArt.ArtBG:SetTexture(T.GetTexture("zMistsOfPandariaBG"))
+		elseif tocversion >= 60000 and tocversion <= 69999 then
+			GameVersionArt.ArtBG:SetTexture(T.GetTexture("zWarlordsOfDraenorBG"))
+		elseif tocversion >= 70000 and tocversion <= 79999 then
+			GameVersionArt.ArtBG:SetTexture(T.GetTexture("zLegionBG"))
+		elseif tocversion >= 80000 and tocversion <= 89999 then
+			GameVersionArt.ArtBG:SetTexture(T.GetTexture("zBattleForAzerothBG"))
+		elseif tocversion >= 90000 and tocversion <= 99999 then
+			GameVersionArt.ArtBG:SetTexture(T.GetTexture("zShadowlandsBG"))
+		elseif tocversion >= 100000 and tocversion <= 109999 then
+			GameVersionArt.ArtBG:SetTexture(T.GetTexture("zDragonFlightBG"))
+		else
+			GameVersionArt.ArtBG:SetTexture(0.11, 0.11, 0.11)
+		end
 	else
-		Window.LogoGameVersionBG:SetTexture(T.GetTexture("ClassicBG"))
-	end
+		GameVersionArt.ArtBG:SetTexture(T.GetTexture(C["ConfigMenu"]["CustomBG"]))
+	end	
 
-		Window.MaxUIGameVersiontext = Window:CreateFontString(nil, "OVERLAY")
-		Window.MaxUIGameVersiontext:SetFontTemplate(C.Medias.Font, 16, 1.25, 1.25)
-		Window.MaxUIGameVersiontext:SetPoint("TOP", Window.Logomaxui, "CENTER", 0, -84)
-		Window.MaxUIGameVersiontext:SetTextColor(1, 1, 1)
-		Window.MaxUIGameVersiontext:SetShadowColor(0, 0, 0)
-		Window.MaxUIGameVersiontext:SetShadowOffset(1, -1)
-		Window.MaxUIGameVersiontext:SetText(GameVersion)	
+	GameVersionArt.LogoMaxUI = GameVersionArt:CreateTexture(nil, "OVERLAY")
+	GameVersionArt.LogoMaxUI:SetWidth(150)
+	GameVersionArt.LogoMaxUI:SetHeight(75)
+	GameVersionArt.LogoMaxUI:SetPoint("BOTTOMLEFT", GameVersionArt, "BOTTOMLEFT", 12, 32)
+	GameVersionArt.LogoMaxUI:SetTexture([[Interface\AddOns\MaxUI\Medias\MaxUI\MaxUI_LOGO.tga]])
 
-		Window.MaxUIVersiontext = Window:CreateFontString(nil, "OVERLAY")
-		Window.MaxUIVersiontext:SetFontTemplate(C.Medias.Font, 12, 1.25, 1.25)
-		Window.MaxUIVersiontext:SetPoint("TOP", Window.Logomaxui, "CENTER", 0, -104)
-		Window.MaxUIVersiontext:SetTextColor(1, 1, 1)
-		Window.MaxUIVersiontext:SetShadowColor(0, 0, 0)
-		Window.MaxUIVersiontext:SetShadowOffset(1, -1)
-		Window.MaxUIVersiontext:SetText(MaxUIVersion)	
+		GameVersionArt.MaxUIVersiontext = GameVersionArt:CreateFontString(nil, "OVERLAY")
+		GameVersionArt.MaxUIVersiontext:SetFont(C.Medias.Font, 12)
+		GameVersionArt.MaxUIVersiontext:SetPoint("TOP", GameVersionArt.LogoMaxUI, "BOTTOM", 0, -4)
+		GameVersionArt.MaxUIVersiontext:SetTextColor(1, 1, 1)
+		GameVersionArt.MaxUIVersiontext:SetShadowColor(0, 0, 0)
+		GameVersionArt.MaxUIVersiontext:SetShadowOffset(1, -1)
+		GameVersionArt.MaxUIVersiontext:SetText(MaxUIVersion)	
 
-	Window.Logotukui = Window:CreateTexture(nil, "OVERLAY")
-	Window.Logotukui:SetWidth(148)
-	Window.Logotukui:SetHeight(148)
-	Window.Logotukui:SetPoint("BOTTOM", Window, "BOTTOM", 0, 42)
-	Window.Logotukui:SetTexture([[Interface\AddOns\Tukui\Medias\Textures\Others\logo.blp]])
+	GameVersionArt.Logotukui = GameVersionArt:CreateTexture(nil, "OVERLAY")
+	GameVersionArt.Logotukui:SetWidth(100)
+	GameVersionArt.Logotukui:SetHeight(100)
+	GameVersionArt.Logotukui:SetPoint("BOTTOMRIGHT", GameVersionArt, "BOTTOMRIGHT", -32, 32)
+	GameVersionArt.Logotukui:SetTexture([[Interface\AddOns\Tukui\Medias\Textures\Others\logo.blp]])
 
-		Window.TukuiVersiontext = Window:CreateFontString(nil, "OVERLAY")
-		Window.TukuiVersiontext:SetFontTemplate(C.Medias.Font, 12, 1.25, 1.25)
-		Window.TukuiVersiontext:SetPoint("BOTTOM", Window, "BOTTOM", 0, 24)
-		Window.TukuiVersiontext:SetTextColor(1, 1, 1)
-		Window.TukuiVersiontext:SetShadowColor(0, 0, 0)
-		Window.TukuiVersiontext:SetShadowOffset(1, -1)
-		Window.TukuiVersiontext:SetText(TukuiVersion)	
-
-		Window.MaxUIWelcometext = Window:CreateFontString(nil, "OVERLAY")
-		Window.MaxUIWelcometext:SetFontTemplate(C.Medias.Font, 14, 1.25, 1.25)
-		Window.MaxUIWelcometext:SetPoint("TOP", Window, "CENTER", 0, 0)
-		Window.MaxUIWelcometext:SetTextColor(1, 1, 1)
-		Window.MaxUIWelcometext:SetShadowColor(0, 0, 0)
-		Window.MaxUIWelcometext:SetShadowOffset(1, -1)
-		Window.MaxUIWelcometext:SetText(WelcomeMessage)	
+		GameVersionArt.TukuiVersiontext = GameVersionArt:CreateFontString(nil, "OVERLAY")
+		GameVersionArt.TukuiVersiontext:SetFont(C.Medias.Font, 12)
+		GameVersionArt.TukuiVersiontext:SetPoint("TOP", GameVersionArt.Logotukui, "BOTTOM", 0, -4)
+		GameVersionArt.TukuiVersiontext:SetTextColor(1, 1, 1)
+		GameVersionArt.TukuiVersiontext:SetShadowColor(0, 0, 0)
+		GameVersionArt.TukuiVersiontext:SetShadowOffset(1, -1)
+		GameVersionArt.TukuiVersiontext:SetText(TukuiVersion)	
 end
 GUI:AddWidgets(MaxUIWelcome)
 
 ------------------------------------------------------------------------------------------
+-- CONFIGURATION SECTION
+------------------------------------------------------------------------------------------
+local MaxUIConfig = function(self)
+	local Window = self:CreateWindow("Config")
+
+	Window:CreateWindowLogo("All", "|cffFFFF99Configuration|r")
+	Window:CreateSpacer("All", 2)
+	Window:CreateSpacer("All", 3)
+	Window:CreateSpacer("All", 4)
+	Window:CreateSpacer("All", 5)
+	Window:CreateExplanationText("All", 6, "Most of these options are also accessable as slash commands,")
+	Window:CreateExplanationText("All", 7, "check the Help section for more info.")
+	Window:CreateSpacer("All", 8)
+
+	Window:CreateSection("All", "Mode")
+	Window:CreateDropdown("All", "ConfigMenu", "Style", "Set configuration mode")
+	Window:CreateSwitch("All", "ConfigMenu", "EnableCustomBG", "Enable custom art settings for main window")
+	Window:CreateDropdown("All", "ConfigMenu", "CustomBG", "Set custom art", "Texture")
+	Window:CreateSpacerNoPos("All")
+	
+	Window:CreateSection("All", "Tukui/MaxUI settings")
+	Window:CreateSectionButton("All", "Default Blizzard", "Reset BLizzard and Edit Mode to default settings to prevent bug", GUI.TotalResetBLizzard)	
+	Window:CreateSectionButton("All", "Default", "Reset Tukui/MaxUI to default settings", GUI.TotalReset)	
+	Window:CreateSpacerNoPos("All")
+	
+	Window:CreateSection("All", "Unitframes")
+	Window:CreateSectionButton("All", "Test", "Run test mode", GUI.TukuiTest)	
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Loot modules")
+	Window:CreateSectionButton("All", "Test", "Run grouploot test mode", GUI.TukuiGroupLootTest)	
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Chat settings")
+	Window:CreateSectionButton("All", "Default", "Reset chat to default settings by theme (Tukui / MaxUI)", GUI.ChatSetupReset)	
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Datatext settings")
+	Window:CreateSectionButton("All", "Default", "Set all datatexts to default by theme (Tukui / MaxUI)", GUI.DatatextSetupDefault)	
+	Window:CreateSectionButton("All", "Config", "Open datatext configuration mode", GUI.DatatextSetupConfig)	
+	Window:CreateSectionButton("All", "Gold Reset", "Reset gold datatext", GUI.DatatextSetupGoldReset)	
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Tukui/MaxUI tools")
+	Window:CreateSectionButton("All", "Keybinds", "Open hover keybinds", GUI.TukuiKeybinds)	
+	Window:CreateSectionButton("All", "Debuff tracking", "Open raid debuff tracking tool", GUI.TukuiDebuffTracking)	
+	Window:CreateSectionButton("All", "Markers", "Open Tukui markers", GUI.TukuiMarkers)	
+	Window:CreateSectionButton("All", "Micromenu", "Open Tukui Micromenu", GUI.TukuiMicroMenu)	
+	Window:CreateSectionButton("All", "AFK", "Run afk mode", GUI.AFK)	
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Move & Grid settings")
+	Window:CreateSectionButton("All", "Move", "Enable movable elements", GUI.TukuiMove)	
+	Window:CreateSectionButton("All", "Standard", "Standard alignment grid", GUI.TukuiGrid)	
+	Window:CreateSectionButton("All", "24", "Square grid", GUI.TukuiGrid24)	
+	Window:CreateSectionButton("All", "48", "Square grid", GUI.TukuiGrid48)	
+	Window:CreateSectionButton("All", "64", "Square grid", GUI.TukuiGrid64)	
+	Window:CreateSectionButton("All", "96", "Square grid", GUI.TukuiGrid96)	
+	Window:CreateSectionButton("All", "128", "Square grid", GUI.TukuiGrid128)	
+	Window:CreateSpacerNoPos("All")
+
+	if C["ConfigMenu"]["Style"]["Value"] == "Developer" then
+		Window:CreateSection("All", "Developer settings")
+		Window:CreateSectionButton("All", "Help", "Print Tukui help in chat", GUI.TukuiPrint)	
+		Window:CreateSectionButton("All", "Status", "Tukui status report", GUI.TukuiStatus)	
+		Window:CreateSectionButton("All", "Frame Stack", "Run frame stack tool", GUI.FStack)	
+		Window:CreateSectionButton("All", "Trace Events", "Tukui trace events (chat)", GUI.TukuiTraceEvents)	
+	end
+end
+GUI:AddWidgets(MaxUIConfig)
+
+------------------------------------------------------------------------------------------
 -- HELP WINDOW
 ------------------------------------------------------------------------------------------
-local Texts = {}
-local Count = 1
-
 L.Help.Grid = "|cff00ff00/tukui grid|r or |cff00ff00/tukui grid 128|r : Display a grid which allow you to better align frames."
 L.Help.Status = "|cff00ff00/tukui status|r or |cff00ff00/tukui debug|r : Show a debug window with information about debugging the UI"
 
@@ -226,228 +238,64 @@ L.MaxUIHelp.BuffTracker = "|cffffff99/maxui bufftracker|r or |cffffff99/maxui bt
 
 
 local MaxUIHelp = function(self)
-	local Window = self:CreateWindow("  |cffFFFF99Help|r  ", false)
+	local Window = self:CreateWindow("Help", false)
 
-	Window.Logomaxui = Window:CreateTexture(nil, "ART")
-	Window.Logomaxui:SetWidth(Window:GetWidth()-4)
-	Window.Logomaxui:SetHeight((Window:GetWidth()-4)/2)
-	Window.Logomaxui:SetPoint("TOP", Window, "TOP", 0, -4)
-	Window.Logomaxui:SetTexture(T.GetTexture("MaxUI"))
-
-	Window.Logotukui = Window:CreateTexture(nil, "OVERLAY")
-	Window.Logotukui:SetWidth(148)
-	Window.Logotukui:SetHeight(148)
-	Window.Logotukui:SetPoint("BOTTOM", Window, "BOTTOM", 0, 42)
-	Window.Logotukui:SetTexture([[Interface\AddOns\Tukui\Medias\Textures\Others\logo.blp]])
+	Window:CreateWindowLogo("All", "|cffFFFF99Help Section|r")
+	Window:CreateSpacer("All", 2)
+	Window:CreateSpacer("All", 3)
+	Window:CreateSpacer("All", 4)
+	Window:CreateSpacer("All", 5)
+	Window:CreateExplanationText("All", 6, "Several slash commands are integrated in the config section.")
+	Window:CreateSpacer("All", 7)
 	
-	for Index, Value in pairs(L.MaxUIHelp) do
-		Texts[Index] = Window:CreateFontString(nil, "OVERLAY")
-		Texts[Index]:SetFont(C.Medias.Font, 11, "THINOUTLINE")
-		Texts[Index]:SetPoint("BOTTOMLEFT", Window, "BOTTOMLEFT", 4, 23 * Count)
-		Texts[Index]:SetText(Value)
-		
-		Count = Count + 1
-	end
-	for Index, Value in pairs(L.Help) do
-		Texts[Index] = Window:CreateFontString(nil, "OVERLAY")
-		Texts[Index]:SetFont(C.Medias.Font, 11, "THINOUTLINE")
-		Texts[Index]:SetPoint("BOTTOMLEFT", Window, "BOTTOMLEFT", 4, 23 * Count)
-		Texts[Index]:SetText(Value)
-		
-		Count = Count + 1
-	end
+	Window:CreateSection("All", "MaxUI slash commands")
+	Window:CreateTextLine("All", L.MaxUIHelp.Print)
+	Window:CreateTextLine("All", L.MaxUIHelp.GameMenu)
+	Window:CreateTextLine("All", L.MaxUIHelp.RaidTools)
+	Window:CreateTextLine("All", L.MaxUIHelp.BuffTracker)
+	Window:CreateTextLine("All", L.MaxUIHelp.DataCenter)
+	Window:CreateSpacerNoPos("All")
+	
+	Window:CreateSection("All", "Tukui slash commands")
+	Window:CreateTextLine("All", L.Help.Config)
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateTextLine("All", "INSTALL OR RESET:")
+	Window:CreateTextLine("All", L.Help.Install)
+	Window:CreateTextLine("All", "|cff00ff00/tukui reset blizzard|r : to reset the blizzard ui to default (Edit mode reset)")
+	Window:CreateTextLine("All", L.Help.Chat)
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateTextLine("All", "SETTINGS:")
+	Window:CreateTextLine("All", L.Help.Keybinds)
+	Window:CreateTextLine("All", L.Help.Move)
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateTextLine("All", "DATATEXTS:")
+	Window:CreateTextLine("All", L.Help.Datatexts)
+	Window:CreateTextLine("All", L.Help.Gold)
+	Window:CreateTextLine("All", "|cff00ff00/tukui dt reset|r : reset the datatexts to default settings.")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateTextLine("All", "TOOLS:")
+	Window:CreateTextLine("All", L.Help.MicroMenu)
+	Window:CreateTextLine("All", L.Help.ObjectiveTracker)
+	Window:CreateTextLine("All", L.Help.Profiles)
+	Window:CreateTextLine("All", L.Help.RaidUtilities)
+	Window:CreateTextLine("All", L.Help.Tracking)
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateTextLine("All", "DEBUG:")
+	Window:CreateTextLine("All", L.Help.Test)
+	Window:CreateTextLine("All", L.Help.Status)
+	Window:CreateTextLine("All", "|cff00ff00/tukui fn|r : to get the global frame name for mouseover frame.")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateTextLine("All", "ADDONS:")
+	Window:CreateTextLine("All", L.Help.Load)
+	Window:CreateSpacerNoPos("All")
 end
 GUI:AddWidgets(MaxUIHelp)
-
-------------------------------------------------------------------------------------------
--- ADDONS	
-------------------------------------------------------------------------------------------
-if IsAddOnLoaded( 'AddOnSkins', 'AdvancedInterfaceOptions', 'AstralKeys', 'Auctionator', 'BugSack', 'Clique', 'DBM-Core', 'Details', 'Hekili', 'Immersion', 'ls_Toasts', 'Leatrix_Plus', 'Pawn', 'ProjectAzilroka', 'RSA', 'Simulationcraft', 'WeakAuras', 'WorldQuestsList', 'WorldQuestTab') then
-
-	local AddOns = function(self)
-		local Window = self:CreateWindow(" |cffFFFF99AddOns|r ")
-
-		Window:CreateSection("All", "MaxUI connected AddOns")
-		
-		if IsAddOnLoaded('AddOnSkins') then 
-			Window:CreateSectionButton("All", "open", "AddonSkins", GUI.OpenConfigAddOnSkins)	
-		end
-
-		if IsAddOnLoaded('AdvancedInterfaceOptions') then 
-			Window:CreateSectionButton("All", "open", "Advanced Interface Options", GUI.OpenConfigAdvancedInterfaceOptions)
-		end
-
-		if IsAddOnLoaded('AstralKeys') then 
-			Window:CreateSectionButton("All", "open", "Astral Keys", GUI.OpenConfigAstralKeys)
-		end
-
-		if IsAddOnLoaded('Auctionator') then 
-			Window:CreateSectionButton("All", "open", "Auctionator", GUI.OpenConfigAuctionator)
-		end
-		
-		if IsAddOnLoaded('BugSack') then 
-			Window:CreateSectionButton("All", "open", "BugSack", GUI.OpenConfigBugSack)
-		end
-		
-		if IsAddOnLoaded('Clique') then 
-			Window:CreateSectionButton("All", "open", "Clique", GUI.OpenConfigClique)
-		end
-
-		if IsAddOnLoaded('DBM-Core') then 
-			Window:CreateSectionButton("All", "open", "Deadly Boss Mods", GUI.OpenConfigDBM)	
-		end
-		
-		if IsAddOnLoaded('Details') then 
-			Window:CreateSectionButton("All", "open", "Details!", GUI.OpenConfigDetails)	
-		end
-
-		if IsAddOnLoaded('Hekili') then 
-			Window:CreateSectionButton("All", "open", "Hekili", GUI.OpenConfigHekili)	
-		end
-
-		if IsAddOnLoaded('Immersion') then 
-			Window:CreateSectionButton("All", "open", "Immersion", GUI.OpenConfigImmersion)	
-		end
-
-		if IsAddOnLoaded('Leatrix_Plus') then 
-			Window:CreateSectionButton("All", "open", "Leatrix Plus", GUI.OpenConfigLeatrixPlus)
-		end
-
-		if IsAddOnLoaded('ls_Toasts') then 
-			Window:CreateSectionButton("All", "open", "LS: Toasts", GUI.OpenConfigLSToasts)	
-		end
-
-		if IsAddOnLoaded('Pawn') then 
-			Window:CreateSectionButton("All", "open", "Pawn", GUI.OpenConfigPawn)
-		end
-
-		if IsAddOnLoaded('ProjectAzilroka') then 
-			Window:CreateSectionButton("All", "open", "Project Azilroka", GUI.OpenConfigProjectAzilroka)
-		end
-
-		if IsAddOnLoaded('Questie') then 
-			Window:CreateSectionButton("All", "open", "Questie", GUI.OpenConfigQuestie)	
-		end
-		
-
-		if IsAddOnLoaded('RSA') then 
-			Window:CreateSectionButton("All", "open", "Raelli's Spell Announcer", GUI.OpenConfigRSA)	
-		end
-		
-		if IsAddOnLoaded('Simulationcraft') then 
-			Window:CreateSectionButton("All", "open", "SimCraft", GUI.OpenConfigSimCraft)	
-		end
-
-		if IsAddOnLoaded('WeakAuras') then 
-			Window:CreateSectionButton("All", "open", "WeakAuras", GUI.OpenConfigWeakAuras)	
-		end
-
-		if IsAddOnLoaded('WorldQuestsList') then 
-			Window:CreateSectionButton("All", "open", "World Quest List", GUI.OpenConfigWorldQuestList)
-		end
-		
-		if IsAddOnLoaded('WorldQuestTab') then 
-			Window:CreateSectionButton("All", "open", "World Quest Tab", GUI.OpenConfigWorldQuestTab)
-		end
-
-		local Explanation = CreateFrame("Frame", "Explanation", Window)
-		Explanation:SetPoint("BOTTOMLEFT", Window, "BOTTOMLEFT", 16, 16)
-		Explanation:SetPoint("BOTTOMRIGHT", Window, "BOTTOMRIGHT", -16, 16)
-		Explanation:SetHeight(120)
-		Explanation:SetFrameStrata("FULLSCREEN")
-		Explanation:SetFrameLevel(15)
-		Explanation:CreateBackdrop("Transparent")
-		Explanation:EnableMouse(true)
-
-		Explanation.Text = Explanation:CreateFontString(nil, "OVERLAY")
-		Explanation.Text:SetFont(C.Medias.Font, 12)
-		Explanation.Text:SetPoint("LEFT", Explanation, "LEFT", 16, 0)
-		Explanation.Text:SetTextColor(1, 1, 1)
-		Explanation.Text:SetShadowColor(0, 0, 0)
-		Explanation.Text:SetShadowOffset(1.25, -1.25)
-		Explanation.Text:SetJustifyH("LEFT")
-		Explanation.Text:SetText("|cffFFFF99NOTE:|r \n\nShortcuts to other addons and their configuration.")	
-		
-		Explanation.Logomaxui = Explanation:CreateTexture(nil, "ART")
-		Explanation.Logomaxui:SetWidth(96)
-		Explanation.Logomaxui:SetHeight(48)
-		Explanation.Logomaxui:SetPoint("RIGHT", Explanation, "TOPRIGHT", -16, 0)
-		Explanation.Logomaxui:SetTexture(T.GetTexture("MaxUI"))
-	end
-	GUI:AddWidgets(AddOns)
-end
-
-------------------------------------------------------------------------------------------
--- CONFIGURATION SECTION
-------------------------------------------------------------------------------------------
-local MaxUIConfig = function(self)
-	local Window = self:CreateWindow(" |cffFFFF99Config|r ")
-
-	Window:CreateSection("All", "Mode")
-	Window:CreateDropdown("All", "ConfigMenu", "Style", "Set configuration mode")
-	
-	Window:CreateSection("All", "Tukui/MaxUI settings")
-	Window:CreateSectionButton("All", "Default", "Reset Tukui/MaxUI to default settings", GUI.TotalReset)	
-	Window:CreateSectionButton("All", "Test", "Run test mode", GUI.TukuiTest)	
-
-	Window:CreateSection("All", "Chat settings")
-	Window:CreateSectionButton("All", "Default", "Reset chat to default settings", GUI.ChatSetupReset)	
-
-	Window:CreateSection("All", "Datatext settings")
-	Window:CreateSectionButton("All", "Default", "Set all datatexts to default", GUI.DatatextSetupDefault)	
-	Window:CreateSectionButton("All", "Config", "Open datatext configuration mode", GUI.DatatextSetupConfig)	
-	Window:CreateSectionButton("All", "Gold Reset", "Reset gold datatext", GUI.DatatextSetupGoldReset)	
-
-	Window:CreateSection("All", "Tukui/MaxUI tools")
-	Window:CreateSectionButton("All", "Keybinds", "Open hover keybinds", GUI.TukuiKeybinds)	
-	Window:CreateSectionButton("All", "Debuff tracking", "Open raid debuff tracking tool", GUI.TukuiDebuffTracking)	
-	Window:CreateSectionButton("All", "Markers", "Open Tukui markers", GUI.TukuiMarkers)	
-	Window:CreateSectionButton("All", "Micromenu", "Open Tukui Micromenu", GUI.TukuiMicroMenu)	
-	Window:CreateSectionButton("All", "AFK", "Run afk mode", GUI.AFK)	
-
-
-	Window:CreateSection("All", "Move & Grid settings")
-	Window:CreateSectionButton("All", "Move", "Enable movable elements", GUI.TukuiMove)	
-	Window:CreateSectionButton("All", "Standard", "Standard alignment grid", GUI.TukuiGrid)	
-	Window:CreateSectionButton("All", "24", "", GUI.TukuiGrid24)	
-	Window:CreateSectionButton("All", "48", "", GUI.TukuiGrid48)	
-	Window:CreateSectionButton("All", "64", "", GUI.TukuiGrid64)	
-	Window:CreateSectionButton("All", "96", "", GUI.TukuiGrid96)	
-	Window:CreateSectionButton("All", "128", "", GUI.TukuiGrid128)	
-
-	if C["ConfigMenu"]["Style"]["Value"] == "Developer" then
-		Window:CreateSection("All", "Developer settings")
-		Window:CreateSectionButton("All", "Help", "Print Tukui help in chat", GUI.TukuiPrint)	
-		Window:CreateSectionButton("All", "Status", "Tukui status report", GUI.TukuiStatus)	
-		Window:CreateSectionButton("All", "Frame Stack", "Run frame stack tool", GUI.FStack)	
-		Window:CreateSectionButton("All", "Trace Events", "Tukui trace events (chat)", GUI.TukuiTraceEvents)	
-	end
-	
-	local Explanation = CreateFrame("Frame", "Explanation", Window)
-	Explanation:SetPoint("BOTTOMLEFT", Window, "BOTTOMLEFT", 16, 16)
-	Explanation:SetPoint("BOTTOMRIGHT", Window, "BOTTOMRIGHT", -16, 16)
-	Explanation:SetHeight(120)
-	Explanation:SetFrameStrata("FULLSCREEN")
-	Explanation:SetFrameLevel(15)
-	Explanation:CreateBackdrop("Transparent")
-	Explanation:EnableMouse(true)
-
-	Explanation.Text = Explanation:CreateFontString(nil, "OVERLAY")
-	Explanation.Text:SetFont(C.Medias.Font, 12)
-	Explanation.Text:SetPoint("LEFT", Explanation, "LEFT", 16, 0)
-	Explanation.Text:SetTextColor(1, 1, 1)
-	Explanation.Text:SetShadowColor(0, 0, 0)
-	Explanation.Text:SetShadowOffset(1.25, -1.25)
-	Explanation.Text:SetJustifyH("LEFT")
-	Explanation.Text:SetText("|cffFFFF99NOTE:|r \n\nMost of these options are also accessable as slash commands,\ncheck the Help section for more info.")	
-	
-	Explanation.Logomaxui = Explanation:CreateTexture(nil, "ART")
-	Explanation.Logomaxui:SetWidth(96)
-	Explanation.Logomaxui:SetHeight(48)
-	Explanation.Logomaxui:SetPoint("RIGHT", Explanation, "TOPRIGHT", -16, 0)
-	Explanation.Logomaxui:SetTexture(T.GetTexture("MaxUI"))
-end
-GUI:AddWidgets(MaxUIConfig)
 
 ------------------------------------------------------------------------------------------
 -- PROFILES
@@ -455,60 +303,71 @@ GUI:AddWidgets(MaxUIConfig)
 local Profiles = function(self)
 	local Profiles = T.Profiles
 	local BrightColor = {0.35, 0.35, 0.35}
-	local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
 	local baseProfilesEnable = Profiles.Enable
 	local EditBox = Profiles:GetParent().EditBox
 	
-	local Window = self:CreateWindow(" |cffFFFF99Profiles|r ")
+	local Window = self:CreateWindow("Profiles")
 	Window:HookScript("OnShow", GUI.ProfilesShow)
 	Window:HookScript("OnHide", GUI.ProfilesHide)
+
+	Window:CreateWindowLogo("All", "|cffFFFF99Profiles|r")
+	Window:CreateSpacer("All", 2)
+	Window:CreateSpacer("All", 3)
+	Window:CreateSpacer("All", 4)
+	Window:CreateSpacer("All", 5)
+	Window:CreateExplanationText("All", 6, "Quickly copy a profile from another character or import/export with a textstring.")
+	Window:CreateSpacer("All", 7)
 
 	Window:CreateSection("All", "Profiles")
 	local Profile = Window:CreateDropdown("All", "General", "Profiles", "Import a profile from another character")
 	Profile.Menu:HookScript("OnHide", GUI.SetProfile)
+	Window:CreateSpacerNoPos("All")
 
 	Window:CreateSection("All", "IMPORT/EXPORT")
 
 	function Profiles:Enable()
 		baseProfilesEnable(self)
-		
+
+		self.Logo:Kill()
+		self.Backdrop:Kill()
+		self.Shadow:Kill()
+		self.Close:Kill()
+
 		self:ClearAllPoints()
 		self:SetParent(Window)
 		self:SetPoint("BOTTOM", Window, "BOTTOM", 0, 0)
-		
-		self.Logo:Kill()
-		self.Title:SetFont(C.Medias.Font, 12, "")
-		self.Title:ClearAllPoints()
-		self.Title:SetPoint("TOP", Window, "TOP", 0, -96)
-		self.Description:SetFont(C.Medias.Font, 12, "")
+	
 		self.Status:SetFont(C.Medias.Font, 12, "")
 		self.Status:SetTextColor(1, 1, 1)
+		self.Status:ClearAllPoints()
+		self.Status:SetPoint("TOP", Window, "TOP", 0, -264)
 
-		self.EditBox.Backdrop:SetBorderColor(0.43, 0.43, 0.43)
-		self.EditBox:ClearAllPoints()
-		self.EditBox:SetPoint("TOP", self.Status, "BOTTOM", 0, -4)
+		self.Title:SetFont(C.Medias.Font, 12, "")
+		self.Title:ClearAllPoints()
+		self.Title:SetPoint("TOP", self.Status, "BOTTOM", 0, -12)
 		
-		self.Backdrop:Kill()
-		self.Shadow:Kill()
+		self.Description:SetFont(C.Medias.Font, 12, "")
 		
-		self.Close:Kill()
-		self.Reset.Shadow:Kill()
-		self.Apply.Shadow:Kill()
+		self.ScrollArea:ClearAllPoints()
+		self.ScrollArea:SetPoint("TOPLEFT", Window, "TOPLEFT", 24, -340)
+		self.ScrollArea:SetPoint("BOTTOMRIGHT", Window, "BOTTOMRIGHT", -46, 80)
 		
+		self.ScrollArea.Backdrop:SetBorderColor(0, 0, 0)
+		self.ScrollArea.Backdrop:SetAlpha(0.7)
+		self.ScrollArea.Backdrop:CreateShadow()
+		
+		self.EditBox:SetWidth(self.ScrollArea:GetWidth())
+		self.EditBox:SetHeight(self.ScrollArea:GetHeight())
+		
+		self.Reset:ClearAllPoints()
+		self.Reset:SetPoint("BOTTOMRIGHT", Window, "BOTTOM", -4, 24)
 		self.Reset:SetHeight(20)
 		self.Reset:SetWidth(244)
-		self.Reset.Backdrop.Texture = self.Reset.Backdrop:CreateTexture(nil, "ART")
-		self.Reset.Backdrop.Texture:SetInside(self.Reset.Backdrop)
-		self.Reset.Backdrop.Texture:SetTexture(T.GetTexture(C["General"]["TextureButton"]))
-		self.Reset.Backdrop.Texture:SetVertexColor(unpack(BrightColor))
-	
+
+		self.Apply:ClearAllPoints()
+		self.Apply:SetPoint("BOTTOMLEFT", Window, "BOTTOM", 4, 24)
 		self.Apply:SetHeight(20)
 		self.Apply:SetWidth(244)
-		self.Apply.Backdrop.Texture = self.Apply.Backdrop:CreateTexture(nil, "ART")
-		self.Apply.Backdrop.Texture:SetInside(self.Apply.Backdrop)
-		self.Apply.Backdrop.Texture:SetTexture(T.GetTexture(C["General"]["TextureButton"]))
-		self.Apply.Backdrop.Texture:SetVertexColor(unpack(BrightColor))
-		
 	end
 end
 GUI:AddWidgets(Profiles)
@@ -517,118 +376,323 @@ GUI:AddWidgets(Profiles)
 -- QUICK SETUP	
 ------------------------------------------------------------------------------------------
 local QuickSetup = function(self)
-	local Window = self:CreateWindow(" |cffFFFF99Quick Setup|r ")
+	local Window = self:CreateWindow("Quick Setup")
 
-	Window:CreateSection("All", "Step 1: Role / Playstyle")
+	Window:CreateWindowLogo("All", "|cffFFFF99Quick Setup|r")
+	Window:CreateSpacer("All", 2)
+	Window:CreateSpacer("All", 3)
+	Window:CreateSpacer("All", 4)
+	Window:CreateSpacer("All", 5)
+	Window:CreateExplanationText("All", 6, "Options for a quick basic setup using several fixed settings or layouts.")
+	Window:CreateExplanationText("All", 7, "When step 3 is set to 'locked', actionbars can not be modified in the actionbar section.")
+	Window:CreateExplanationText("All", 8, "The Tukui layout doesn't have actionbar adjustments.")
+	Window:CreateExplanationText("All", 9, "For more customization options go to the appropiate section.")
+	Window:CreateSpacer("All", 10)
+
+	Window:CreateSection("All", "Step 0: General theme")
+	Window:CreateDropdown("All", "General", "Themes", "Set UI theme")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Step 1: Role / Playstyle (actionbars)")
 	Window:CreateDropdown("All", "Layout", "LayoutRole", "Set role / playstyle")
+	Window:CreateSpacerNoPos("All")
 
-	Window:CreateSection("All", "Step 2: Actionbar positioning")
-	Window:CreateDropdown("All", "Layout", "LayoutAB", "Set position(s) for certain actionbars")
+	Window:CreateSection("All", "Step 2:Positioning (actionbars)")
+	Window:CreateDropdown("All", "Layout", "LayoutAB", "Set predefined position(s) for certain actionbars")
+	Window:CreateSpacerNoPos("All")
 
-	Window:CreateSection("All", "Step 3: Customize layout")
+	Window:CreateSection("All", "Step 3: Customize layout (actionbars)")
 	Window:CreateDropdown("All", "Layout", "LayoutCustomize", "Set customize state for layouts / actionbars")
+	Window:CreateSpacerNoPos("All")
 
-	Window:CreateSection("All", "Step 4: Unitframes orientation")
-	if (C["UnitFrames"]["Style"]["Value"] == "MaxUI") then
-		Window:CreateDropdown("All", "UnitFrames", "HorVer", "|cffFFFF99Set unitframes orientation|r")
-		Window:CreateDropdown("All", "ClassOptions", "ClassResourcesOrientation", "|cffFFFF99Set class resources orientation|r")
-	end
+	Window:CreateSection("All", "Step 4: Units Style")
+	Window:CreateDropdown("All", "UnitFrames", "Style", "Set unitframes style")
+	Window:CreateDropdown("All", "ClassOptions", "ClassPowerStyle", "Set class power style")
+	Window:CreateDropdown("All", "Raid", "Style", "Set raid unit style")
+	Window:CreateDropdown("All", "Party", "Style", "Set party unit style")
+	Window:CreateDropdown("All", "NamePlates", "Style", "Set nameplates style")
+	Window:CreateSpacerNoPos("All")
 
-	Window:CreateSection("All", "Step 5: Unitframes anchoring")
+	Window:CreateSection("All", "Step 5: Unitframes orientation")
+	Window:CreateDropdown("All", "UnitFrames", "HorVer", "|cffFFFF99Set unitframes orientation|r")
+	Window:CreateDropdown("All", "ClassOptions", "ClassResourcesOrientation", "|cffFFFF99Set class resources orientation|r")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Step 6: Unitframes anchoring")
 	Window:CreateSlider("All", "UnitFrames", "MaxUIAnchorWidth", "|cffFFFFFFSet horizontal offset for player and target|r", -1000, 1000, 1)
 	Window:CreateSlider("All", "UnitFrames", "MaxUIAnchorVertical", "|cffFFFFFFSet vertical offset for player and target|r", -1000, 1000, 1)
+	Window:CreateSpacerNoPos("All")
 	
-	Window:CreateSection("All", "Step 6: Unitframes customization")
+	Window:CreateSection("All", "Step 7: Unitframes customization")
 	Window:CreateDropdown("All", "UnitFrames", "Colorstyle", "Set color style for all unitframes")
-
-	local Explanation = CreateFrame("Frame", "Explanation", Window)
-	Explanation:SetPoint("BOTTOMLEFT", Window, "BOTTOMLEFT", 16, 16)
-	Explanation:SetPoint("BOTTOMRIGHT", Window, "BOTTOMRIGHT", -16, 16)
-	Explanation:SetHeight(120)
-	Explanation:SetFrameStrata("FULLSCREEN")
-	Explanation:SetFrameLevel(15)
-	Explanation:CreateBackdrop("Transparent")
-	Explanation:EnableMouse(true)
-
-	Explanation.Text = Explanation:CreateFontString(nil, "OVERLAY")
-	Explanation.Text:SetFont(C.Medias.Font, 12)
-	Explanation.Text:SetPoint("LEFT", Explanation, "LEFT", 16, 0)
-	Explanation.Text:SetTextColor(1, 1, 1)
-	Explanation.Text:SetShadowColor(0, 0, 0)
-	Explanation.Text:SetShadowOffset(1.25, -1.25)
-	Explanation.Text:SetJustifyH("LEFT")
-	Explanation.Text:SetText("|cffFFFF99NOTE:|r \n\nWhen step 3 is set to 'locked', actionbars can not be modified in the actionbar section.\n\nThe Tukui layout doesn't have actionbar adjustments.")	
-	
-	Explanation.Logomaxui = Explanation:CreateTexture(nil, "ART")
-	Explanation.Logomaxui:SetWidth(96)
-	Explanation.Logomaxui:SetHeight(48)
-	Explanation.Logomaxui:SetPoint("RIGHT", Explanation, "TOPRIGHT", -16, 0)
-	Explanation.Logomaxui:SetTexture(T.GetTexture("MaxUI"))
+	Window:CreateDropdown("All", "UnitFrames", "Roles", "Set style for role icons used on all unitframes")
 end
 GUI:AddWidgets(QuickSetup)
+
+------------------------------------------------------------------------------------------
+-- ADDONS	
+------------------------------------------------------------------------------------------
+local AddOns = function(self)
+	local Window = self:CreateWindow("AddOns")
+
+	Window:CreateWindowLogo("All", "|cffFFFF99Loaded Addons|r")
+	Window:CreateSpacer("All", 2)
+	Window:CreateSpacer("All", 3)
+	Window:CreateSpacer("All", 4)
+	Window:CreateSpacer("All", 5)
+	Window:CreateExplanationText("All", 6, "Shortcuts to other enabled addons and their configuration.")
+	Window:CreateExplanationText("All", 7, "Only most common addons / addons used by Maximvs.")
+	Window:CreateSpacer("All", 8)
+
+	Window:CreateSection("All", "Loaded AddOns")
+	if IsAddOnLoaded('AddOnSkins') then 
+		Window:CreateSectionButton("All", "open", "AddonSkins", GUI.OpenConfigAddOnSkins)	
+	end
+
+	if IsAddOnLoaded('AdvancedInterfaceOptions') then 
+		Window:CreateSectionButton("All", "open", "Advanced Interface Options", GUI.OpenConfigAdvancedInterfaceOptions)
+	end
+
+	if IsAddOnLoaded('AstralKeys') then 
+		Window:CreateSectionButton("All", "open", "Astral Keys", GUI.OpenConfigAstralKeys)
+	end
+
+	if IsAddOnLoaded('Auctionator') then 
+		Window:CreateSectionButton("All", "open", "Auctionator", GUI.OpenConfigAuctionator)
+	end
+	
+	if IsAddOnLoaded('BugSack') then 
+		Window:CreateSectionButton("All", "open", "BugSack", GUI.OpenConfigBugSack)
+	end
+	
+	if IsAddOnLoaded('Clique') then 
+		Window:CreateSectionButton("All", "open", "Clique", GUI.OpenConfigClique)
+	end
+
+	if IsAddOnLoaded('DBM-Core') then 
+		Window:CreateSectionButton("All", "open", "Deadly Boss Mods", GUI.OpenConfigDBM)	
+	end
+	
+	if IsAddOnLoaded('Details') then 
+		Window:CreateSectionButton("All", "open", "Details!", GUI.OpenConfigDetails)	
+	end
+
+	if IsAddOnLoaded('Hekili') then 
+		Window:CreateSectionButton("All", "open", "Hekili", GUI.OpenConfigHekili)	
+	end
+
+	if IsAddOnLoaded('Immersion') then 
+		Window:CreateSectionButton("All", "open", "Immersion", GUI.OpenConfigImmersion)	
+	end
+
+	if IsAddOnLoaded('Leatrix_Plus') then 
+		Window:CreateSectionButton("All", "open", "Leatrix Plus", GUI.OpenConfigLeatrixPlus)
+	end
+
+	if IsAddOnLoaded('ls_Toasts') then 
+		Window:CreateSectionButton("All", "open", "LS: Toasts", GUI.OpenConfigLSToasts)	
+	end
+
+	--if IsAddOnLoaded('Pawn') then 
+	--	Window:CreateSectionButton("All", "open", "Pawn", GUI.OpenConfigPawn)
+	--end
+
+	if IsAddOnLoaded('ProjectAzilroka') then 
+		Window:CreateSectionButton("All", "open", "Project Azilroka", GUI.OpenConfigProjectAzilroka)
+	end
+
+	if IsAddOnLoaded('Questie') then 
+		Window:CreateSectionButton("All", "open", "Questie", GUI.OpenConfigQuestie)	
+	end
+
+	if IsAddOnLoaded('RSA') then 
+		Window:CreateSectionButton("All", "open", "Raelli's Spell Announcer", GUI.OpenConfigRSA)	
+	end
+	
+	if IsAddOnLoaded('Simulationcraft') then 
+		Window:CreateSectionButton("All", "open", "SimCraft", GUI.OpenConfigSimCraft)	
+	end
+
+	if IsAddOnLoaded('WeakAuras') then 
+		Window:CreateSectionButton("All", "open", "WeakAuras", GUI.OpenConfigWeakAuras)	
+	end
+
+	if IsAddOnLoaded('WorldQuestsList') then 
+		Window:CreateSectionButton("All", "open", "World Quest List", GUI.OpenConfigWorldQuestList)
+	end
+	
+	if IsAddOnLoaded('WorldQuestTab') then 
+		Window:CreateSectionButton("All", "open", "World Quest Tab", GUI.OpenConfigWorldQuestTab)
+	end
+	Window:CreateSpacerNoPos("All")
+
+	if IsAddOnLoaded('BugSack') and C.Skins.MaxUISkinsAddons and C.AddOns.BugSackSkin then 
+		Window:CreateSection("All", "Bugsack")
+		--Window:CreateSlider("All", "AddOns", "BugSackWidth", "Set width", 500, 1000, 1)
+		Window:CreateSlider("All", "AddOns", "BugSackHeight", "Set height", 310, 1000, 1)
+		Window:CreateSpacerNoPos("All")
+	end
+
+	if IsAddOnLoaded('ColorPickerPlus') and C.Skins.MaxUISkinsAddons and C.AddOns.ColorPickerPlusSkin then 
+		Window:CreateSection("All", "ColorPickerPlus")
+		Window:CreateSpacerNoPos("All")
+	end
+
+	if IsAddOnLoaded('DBM-Core') and C.Skins.MaxUISkinsAddons and C.AddOns.DBMSkin then 
+		Window:CreateSection("All", "Deadly Boss mods")
+		Window:CreateSwitch("All", "AddOns", "DBMSkinEdge", "Set top border/edge for DBM infoframes")
+		Window:CreateDropdown("All", "AddOns", "DBMBarTextPosition", "Set position for DBM bar texts")
+		Window:CreateSlider("All", "AddOns", "DBMBarBackdropAlpha", "Set alpha for the bar backdrop", 0, 1, 0.1)
+		Window:CreateSlider("All", "AddOns", "DBMIconBarSpacing", "Set icon spacing", -50, 50, 1)
+		Window:CreateSpacerNoPos("All")
+	end
+
+	if IsAddOnLoaded('Immersion') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then 
+		Window:CreateSection("All", "Immersion")
+		Window:CreateSwitch("All", "AddOns", "ImmersionTopEdge", "Enable a small colored top border")
+		Window:CreateSpacerNoPos("All")
+	end
+end
+GUI:AddWidgets(AddOns)
+
+------------------------------------------------------------------------------------------
+-- FILTERS	
+------------------------------------------------------------------------------------------
+local MaxUIFilters = function(self)
+	local Window = self:CreateWindow("Masks")
+
+	Window:CreateWindowLogo("All", "|cffFFFF99Masks|r")
+	Window:CreateSpacer("All", 2)
+	Window:CreateSpacer("All", 3)
+	Window:CreateSpacer("All", 4)
+	Window:CreateSpacer("All", 5)
+	Window:CreateExplanationText("All", 6, "Extra visual masks/filters for")
+	Window:CreateExplanationText("All", 7, "MaxUI and Tukui elements.")
+	Window:CreateSpacer("All", 8)
+
+	Window:CreateSection("All", "Settings")
+	Window:CreateDropdown("All", "Skins", "SkinTexture", "|cffFFFF99Set texture for the mask overlay|r", "Texture")
+	Window:CreateDropdown("All", "Skins", "SkinVerticalTexture", "|cffFFFF99Set texture for the mask overlay for vertical unitframes|r", "Texture")
+	Window:CreateSlider("All", "Skins", "FilterAlpha", "|cffFFFF99Set mask alpha|r", 0, 1, 0.1)
+	Window:CreateColorSelection("All", "Skins", "CustomFilterColor", "|cffFFFF99Set custom color|r")
+	Window:CreateSpacerNoPos("All")
+	Window:CreateSection("All", "Mask: General")
+	Window:CreateSwitch("All", "Skins", "ButtonFilter", "|cffFFFF99Enable a mask for buttons|r")
+	Window:CreateSwitch("All", "Skins", "HeaderFilter", "|cffFFFF99Enable a mask for headers|r")
+	Window:CreateSwitch("All", "Skins", "BackdropFilter", "|cffFFFF99Enable a mask for standard frames/backdrops|r")
+	Window:CreateSpacerNoPos("All")
+	Window:CreateSection("All", "Mask: Unitframes")
+	Window:CreateSwitch("All", "Skins", "NamePlatesFilter", "|cffFFFF99Enable a mask for the nameplates|r")
+	Window:CreateSwitch("All", "Skins", "UnitFramesFilter", "|cffFFFF99Enable a mask for the individual unitframes|r")
+	Window:CreateSwitch("All", "Skins", "GroupRaidFilter", "|cffFFFF99Enable a mask for the group or raid unitframes|r")
+	Window:CreateSpacerNoPos("All")
+	Window:CreateSection("All", "Mask: Icons (actionbars and auras)")
+	Window:CreateSwitch("All", "Skins", "ActionBarButtonFilter", "|cffFFFF99Enable a mask for the actionbar buttons|r")
+	Window:CreateSwitch("All", "Skins", "AurasFilter", "|cffFFFF99Enable a mask for the auras|r")
+	Window:CreateSpacerNoPos("All")
+	Window:CreateSection("All", "Mask: Elements")
+	Window:CreateSwitch("All", "Skins", "BattlegroundTrackerFilter", "|cffFFFF99Enable a mask for battleground tracker |r")
+	Window:CreateSwitch("All", "Skins", "ChatFilter", "|cffFFFF99Enable a mask for the chat panels|r")
+	Window:CreateSwitch("All", "Skins", "DataBarFilter", "|cffFFFF99Enable a mask for the databars|r")
+	Window:CreateSwitch("All", "Skins", "DataCenterFilter", "|cffFFFF99Enable a mask for the data center panel|r")
+	Window:CreateSwitch("All", "Skins", "DataTextFilter", "|cffFFFF99Enable a mask for the datatexts|r")
+	Window:CreateSwitch("All", "Skins", "InventoryFilter", "|cffFFFF99Enable a mask for the inventory elements|r")
+	Window:CreateSwitch("All", "Skins", "InventoryBGFilter", "|cffFFFF99Enable a mask for the inventory backdrops|r")
+	Window:CreateSwitch("All", "Skins", "MinimapFilter", "|cffFFFF99Enable a mask for the minimap|r")
+	Window:CreateSwitch("All", "Skins", "MinimapElementsFilter", "|cffFFFF99Enable a mask for the minimap elements|r")
+	Window:CreateSwitch("All", "Skins", "ObjectiveTrackerFilter", "|cffFFFF99Enable a mask for objective tracker elements|r")
+	Window:CreateSwitch("All", "Skins", "TooltipFilter", "|cffFFFF99Enable a mask for the tooltip|r")
+	Window:CreateSwitch("All", "Skins", "TooltipHealthFilter", "|cffFFFF99Enable a mask for the tooltip health bar|r")
+	Window:CreateSpacerNoPos("All")
+	
+	Window:CreateSection("All", "Mask: Screen and AFK")
+	Window:CreateSwitch("All", "Skins", "UIParentFilter", "|cffFFFF99Enable a shadowy mask for the screen|r")
+	Window:CreateSwitch("All", "Skins", "AFKFilter", "|cffFFFF99Enable a mask for the afk screen|r")
+	Window:CreateSlider("All", "Skins", "FilterSize", "|cffFFFF99Set screen mask size|r", 0, 300, 2)
+	Window:CreateSlider("All", "Skins", "ScreenFilterAlpha", "|cffFFFF99Set screen mask alpha|r", 0, 1, 0.1)
+	Window:CreateColorSelection("All", "Skins", "ScreenFilterColor", "|cffFFFF99Set screen mask color|r")
+	Window:CreateSpacerNoPos("All")
+end
+GUI:AddWidgets(MaxUIFilters)
 
 ------------------------------------------------------------------------------------------
 -- SKINS	
 ------------------------------------------------------------------------------------------
 local MaxUISkins = function(self)
-	local Window = self:CreateWindow(" |cffFFFF99Skins|r")
+	local Window = self:CreateWindow("Skins")
 
-	Window:CreateSection("All", "AddonSkins")
-	Window:CreateSwitch("All", "Skins", "MaxUIAddOnSkins", "Enable MaxUI style for AddonSkins")
-	Window:CreateDropdown("All", "Skins", "Color", "|cffFFFF99Set color theme for skins|r")
+	Window:CreateWindowLogo("All", "|cffFFFF99Skinning|r")
+	Window:CreateSpacer("All", 2)
+	Window:CreateSpacer("All", 3)
+	Window:CreateSpacer("All", 4)
+	Window:CreateSpacer("All", 5)
+	Window:CreateExplanationText("All", 6, "Skinning frames and addons in MaxUI style")
+	Window:CreateSpacer("All", 7)
+	
+	Window:CreateSection("All", "MaxUI Skinning")
+	Window:CreateSwitch("All", "Skins", "MaxUISkinsBlizzard", "Enable MaxUI's own style and skinning for Blizzard frames. (WIP)")
+	Window:CreateSwitch("All", "Skins", "MaxUISkinsAddons", "Enable MaxUI's own style and skinning for (some) Addons. (WIP)")
+	Window:CreateSwitch("All", "Skins", "MaxUIPositioningBlizzardFrames", "Enable MaxUI alternate (centered) positions for frames.")
+	Window:CreateSpacerNoPos("All")
 
-	Window:CreateSection("All", "Filters")
-	Window:CreateSwitch("All", "Skins", "MinimapFilter", "Enable a shadowy filter for the minimap")
-	Window:CreateSwitch("All", "Skins", "ChatFilter", "Enable a shadowy filter for the chat panels")
-	Window:CreateSwitch("All", "Skins", "AFKFilter", "Enable a shadowy filter for the afk screen")
-	Window:CreateSlider("All", "Skins", "FilterAlpha", "Set filter alpha|r", 0, 1, 0.1)
-	
-	Window:CreateSection("All", "Screen Filter")
-	Window:CreateSwitch("All", "Skins", "UIParentFilter", "Enable a shadowy filter for the screen")
-	Window:CreateSlider("All", "Skins", "FilterSize", "Set screen filter size|r", 0, 300, 2)
-	Window:CreateColorSelection("All", "Skins", "ScreenFilterColor", "Set screen filter color|r")
-	Window:CreateSlider("All", "Skins", "ScreenFilterAlpha", "Set screen filter alpha|r", 0, 1, 0.1)
-	
-	
-	local Explanation = CreateFrame("Frame", "Explanation", Window)
-	Explanation:SetPoint("BOTTOMLEFT", Window, "BOTTOMLEFT", 16, 16)
-	Explanation:SetPoint("BOTTOMRIGHT", Window, "BOTTOMRIGHT", -16, 16)
-	Explanation:SetHeight(120)
-	Explanation:SetFrameStrata("FULLSCREEN")
-	Explanation:SetFrameLevel(15)
-	Explanation:CreateBackdrop("Transparent")
-	Explanation:EnableMouse(true)
+	if C.Skins.MaxUISkinsBlizzard then
+		Window:CreateSection("All", "MaxUI Blizzard Skinning")
+		Window:CreateDoubleSwitch("All", "Skins", "GameMenu", "Enable skin Game Menu", "Skins", "Character", "Enable skin Character")
+		Window:CreateDoubleSwitch("All", "Skins", "CustomerSupport", "Enable skin Customer Support", "Skins", "Talents", "Enable skin Talents")
+		Window:CreateDoubleSwitch("All", "Skins", "WhatsNew", "Enable skin What's New?", "Skins", "Spellbook", "Enable skin Spellbook")
+		Window:CreateDoubleSwitch("All", "Skins", "Report", "Enable skin Report", "Skins", "DressingRoom", "Enable skin DressingRoom")
+		Window:CreateSwitch("All", "Skins", "SettingsPanel", "Enable skin Settings Panel")
+		Window:CreateSpacerNoPos("All")
 
-	Explanation.Text = Explanation:CreateFontString(nil, "OVERLAY")
-	Explanation.Text:SetFont(C.Medias.Font, 12)
-	Explanation.Text:SetPoint("LEFT", Explanation, "LEFT", 16, 0)
-	Explanation.Text:SetTextColor(1, 1, 1)
-	Explanation.Text:SetShadowColor(0, 0, 0)
-	Explanation.Text:SetShadowOffset(1.25, -1.25)
-	Explanation.Text:SetJustifyH("LEFT")
-	Explanation.Text:SetText("|cffFFFF99NOTE:|r \n\nMaxUI modifies AddonSkins to skin Blizzard frames and addons.\nThe style of MaxUI is applied to those skins.\nTo disable skins or for more options, go to the AddonSkins interface.\n\nNot all skins are working or finished.")	
-	
-	Explanation.Logomaxui = Explanation:CreateTexture(nil, "ART")
-	Explanation.Logomaxui:SetWidth(96)
-	Explanation.Logomaxui:SetHeight(48)
-	Explanation.Logomaxui:SetPoint("RIGHT", Explanation, "TOPRIGHT", -16, 0)
-	Explanation.Logomaxui:SetTexture(T.GetTexture("MaxUI"))
-	
-		if IsAddOnLoaded('AddOnSkins') then 
-			AddonSkinsButton = Window:CreateSectionButton("All", "AddOnSkins", "", GUI.OpenConfigAddOnSkins)	
-			AddonSkinsButton:ClearAllPoints()
-			AddonSkinsButton:SetFrameStrata("FULLSCREEN")
-			AddonSkinsButton:SetFrameLevel(16)
-			AddonSkinsButton:SetPoint("BOTTOMRIGHT", Explanation, "BOTTOMRIGHT", -8, 8)
+		Window:CreateDoubleSwitch("All", "Skins", "AddOns", "Enable skin Addon Manager", "Skins", "WorldMapQuestlog", "Enable skin World map and Questlog")
+		Window:CreateDoubleSwitch("All", "Skins", "Keybinds", "Enable skin Keybinds", "Skins", "QuestGossip", "Enable skin Quest & Gossip")
+		Window:CreateDoubleSwitch("All", "Skins", "Macros", "Enable skin Macro's", "Skins", "Flightmap", "Enable skin Flightmap")
+		Window:CreateDoubleSwitch("All", "Skins", "Popups", "Enable skin Popups ", "Skins", "DungeonJournal", "Enable skin Dungeon Journal")
+		Window:CreateDoubleSwitch("All", "Skins", "ColorPicker", "Enable skin Colorpicker ", "Skins", "MissionsRenown", "Enable skin Missions & Renown")
+		Window:CreateSpacerNoPos("All")
+
+		Window:CreateDoubleSwitch("All", "Skins", "Social", "Enable skin Social: Friends, Who, Raid", "Skins", "Merchant", "Enable skin Merchant")
+		Window:CreateDoubleSwitch("All", "Skins", "LFG", "Enable skin PVE, PVP & LFG/LFD", "Skins", "Tradeskill", "Enable skin Tradeskills")
+		Window:CreateDoubleSwitch("All", "Skins", "Guild", "Enable skin Guild", "Skins", "Trainer", "Enable skin Trainer")
+		Window:CreateDoubleSwitch("All", "Skins", "Communities", "Enable skin Communities", "Skins", "AuctionHouse", "Enable skin Auction House")
+		Window:CreateDoubleSwitch("All", "Skins", "EventCalendar", "Enable skin Event Calendar", "Skins", "Mail", "Enable skin Mail")
+		Window:CreateSpacerNoPos("All")
+
+		Window:CreateDoubleSwitch("All", "Skins", "Voice", "Enable skin Voice", "Skins", "Achievements", "Enable skin Achievements")
+		Window:CreateDoubleSwitch("All", "Skins", "StopWatch", "Enable skin StopWatch", "Skins", "Collections", "Enable skin Collections")
+		Window:CreateSwitch("All", "Skins", "Other", "Enable skin Other")
+		Window:CreateSpacerNoPos("All")
+	end
+
+	if C.Skins.MaxUISkinsAddons then
+		Window:CreateSection("All", "MaxUI Addon Skinning")
+		if IsAddOnLoaded('BugSack') then 
+			Window:CreateSwitch("All", "AddOns", "BugSackSkin", "Enable skin BugSack")
 		end
+		if IsAddOnLoaded('Clique') then 
+			Window:CreateSwitch("All", "AddOns", "CliqueSkin", "Enable skin Clique")
+		end
+		if IsAddOnLoaded('ColorPickerPlus') then 
+			Window:CreateSwitch("All", "AddOns", "ColorPickerPlusSkin", "Enable skin ColorPickerPlus")
+		end
+		if IsAddOnLoaded('DBM-Core') then 
+			Window:CreateSwitch("All", "AddOns", "DBMSkin", "Enable skin DBM")
+		end
+		if IsAddOnLoaded('Hekili') then 
+			Window:CreateSwitch("All", "AddOns", "HekiliSkin", "Enable skin Hekili")
+		end
+		if IsAddOnLoaded('Immersion') then 
+			Window:CreateSwitch("All", "AddOns", "ImmersionSkin", "Enable skin Immersion")
+		end
+		--if IsAddOnLoaded('Pawn') then 
+		--	Window:CreateSwitch("All", "AddOns", "PawnSkin", "Enable skin Pawn")
+		--end
+		if IsAddOnLoaded('ProjectAzilroka') then 
+			Window:CreateSwitch("All", "AddOns", "ProjectAzilrokaSkin", "Enable skin ProjectAzilroka: Square Minimap Button Bar")
+		end
+		if IsAddOnLoaded('Simulationcraft') then 
+			Window:CreateSwitch("All", "AddOns", "SimulationcraftSkin", "Enable skin Simulationcraft")
+		end
+	end
 end
 GUI:AddWidgets(MaxUISkins)
-
-------------------------------------------------------------------------------------------
--- SPACER	
-------------------------------------------------------------------------------------------
-local Spacer = function(self)
-	local Window = self:CreateWindow(" |cffFFFFFF|r ")
-
-end
-GUI:AddWidgets(Spacer)

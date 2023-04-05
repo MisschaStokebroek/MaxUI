@@ -1,22 +1,19 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-07-2021
+-- latest update: 30-10-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up EXTRA BAR.
+-- still needs a real makeover....
 
 ------------------------------------------------------------------------------------------
 -- SETUP
 ------------------------------------------------------------------------------------------
 local T, C, L = Tukui:unpack()
 local ActionBars = T.ActionBars
-local Movers = T["Movers"]
-local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
-
 local baseSetupExtraButton = ActionBars.SetupExtraButton
 local _G = _G
-
---if IsAddOnLoaded("MaxUI") then return end
+local Movers = T["Movers"]
 
 ------------------------------------------------------------------------------------------
 -- EXTRA BAR
@@ -42,22 +39,21 @@ function ActionBars:VisibilityExtraBar()
 	Button:SetAlpha(C["ActionBars"]["ExtraBarAlpha"])
 	ZoneAbilityFrame:SetAlpha(C["ActionBars"]["ExtraBarAlpha"])
 	TukuiExtraActionButton:SetAlpha(C["ActionBars"]["ExtraBarAlpha"])
-	ZoneAbilityFrame.SpellButtonContainer:SetAlpha(1)
 	
+	ZoneAbilityFrame.SpellButtonContainer:SetAlpha(1)
 		ZoneAbilityFrame:HookScript("OnEnter", function(self)
 			Button:SetAlpha(1)
 			ZoneAbilityFrame:SetAlpha(1)
 			--TukuiExtraActionButton:SetAlpha(1)
 			--ZoneAbilityFrame.SpellButtonContainer:SetAlpha(1)
 		end)
-		
+
 		ZoneAbilityFrame:HookScript("OnLeave", function(self)
 			Button:SetAlpha(C["ActionBars"]["ExtraBarAlpha"])
 			ZoneAbilityFrame:SetAlpha(C["ActionBars"]["ExtraBarAlpha"])
 			--TukuiExtraActionButton:SetAlpha(C["ActionBars"]["ExtraBarAlpha"])
 			--ZoneAbilityFrame.SpellButtonContainer:SetAlpha(1)
 		end)
-		
 	end
 end
 
@@ -123,11 +119,9 @@ function ActionBars:StylingExtraBar()
 		Holder:CreateMaxUIBottomEdge()
 		Holder:CreateMaxUILeftEdge()
 		Holder:CreateMaxUIRightEdge()
-	
-	elseif C["ActionBars"]["ActionBarStanceEdges"]["Value"] == "None" then
-
 	end
 end
+
 
 function ActionBars:SetupExtraButton()
 	baseSetupExtraButton(self)
@@ -136,16 +130,21 @@ function ActionBars:SetupExtraButton()
 	local Holder = TukuiExtraActionButton
 	local Button = ExtraActionButton1
 
---	self.VisibilityExtraBar()
+	--self.VisibilityExtraBar()
+	--self:StylingExtraBar()
 	
 	--if C["ActionBars"]["ActionBarExtraCombatState"]["Value"] ~= "Nothing" then 
 		--self:CombatStateExtraBar()
 	--end	
 
 	--if (C.General.Themes.Value == "MaxUI") then
-		--self:MaxUIStyleExtraBar()
+	--	self:MaxUIStyleExtraBar()
 	--end
 	
-	--self:StylingExtraBar()	
+	Movers:RegisterFrame(Button, "Extra Skill Button")
 
+	-- filter
+	if C["Skins"]["ActionBarButtonFilter"] == true then 
+		Button:CreateMaxUIFilterInside()
+	end
 end

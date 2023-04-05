@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 15-08-2022
 ------------------------------------------------------------------------------------------
 
 -- Setting up datatext for Currency.
@@ -15,7 +15,10 @@ local strsub = strsub
 local strsplit = strsplit
 local Data
 
+if IsAddOnLoaded("MaxUI") then return end
+
 if not T.Retail then return end
+
 
 ------------------------------------------------------------------------------------------
 -- CURRENCY DATATEXT
@@ -29,8 +32,17 @@ local OnMouseDown = function()
 	ToggleCharacter("TokenFrame")
 end
 
-local Update = function()
+local Update = function(self)
 	local Text = DataText.NameColor.. "Currencies|r"
+
+	if C["DataTexts"]["Icons"] == true then
+		self.icon = self:CreateTexture(nil, "OVERLAY")
+		self.icon:SetWidth(20)
+		self.icon:SetHeight(20)
+		self.icon:SetPoint("LEFT", self, "CENTER", 52, 1)
+		self.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\cCurrency.tga]])
+		self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
+	end
 
 	for i = 1, MAX_WATCHED_TOKENS do
 		local Name, Count = GetBackpackCurrencyInfo(i)
@@ -52,6 +64,25 @@ local Update = function()
 		end
 	end
 	Data.Text:SetText(Text)
+
+	self:SetScript("OnEnter", function(self)
+		--self.Text:SetFormattedText("%s", DataText.HighlightColor .. "Game Menu|r")
+		if C["DataTexts"]["Icons"] == true then
+			self.icon:SetVertexColor(unpack(C["DataTexts"].HighlightColor))
+		end
+		GameTooltip:SetOwner(self:GetTooltipAnchor())
+		--GameTooltip:AddLine("Game Menu:")
+		--GameTooltip:AddLine("Toggle the MaxUI Game Menu ", 1, 1, 1, 1, 1, 1)
+		GameTooltip:Show()
+	end)
+	
+	self:SetScript("OnLeave", function(self)
+		--self.Text:SetFormattedText("%s", DataText.NameColor .. "Game Menu|r")
+		if C["DataTexts"]["Icons"] == true then
+			self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
+		end
+		GameTooltip:Hide()
+	end)
 end
 
 local Enable = function(self)

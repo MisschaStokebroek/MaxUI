@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-06-2021
+-- latest update: 27-12-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up MaxUISkins
@@ -8,61 +8,61 @@
 ------------------------------------------------------------------------------------------
 -- SETUP
 ------------------------------------------------------------------------------------------
-if not IsAddOnLoaded('AddonSkins') then 
-	return
-end
-
-local AS, ASL = unpack(AddOnSkins)
-if not AS:CheckAddOn('Tukui') then return end
-local T, C
-local _G = _G
-
-if not IsAddOnLoaded('BugSack') then 
-	return
-end
+local T, C, L = unpack(Tukui) 
+local BugSackSkin = CreateFrame("Frame")
 
 ------------------------------------------------------------------------------------------
--- ADDON MANAGER
+-- SKIN BugSack
 ------------------------------------------------------------------------------------------
-local AS_BugSack = AS.BugSack
-function AS:BugSack(event, addon)
-	AS_BugSack(self, event, addon)
-
-	if not Tukui then return end
-	if not T then
-		T, C = Tukui:unpack()
-	end
-
-	if not C["Skins"]["MaxUIAddOnSkins"] then return end
-	
+local function SkinBugSackToMaxUIStyle()
 	hooksecurefunc(BugSack, "OpenSack", function()
 		
-		-- adjustments
-		BugSackFrame:CreateShadow()
-		BugSackFrame:SetHeight(420)
-		
-		-- header
-		BugSackFrame:CreateMaxUIHeader("BugSack")
-		BugSackFrame.MaxUIHeader:SetFrameStrata("LOW")
-		BugSackFrame.MaxUIHeader:SetFrameLevel(10)
+		if BugSackFrame.IsSkinned then return end
 
-		-- relocate
-		BugSackFrame:ClearAllPoints()
-		BugSackFrame:SetPoint("TOP", UIParent, "TOP", 0, -100)
-		BugSackFrame.ClearAllPoints = function() end
-		BugSackFrame.SetPoint = function() end
-		
-		for _, child in pairs({BugSackFrame:GetChildren()}) do
-			if (child:IsObjectType('Button') and child:GetScript('OnClick') == BugSack.CloseSack) then
-				
-				-- close button
-				child:ClearAllPoints()
-				child:SetFrameLevel(16)
-				child:SetFrameStrata("HIGH")
-				child:SetPoint("RIGHT", BugSackFrame.MaxUIHeader, "RIGHT", 4, 0)
-			end
-		end
-		
+		-- cleanup
+		BugSackFrame:SkinMaxUIBaseFrame(true)
+		BugSackFrame:SetHeight(C.AddOns.BugSackHeight)
+		--BugSackFrame:SetWidth(C.AddOns.BugSackWidth)
+		BugSackFrame:SetFrameStrata("HIGH")
+
+		BugSackPrevButton:SkinMaxUIButton(true)
+		BugSackSendButton:SkinMaxUIButton(true)
+		BugSackNextButton:SkinMaxUIButton(true)
+
+		BugSackSendButton:ClearAllPoints()
+
+		BugSackSendButton:SetPoint("TOPLEFT", BugSackPrevButton, "TOPRIGHT", 8, 0)
+		BugSackSendButton:SetPoint("BOTTOMRIGHT", BugSackNextButton, "BOTTOMLEFT", -8, 0)
+
+		BugSackTabLast:SkinMaxUITab(true)
+		BugSackTabSession:SkinMaxUITab(true)
+		BugSackTabAll:SkinMaxUITab(true)
+
+		BugSackScrollScrollBar:SkinMaxUIScrollBar(true)
+
+		-- close button
+		BugSackFrame:CreateBlizzardCloseButton(BugSackFrame.MaxUIHeader)
+		BugSackFrame.BlizzardCloseButton:SetScript("OnMouseDown", function(self)
+			BugSack.CloseSack()
+		end)
+
+		BugSackFrame.IsSkinned = true
 	end)
 end
-AS:RegisterSkin('BugSack', AS.BugSack)
+
+------------------------------------------------------------------------------------------
+-- SKIN Execute
+------------------------------------------------------------------------------------------
+function BugSackSkin:OnEvent(event)
+	if IsAddOnLoaded('AddonSkins') then return end
+	if not T.Retail then return end
+	if not C.Skins.MaxUISkinsAddons then return end
+
+	if IsAddOnLoaded('BugSack') and C["AddOns"]["BugSackSkin"] then 
+		SkinBugSackToMaxUIStyle()
+	end
+	self:UnregisterAllEvents()
+end
+
+BugSackSkin:RegisterEvent("PLAYER_LOGIN")
+BugSackSkin:SetScript("OnEvent", BugSackSkin.OnEvent)

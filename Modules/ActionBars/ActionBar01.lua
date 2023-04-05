@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-07-2021
+-- latest update: 30-10-2022
 ------------------------------------------------------------------------------------------
 
 -- setting up ACTION BAR 1.
@@ -19,49 +19,49 @@ local Num = NUM_ACTIONBAR_BUTTONS
 function ActionBars:SizingAB1()
 	local ActionBar1 = ActionBars.Bars.Bar1
 	local ButtonsPerRow = C.ActionBars.Bar1ButtonsPerRow
-	local NumButtons = C.ActionBars.Bar1NumButtons or 12
+	local NumButtons = C.ActionBars.Bar1NumButtons
 	local Size = C["ActionBars"]["ActionBar1ButtonSize"]
 	local Spacing = C.ActionBars.ButtonSpacing
 	
+	if NumButtons <= ButtonsPerRow then
+		ButtonsPerRow = NumButtons
+	end
+
 	local NumRow = ceil(NumButtons / ButtonsPerRow)
 
 	ActionBar1:SetWidth((Size * ButtonsPerRow) + (Spacing * (ButtonsPerRow + 1)))
 	ActionBar1:SetHeight((Size * NumRow) + (Spacing * (NumRow + 1)))
+end
 
-	ActionBar1:SetScript("OnEvent", function(self, event, unit, ...)
-		if (event == "PLAYER_ENTERING_WORLD") then
-			local NumPerRows = ButtonsPerRow
-			local NextRowButtonAnchor = _G["ActionButton1"]
-			for i = 1, Num do
-				local Button = _G["ActionButton"..i]
-				local PreviousButton = _G["ActionButton"..i-1]
-					
-				Button:SetSize(Size, Size)
-				Button:ClearAllPoints()
-				Button:SetParent(self)
-				Button:SetAttribute("showgrid", 1)
-					
-				if T.Retail then
-					Button:ShowGrid(ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
-				else
-					ActionButton_ShowGrid(Button)
-				end
-				
-				ActionBars:SkinButton(Button)
+function ActionBars:ButtonsAB1()
+	local NumPerRows = C.ActionBars.Bar1ButtonsPerRow
+	local NextRowButtonAnchor = _G["ActionButton1"]
+	local ActionBar1 = self.Bars.Bar1
+	local Size = C["ActionBars"]["ActionBar1ButtonSize"]
+	local NumButtons = C.ActionBars.Bar1NumButtons
+	local Spacing = C.ActionBars.ButtonSpacing
+	local ButtonsPerRow = C.ActionBars.Bar1ButtonsPerRow
 
-				if (i == 1) then
-					Button:SetPoint("TOPLEFT", ActionBar1, "TOPLEFT", Spacing, -Spacing)
-				elseif (i == NumPerRows + 1) then
-					Button:SetPoint("TOPLEFT", NextRowButtonAnchor, "BOTTOMLEFT", 0, -Spacing)
-						
-					NumPerRows = NumPerRows + ButtonsPerRow
-					NextRowButtonAnchor = _G["ActionButton"..i]
-				else
-					Button:SetPoint("LEFT", PreviousButton, "RIGHT", Spacing, 0)
-				end
+	for i = 1, Num do
+		local Button = _G["ActionButton"..i]
+		local PreviousButton = _G["ActionButton"..i-1]
+			
+		Button:SetSize(Size, Size)
+		Button:ClearAllPoints()
+	
+		if i <= NumButtons then
+			if (i == 1) then
+				Button:SetPoint("TOPLEFT", ActionBar1, "TOPLEFT", Spacing, -Spacing)
+			elseif (i == NumPerRows + 1) then
+				Button:SetPoint("TOPLEFT", NextRowButtonAnchor, "BOTTOMLEFT", 0, -Spacing)
+					
+				NumPerRows = NumPerRows + ButtonsPerRow
+				NextRowButtonAnchor = _G["ActionButton"..i]
+			else
+				Button:SetPoint("LEFT", PreviousButton, "RIGHT", Spacing, 0)
 			end
 		end
-	end)
+	end
 end
 
 function ActionBars:VisibilityAB1()
@@ -198,7 +198,6 @@ function ActionBars:MaxUIStyleAB1()
 	local ActionBar1 = ActionBars.Bars.Bar1
 	
 	if C["ActionBars"]["ActionBar1Backdrop"]== true then 
-		--ActionBar1.Shadow:Show()
 		ActionBar1.Shadow:SetAlpha(1)
 		ActionBar1.Backdrop:SetOutside()
 		ActionBar1.Backdrop:SetAlpha(BackdropAlpha)
@@ -242,33 +241,27 @@ function ActionBars:StylingAB1()
 		ActionBar1:CreateMaxUIBottomEdge()
 		ActionBar1:CreateMaxUILeftEdge()
 		ActionBar1:CreateMaxUIRightEdge()
-	
-	elseif C["ActionBars"]["ActionBar4Edges"]["Value"] == "None" then
-
 	end
 end
 
 function ActionBars:CreateBar1()
+    baseCreateBar1(self)
+
 	if C["Layout"]["LayoutCustomize"]["Value"] == "Fixed" then 
 		T.LoadActionBarLayouts()
 	end
 
-    -- Tukui
-    baseCreateBar1(self)
-
-	-- MaxUI
+	self:PositionAB1()
+	self:SizingAB1()
 	self:VisibilityAB1()
+	self:StylingAB1()	
+	self:ButtonsAB1()
 	
 	if C["ActionBars"]["ActionBar1CombatState"]["Value"] ~= "Nothing" then 
 		self:CombatStateAB1()
 	end
 	
-	self:SizingAB1()
-	self:PositionAB1()
-	
 	if (C.General.Themes.Value == "MaxUI") then
 		self:MaxUIStyleAB1()
 	end
-	
-	self:StylingAB1()	
-end	
+end
