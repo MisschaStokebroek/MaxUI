@@ -23,7 +23,7 @@ function Minimap:TukuiStyleAdjustments()
 	local MailBorder = MiniMapMailBorder
 	local MailIcon = MiniMapMailIcon
 
-	if T.Retail then
+	if T.Retail and MawBuffsBelowMinimapFrame then
 		MawBuffsBelowMinimapFrame.Container:ClearAllPoints()
 		MawBuffsBelowMinimapFrame.Container:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -10)
 	end
@@ -175,7 +175,7 @@ function Minimap:MaxUIStyle()
 		MinimapCoords:ClearAllPoints()
 		MinimapCoords:SetSize(70, 22)
 		MinimapCoords:SetPoint("BOTTOMLEFT", MinimapZone, "TOPLEFT", 0, 4)
-		MinimapCoords.Backdrop:SetAlpha(0.8)
+		MinimapCoords.Backdrop:SetAlpha(0.75)
 		MinimapCoords.Backdrop:CreateShadow()
 	end
 
@@ -289,7 +289,7 @@ function Minimap:Enable()
 		self:MaxUIStyle()
 	end
 
-	-- Compass
+	-- Rectangular
 	if C["Location"]["MinimapRectangular"] == true then 
 		Minimap:RectangleMask()
 	end

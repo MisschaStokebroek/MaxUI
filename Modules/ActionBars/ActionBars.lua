@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 30-10-2022
+-- latest update: 20-05-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up ACTION BARS.
@@ -13,13 +13,6 @@ local ActionBars = T.ActionBars
 local baseEnable = ActionBars.Enable
 local baseSkinButton = ActionBars.SkinButton
 local baseSkinPetAndShiftButton = ActionBars.SkinPetAndShiftButton
-
-------------------------------------------------------------------------------------------
--- FIX FOR PETBAR ERROR
-------------------------------------------------------------------------------------------
---function ActionBars:MovePetBar()
---	return
---end
 
 ------------------------------------------------------------------------------------------
 -- ACTIONBARS COOLDOWN BLING
@@ -50,7 +43,7 @@ end
 ------------------------------------------------------------------------------------------
 function ActionBars:SkinButton(button)
   baseSkinButton(self, button)
-	
+
 	if not (C.General.Themes.Value == "MaxUI") then return end
 
 	local BackdropR, BackdropG, BackdropB = unpack(C["General"]["BackdropColor"])
@@ -155,5 +148,97 @@ function ActionBars:SkinPetAndShiftButton(Normal, Button, Icon, Name, Pet)
 
 	if (C.ActionBars.HotKey) then
 		HotKey:SetScale(C.ActionBars.ABFontSize/10)
+	end
+end
+
+------------------------------------------------------------------------------------------
+-- SPELLPROC ANIMATION
+------------------------------------------------------------------------------------------
+local baseStartHighlight = ActionBars.StartHighlight
+local baseStopHightlight = ActionBars.StopHightlight
+
+local function HideBlizzardHighlight(self)
+	if (self.overlay) then
+	  self.overlay:Hide()
+		self.overlay:SetAlpha(0)
+	end
+
+	if (self.SpellActivationAlert) then
+	  self.SpellActivationAlert:Hide()
+		self.SpellActivationAlert:SetAlpha(0)
+	end
+end
+
+function ActionBars:StartHighlight()
+ 	HideBlizzardHighlight(self)
+
+	if C["ActionBars"]["ProcAnim+"]["Value"] == "Backdrop" then
+ 		baseStartHighlight(self)
+		if self.Backdrop then
+			self.Backdrop:SetBackdropColor(unpack(C["ActionBars"]["ProcAnimColor"]))
+			self.Backdrop:SetBorderColor(unpack(C.General.BorderColor))
+		end
+
+	elseif C["ActionBars"]["ProcAnim+"]["Value"] == "Overlay" then
+ 		baseStartHighlight(self)
+		if self.Backdrop then
+			self.Backdrop:SetBackdropColor(unpack(C["ActionBars"]["ProcAnimColor"]))
+			self.Backdrop:SetBorderColor(unpack(C.General.BorderColor))
+			self.Backdrop:SetFrameLevel(self:GetFrameLevel() + 1)
+		end
+
+	elseif C["ActionBars"]["ProcAnim+"]["Value"] == "Border" then
+ 		baseStartHighlight(self)
+		if self.Backdrop then
+			self.Backdrop:SetBorderColor(unpack(C["ActionBars"]["ProcAnimColor"]))
+		end
+
+	elseif C["ActionBars"]["ProcAnim+"]["Value"] == "BorderAndBackdrop" then
+ 		baseStartHighlight(self)
+		if self.Backdrop then
+			self.Backdrop:SetBackdropColor(unpack(C["ActionBars"]["ProcAnimColor"]))
+			self.Backdrop:SetBorderColor(unpack(C["ActionBars"]["ProcAnimColor"]))
+		end
+
+	elseif C["ActionBars"]["ProcAnim+"]["Value"] == "BorderAndOverlay" then
+ 		baseStartHighlight(self)
+		if self.Backdrop then
+			self.Backdrop:SetBackdropColor(unpack(C["ActionBars"]["ProcAnimColor"]))
+			self.Backdrop:SetFrameLevel(self:GetFrameLevel() + 1)
+			self.Backdrop:SetBorderColor(unpack(C["ActionBars"]["ProcAnimColor"]))
+		end
+	end
+end
+
+function ActionBars:StopHightlight()
+	
+	if C["ActionBars"]["ProcAnim+"]["Value"] == "Backdrop" then
+ 		baseStopHightlight(self)
+		if self.Backdrop then
+			self.Backdrop:SetBackdropColor(unpack(C.General.BackdropColor))
+		end
+	elseif C["ActionBars"]["ProcAnim+"]["Value"] == "Overlay" then
+		baseStopHightlight(self)
+		if self.Backdrop then
+			self.Backdrop:SetBackdropColor(unpack(C.General.BackdropColor))
+			self.Backdrop:SetFrameLevel(self:GetFrameLevel())
+		end
+
+	elseif C["ActionBars"]["ProcAnim+"]["Value"] == "Border" then
+		baseStopHightlight(self)
+
+
+	elseif C["ActionBars"]["ProcAnim+"]["Value"] == "BorderAndBackdrop" then
+ 		baseStopHightlight(self)
+		if self.Backdrop then
+			self.Backdrop:SetBackdropColor(unpack(C.General.BackdropColor))
+		end
+
+	elseif C["ActionBars"]["ProcAnim+"]["Value"] == "BorderAndOverlay" then
+		baseStopHightlight(self)
+		if self.Backdrop then
+			self.Backdrop:SetBackdropColor(unpack(C.General.BackdropColor))
+			self.Backdrop:SetFrameLevel(self:GetFrameLevel())
+		end
 	end
 end

@@ -1,20 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="MicroMenu.lua"/>
-	<Script file="ThreatBar.lua"/>
 	<Script file="Errors.lua"/>
-	<Script file="ExperienceBar.lua"/>
-	<Script file="ReputationBar.lua"/>
-	<Script file="AltPowerBar.lua"/>
-	<Script file="HonorBar.lua"/>
-	<Script file="AnimaBar.lua"/>
-	<Script file="AzeriteBar.lua"/>
-	<Script file="ObjectiveTracker.lua"/>
 	<Script file="Battleground.lua"/>
 	<Script file="Durability.lua"/>
 	<Script file="Ghost.lua"/>
 	<Script file="LossOfControl.lua"/>
-	<Script file="MirrorBars.lua"/>
 	<Script file="AFK.lua"/>
-	<Script file="TalkingHead.lua"/>
-	<Script file="StaticPopups.lua"/>
 </Ui>

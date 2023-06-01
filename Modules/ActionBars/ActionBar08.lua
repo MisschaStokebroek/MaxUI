@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-08-2022
+-- latest update: 01-05-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up ACTION BAR 8.
@@ -160,22 +160,16 @@ function ActionBars:PositionAB8()
 end
 
 function ActionBars:MaxUIStyleAB8()
-	local BackdropR, BackdropG, BackdropB = unpack(C["General"]["BackdropColor"])
-	local BackdropAlpha = (C["ActionBars"]["ABAlpha"])
 	local ActionBar8 = ActionBars.Bars.Bar8
 
 	if C["ActionBars"]["ActionBar8Backdrop"]== true then 
-		ActionBar8.Shadow:SetAlpha(1)
-		ActionBar8.Backdrop:SetOutside()
-		ActionBar8.Backdrop:SetAlpha(BackdropAlpha)
-		ActionBar8.Backdrop:SetBackdropColor(BackdropR, BackdropG, BackdropB)
+		ActionBar8:SkinMaxUIFrame()
 	else
 		for i = 1, Num do
 			local Button = _G["MultiBar7Button"..i]
 			Button:CreateShadow()
 			ActionBar8["MultiBar7Button"..i] = Button
 		end
-		
 		ActionBar8.Shadow:SetAlpha(0)
 		ActionBar8.Backdrop:SetAlpha(0)
 	end

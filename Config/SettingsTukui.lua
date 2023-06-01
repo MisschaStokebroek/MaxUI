@@ -61,7 +61,7 @@ C["ActionBars"]["PetButtonSize"] = 30
 C["ActionBars"]["ButtonSpacing"] = 4
 C["ActionBars"]["ShowBackdrop"] = true
 C["ActionBars"]["AutoAddNewSpell"] = false
-C["ActionBars"]	["ProcAnim"] = true
+C["ActionBars"]	["ProcAnim"] = false
 C["ActionBars"]["Font"] = "MaxUI Outlined"
 C["ActionBars"]["MultiCastBar"] = true
 

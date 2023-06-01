@@ -1,13 +1,12 @@
-## Interface: 100005
+## Interface: 100100
 ## Author: Maximvs
 ## Version: 6.700
 ## Title:MaxUI
 ## Notes: MaxUI, edit for Tukui 20 and World of Warcraft Retail. See tukui.org for more information.
 ## RequiredDeps: Tukui
-## OptionalDeps: ProjectAzilroka, AddOnSkins, LibSharedMedia-3.0
+## OptionalDeps: ProjectAzilroka, AddOnSkins, LibSharedMedia-3.0, ls_Toasts
+## IconTexture: Interface\AddOns\MaxUI\Medias\MaxUI\MaxUI_LOGO_Mini
 ## Thanks to: Tukz, Hydra, Darth Predator, Azilroka, Blazeflack and all other members of Tukui.org community.
-## X-Tukui-ProjectID: 5
-## X-Tukui-ProjectFolders: MaxUI
 
 Medias\Init.xml
 Libs\Init.xml
@@ -15,15 +14,18 @@ Libs\UTF8.xml
 Core\Init.xml
 Config\Init.xml
 
-Skins\Addons\Init.xml
-Skins\Blizzard\Init.xml
-Skins\Tukui\Init.xml
+Modules\Skins\Addons\Init.xml
+Modules\Skins\Blizzard\Init.xml
+Modules\Skins\Tukui\Init.xml
 
 Modules\Panels\Init.xml
 Modules\ChatFrames\Init.xml
 Modules\DataTexts\Init.xml
 Modules\Maps\Init.xml
 Modules\ActionBars\Init.xml
+Modules\DataBars\Init.xml
+Modules\MicroMenu\Init.xml
+Modules\ObjectiveTracker\ObjectiveTracker.lua
 Modules\Miscellaneous\Init.xml
 Modules\Auras\Init.xml
 Modules\UnitFrames\Core\Init.xml

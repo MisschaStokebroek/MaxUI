@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 30-10-2022
+-- latest update: 01-05-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up ACTION BAR 2.
@@ -159,22 +159,16 @@ function ActionBars:PositionAB2()
 end
 
 function ActionBars:MaxUIStyleAB2()
-	local BackdropR, BackdropG, BackdropB = unpack(C["General"]["BackdropColor"])
-	local BackdropAlpha = (C["ActionBars"]["ABAlpha"])
 	local ActionBar2 = ActionBars.Bars.Bar2
 	
 	if C["ActionBars"]["ActionBar2Backdrop"] == true then 
-		ActionBar2.Shadow:SetAlpha(1)
-		ActionBar2.Backdrop:SetOutside()
-		ActionBar2.Backdrop:SetAlpha(BackdropAlpha)
-		ActionBar2.Backdrop:SetBackdropColor(BackdropR, BackdropG, BackdropB)
+		ActionBar2:SkinMaxUIFrame()
 	else
 		for i = 1, Num do
 			local Button = _G["MultiBarBottomLeftButton"..i]
 			Button:CreateShadow()
 			ActionBar2["Button"..i] = Button
 		end
-		
 		ActionBar2.Shadow:SetAlpha(0)
 		ActionBar2.Backdrop:SetAlpha(0)
 	end

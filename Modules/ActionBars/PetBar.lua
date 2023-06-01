@@ -62,28 +62,19 @@ end
 
 function ActionBars:MaxUIStylePetBar()
 	local PetBar = ActionBars.Bars.Pet
-	local BackdropR, BackdropG, BackdropB = unpack(C["General"]["BackdropColor"])
-	local BackdropAlpha = (C["ActionBars"]["ABAlpha"])
 
 	PetBar:SetFrameLevel(4)
 	PetBar:SetFrameStrata("BACKGROUND")
 
 	if C["ActionBars"]["PetBarBackdrop"]== true then 
-		PetBar.Shadow:Show()
-		PetBar.Shadow:SetAlpha(1)
-		PetBar.Backdrop:SetOutside()
-		PetBar.Backdrop:SetAlpha(BackdropAlpha)
-		PetBar.Backdrop:SetBackdropColor(BackdropR, BackdropG, BackdropB)
+		PetBar:SkinMaxUIFrame()
 	else
-		PetBar.Shadow:Hide()
-		PetBar.Shadow:SetAlpha(0)
-		PetBar.Backdrop:SetAlpha(0)
-		
 		for i = 1, NUM_PET_ACTION_SLOTS do
 			local Button = _G["PetActionButton"..i]
 			Button:CreateShadow()
-			--PetBar["Button"..i] = Button
 		end
+		PetBar.Shadow:SetAlpha(0)
+		PetBar.Backdrop:SetAlpha(0)
 	end
 end
 

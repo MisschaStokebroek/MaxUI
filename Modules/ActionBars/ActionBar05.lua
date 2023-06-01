@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 30-10-2022
+-- latest update: 01-05-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up ACTION BAR 5.
@@ -169,22 +169,16 @@ function ActionBars:PositionAB5()
 end
 
 function ActionBars:MaxUIStyleAB5()
-	local BackdropR, BackdropG, BackdropB = unpack(C["General"]["BackdropColor"])
-	local BackdropAlpha = (C["ActionBars"]["ABAlpha"])
 	local ActionBar5 = ActionBars.Bars.Bar5
 
 	if C["ActionBars"]["ActionBar5Backdrop"]== true then 
-		ActionBar5.Shadow:SetAlpha(1)
-		ActionBar5.Backdrop:SetOutside()
-		ActionBar5.Backdrop:SetAlpha(BackdropAlpha)
-		ActionBar5.Backdrop:SetBackdropColor(BackdropR, BackdropG, BackdropB)
+		ActionBar5:SkinMaxUIFrame()
 	else
 		for i = 1, Num do
 			local Button = _G["MultiBarLeftButton"..i]
 			Button:CreateShadow()
 			ActionBar5["Button"..i] = Button
 		end
-		
 		ActionBar5.Shadow:SetAlpha(0)
 		ActionBar5.Backdrop:SetAlpha(0)
 	end

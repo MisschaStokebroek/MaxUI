@@ -102,7 +102,7 @@ local function CreateGameMenuButtons()
 				GuildFrame_LoadUI()
 			end
 			ToggleGuildFrame()
-		else
+		elseif T.Retail then
 			if (not LookingForGuildFrame) then
 				LookingForGuildFrame_LoadUI()
 			end
@@ -399,7 +399,7 @@ DataText.GameMenu = GameMenu
 ------------------------------------------------------------------------------------------
 local Update = function(self)
 	if C["Tools"]["GameMenu"] == true then
-		self.Text:SetFormattedText("%s", DataText.NameColor .. "Game Menu|r")
+		self.Text:SetFormattedText("%s", DataText.NameColor .. "MaxUI Micro Menu|r")
 		
 		if C["DataTexts"]["Icons"] == true then
 			self.icon = self:CreateTexture(nil, "OVERLAY")
@@ -411,18 +411,18 @@ local Update = function(self)
 		end
 		
 		self:SetScript("OnEnter", function(self)
-			self.Text:SetFormattedText("%s", DataText.HighlightColor .. "Game Menu|r")
+			self.Text:SetFormattedText("%s", DataText.HighlightColor .. "MaxUI Micro Menu|r")
 			if C["DataTexts"]["Icons"] == true then
 				self.icon:SetVertexColor(unpack(C["DataTexts"].HighlightColor))
 			end
 			GameTooltip:SetOwner(self:GetTooltipAnchor())
-			GameTooltip:AddLine("Game Menu:")
-			GameTooltip:AddLine("Toggle the MaxUI Game Menu ", 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddLine("MaxUI Micro Menu:")
+			GameTooltip:AddLine("Toggle the MaxUI Micro Menu ", 1, 1, 1, 1, 1, 1)
 			GameTooltip:Show()
 		end)
 		
 		self:SetScript("OnLeave", function(self)
-			self.Text:SetFormattedText("%s", DataText.NameColor .. "Game Menu|r")
+			self.Text:SetFormattedText("%s", DataText.NameColor .. "MaxUI Micro Menu|r")
 			if C["DataTexts"]["Icons"] == true then
 				self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
 			end
@@ -449,4 +449,4 @@ local Disable = function(self)
 	self:SetScript("OnMouseDown", nil)
 end
 
-DataText:Register("|cffFFFF99Game Menu|r", Enable, Disable, Update)
+DataText:Register("|cffFFFF99MaxUI Micro Menu|r", Enable, Disable, Update)

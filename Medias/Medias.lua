@@ -25,13 +25,9 @@ C["Medias"]["ConfigFont"] = [[Interface\AddOns\MaxUI\Medias\Fonts\MaxUI.ttf]]
 C["Medias"]["MaxUIFont"] = [[Interface\AddOns\MaxUI\Medias\Fonts\MaxUI.ttf]]
 
 ------------------------------------------------------------------------------------------
---  MaxUI -- fonts added 
+--  MaxUI -- ADD FONTS OUTLINED
 ------------------------------------------------------------------------------------------
--- Outlined
-local BoldOutlined = CreateFont("BoldOutlined")
-BoldOutlined:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\Bold.ttf", 10, "OUTLINE")
-TukuiMedia:RegisterFont("Bold Outlined", "BoldOutlined")
-
+-- MAXUI
 local MaxUIOutlined = CreateFont("MaxUIOutlined")
 MaxUIOutlined:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\MaxUI.ttf", 10, "OUTLINE")
 TukuiMedia:RegisterFont("MaxUI Outlined", "MaxUIOutlined")
@@ -39,6 +35,10 @@ TukuiMedia:RegisterFont("MaxUI Outlined", "MaxUIOutlined")
 local MaxUIItalicOutlined = CreateFont("MaxUIItalicOutlined")
 MaxUIItalicOutlined:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\MaxUIitalic.ttf", 10, "OUTLINE")
 TukuiMedia:RegisterFont("MaxUI It. Outlined", "MaxUIItalicOutlined")
+
+local BoldOutlined = CreateFont("BoldOutlined")
+BoldOutlined:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\Bold.ttf", 10, "OUTLINE")
+TukuiMedia:RegisterFont("Bold Outlined", "BoldOutlined")
 
 local ComicOutlined = CreateFont("ComicOutlined")
 ComicOutlined:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\comic.ttf", 10, "OUTLINE")
@@ -48,14 +48,24 @@ local CartoonOutlined = CreateFont("CartoonOutlined")
 CartoonOutlined:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\cartoon.ttf", 10, "OUTLINE")
 TukuiMedia:RegisterFont("Cartoon Outlined", "CartoonOutlined")
 
+-- TUKUI
 local ExpresswayOutlined = CreateFont("ExpresswayOutlined")
-ExpresswayOutlined:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\Expressway.ttf", 10, "OUTLINE")
+ExpresswayOutlined:SetFont("Interface\\AddOns\\Tukui\\Medias\\Fonts\\Expressway.ttf", 10, "OUTLINE")
 TukuiMedia:RegisterFont("Expressway Outlined", "ExpresswayOutlined")
 
 local PTSansNarrowOutlined = CreateFont("PTSansNarrowOutlined")
-PTSansNarrowOutlined:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\PTSansNarrow.ttf", 10, "OUTLINE")
+PTSansNarrowOutlined:SetFont("Interface\\AddOns\\Tukui\\Medias\\Fonts\\PTSansNarrow.ttf", 10, "OUTLINE")
 TukuiMedia:RegisterFont("PTSansNarrow Outlined", "PTSansNarrowOutlined")
 
+local BigNoodleTitlingOutlined = CreateFont("BigNoodleTitlingOutlined")
+BigNoodleTitlingOutlined:SetFont("Interface\\AddOns\\Tukui\\Medias\\Fonts\\BigNoodleTitling.ttf", 10, "OUTLINE")
+TukuiMedia:RegisterFont("BigNoodleTitling Outlined", "BigNoodleTitlingOutlined")
+
+local VisitorOutlined = CreateFont("VisitorOutlined")
+VisitorOutlined:SetFont("Interface\\AddOns\\Tukui\\Medias\\Fonts\\Visitor.ttf", 10, "OUTLINE")
+TukuiMedia:RegisterFont("Visitor Outlined", "VisitorOutlined")
+
+-- BLIZZARD
 local WarcraftOutlined = CreateFont("WarcraftOutlined")
 WarcraftOutlined:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\LifeCraft.ttf", 10, "OUTLINE")
 TukuiMedia:RegisterFont("Warcraft Outlined", "WarcraftOutlined")
@@ -64,14 +74,10 @@ local MorpheusOutlined = CreateFont("MorpheusOutlined")
 MorpheusOutlined:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\Morpheus.ttf", 10, "OUTLINE")
 TukuiMedia:RegisterFont("Morpheus Outlined", "MorpheusOutlined")
 
-
--- Shadowed Offset
-local Bold = CreateFont("Bold")
-Bold:SetShadowColor(0, 0, 0)
-Bold:SetShadowOffset(1.25, -1.25)
-Bold:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\Bold.ttf", 10, "")
-TukuiMedia:RegisterFont("Bold", "Bold")
-
+------------------------------------------------------------------------------------------
+--  MaxUI -- ADD FONTS
+------------------------------------------------------------------------------------------
+-- MAXUI
 local MaxUI = CreateFont("MaxUI")
 MaxUI:SetShadowColor(0, 0, 0)
 MaxUI:SetShadowOffset(1.25, -1.25)
@@ -83,6 +89,12 @@ MaxUIitalic:SetShadowColor(0, 0, 0)
 MaxUIitalic:SetShadowOffset(1.25, -1.25)
 MaxUIitalic:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\MaxUIitalic.ttf", 10, "")
 TukuiMedia:RegisterFont("MaxUI It.", "MaxUIitalic")
+
+local Bold = CreateFont("Bold")
+Bold:SetShadowColor(0, 0, 0)
+Bold:SetShadowOffset(1.25, -1.25)
+Bold:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\Bold.ttf", 10, "")
+TukuiMedia:RegisterFont("Bold", "Bold")
 
 local Comic = CreateFont("Comic")
 Comic:SetShadowColor(0, 0, 0)
@@ -96,18 +108,32 @@ Cartoon:SetShadowOffset(1.25, -1.25)
 Cartoon:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\Cartoon.ttf", 10,"")
 TukuiMedia:RegisterFont("Cartoon", "Cartoon")
 
+-- TUKUI
 local Expressway = CreateFont("Expressway")
 Expressway:SetShadowColor(0, 0, 0)
 Expressway:SetShadowOffset(1.25, -1.25)
-Expressway:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\Expressway.ttf", 10, "")
+Expressway:SetFont("Interface\\AddOns\\Tukui\\Medias\\Fonts\\Expressway.ttf", 10, "")
 TukuiMedia:RegisterFont("Expressway", "Expressway")
 
 local PTSansNarrow = CreateFont("PTSansNarrow")
 PTSansNarrow:SetShadowColor(0, 0, 0)
 PTSansNarrow:SetShadowOffset(1.25, -1.25)
-PTSansNarrow:SetFont("Interface\\AddOns\\MaxUI\\Medias\\Fonts\\PTSansNarrow.ttf", 10,"")
+PTSansNarrow:SetFont("Interface\\AddOns\\Tukui\\Medias\\Fonts\\PTSansNarrow.ttf", 10,"")
 TukuiMedia:RegisterFont("PTSansNarrow", "PTSansNarrow")
 
+local BigNoodleTitling = CreateFont("BigNoodleTitling")
+BigNoodleTitling:SetShadowColor(0, 0, 0)
+BigNoodleTitling:SetShadowOffset(1.25, -1.25)
+BigNoodleTitling:SetFont("Interface\\AddOns\\Tukui\\Medias\\Fonts\\BigNoodleTitling.ttf", 10,"")
+TukuiMedia:RegisterFont("BigNoodleTitling", "BigNoodleTitling")
+
+local Visitor = CreateFont("Visitor")
+Visitor:SetShadowColor(0, 0, 0)
+Visitor:SetShadowOffset(1.25, -1.25)
+Visitor:SetFont("Interface\\AddOns\\Tukui\\Medias\\Fonts\\Visitor.ttf", 10,"")
+TukuiMedia:RegisterFont("Visitor", "Visitor")
+
+-- BLIZZARD
 local Warcraft = CreateFont("Warcraft")
 Warcraft:SetShadowColor(0, 0, 0)
 Warcraft:SetShadowOffset(1.25, -1.25)

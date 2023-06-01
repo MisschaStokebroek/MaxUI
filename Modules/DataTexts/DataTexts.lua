@@ -156,7 +156,7 @@ function DataTexts:CreateAnchors()
 				if (C["Skins"]["DataTextFilter"] == true --[[and C["General"]["thickness"] >= 20]]) then 
 					Frame:CreateMaxUIFilter()
 					Frame.Filter:ClearAllPoints()
-					Frame.Filter:SetWidth((BottomLine:GetWidth() / AmountBottom))
+					Frame.Filter:SetWidth((TopLine:GetWidth() / AmountBottom))
 					Frame.Filter:SetHeight(C["General"]["thickness"])
 					Frame.Filter:SetPoint("CENTER", Frame, "CENTER", 0, 0)
 				end
@@ -259,7 +259,7 @@ function DataTexts:AddDefaults()
 			elseif i == 4 then
 				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Chat / Emotes|r"] = {true, i}
 			elseif i == 5 then
-				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Game Menu|r"] = {true, i}
+				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99MaxUI Micro Menu|r"] = {true, i}
 			elseif i == 6 then
 				TukuiDatabase.Variables[GetRealmName()][UnitName("player")].DataTexts["|cffFFFF99Move Speed|r"] = {true, i}
 			elseif i == 7 then

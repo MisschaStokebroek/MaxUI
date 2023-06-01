@@ -57,5 +57,7 @@ function WorldMap:Enable()
 		local MoveButton = WorldMap.MoveButton
 		self:MaxUIWorldMapCoords()
 		MoveButton:Hide()
+
+		--WorldMapFrameCloseButton:SkinMaxUICloseButton(true)
 	end
 end

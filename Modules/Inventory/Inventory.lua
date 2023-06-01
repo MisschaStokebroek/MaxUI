@@ -1,11 +1,11 @@
 ﻿------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 02-10-2022
+-- latest update: 01-05-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up INVENTORY.
 
--- to do: actual bags filter
+-- to do: Skin de actual buttons, blizzard icon background still showing, same for Tukui.
 
 ------------------------------------------------------------------------------------------
 -- SETUP
@@ -18,98 +18,164 @@ local baseBagsSkinBagButton = Bags.SkinBagButton
 local baseCreateContainer = Bags.CreateContainer
 local baseCreateReagentContainer = Bags.CreateReagentContainer
 
--- settings
-local BackdropR, BackdropG, BackdropB = unpack(C["General"]["BackdropColor"])
-local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
+local ButtonSize = C.Bags.ButtonSize
+local ButtonSpacing = C.Bags.Spacing
+
+local BlizzardBags = {
+	CharacterBag0Slot,
+	CharacterBag1Slot,
+	CharacterBag2Slot,
+	CharacterBag3Slot,
+	CharacterReagentBag0Slot,
+}
 
 ------------------------------------------------------------------------------------------
 -- SKINNING
 ------------------------------------------------------------------------------------------
 function Bags:SkinBagButton()
 	baseBagsSkinBagButton(self)
-	if C["Skins"]["InventoryFilter"] == true then 
-		self:CreateMaxUIFilterInside()
-	end
 
-	BankFrameTitleText:Kill()
+	if not (C.Skins.Inventory) then return end
+	self:SkinMaxUIFrame(true)
+	if self.Backdrop.Filter then
+		self.Backdrop.Filter:SetInside()
+	end
 end
 
 ------------------------------------------------------------------------------------------
 -- CONTAINERS
 ------------------------------------------------------------------------------------------
 function Bags:CreateContainer(storagetype, ...)
+
 	baseCreateContainer(self, storagetype, ...)
 	
 	if not (C.General.Themes.Value == "MaxUI") then return end
+	if not (C.Skins.Inventory) then return end
 	
 	local Container = self[storagetype]
-	local BackdropAlpha = C["Bags"]["BagsAlpha"]
-	
-	-- cosmetic
+	Container:SkinMaxUIFrame(true)
 	Container:SetFrameLevel(20)
-	if C["Skins"]["InventoryBGFilter"] == true then 
-		Container:CreateMaxUIFilter()
-	end
-	Container.Backdrop:SetBackdropColor(BackdropR, BackdropG, BackdropB, BackdropAlpha)
 
-	-- bag (right)
+	-- bags (right)
 	if (storagetype == "Bag") then
-		local Sort = Container.SortButton
-		local ToggleBagsContainer = Container.CloseButton
-		local ToggleBags = Container.ToggleBags
+		local SortButton = Container.SortButton
+		local BagsCloseButton = Container.CloseButton
+		local ToggleBagsButton = Container.ToggleBags
 		local BagsContainer = Container.BagsContainer
-		local BanksContainer = Container.BagsContainer
 		local SearchBox = Container.SearchBox
 		
 		Container:ClearAllPoints()
 		Container:SetPoint("RIGHT", UIParent, "RIGHT", -6, 0)
 		Container:CreateMaxUIHeader("Bags")
+		Container.MaxUIHeader:SetPoint("BOTTOMLEFT", Container, "TOPLEFT", 0, 28)
+		Container.MaxUIHeader:SetPoint("BOTTOMRIGHT", Container, "TOPRIGHT", 0, 28)
 		
-		if C["Skins"]["InventoryFilter"] == true then 
-			SearchBox:CreateMaxUIFilter()	
+		BagsCloseButton:SkinMaxUICloseButton()
+		BagsCloseButton:ClearAllPoints()
+		BagsCloseButton:SetPoint("RIGHT", Container.MaxUIHeader, "RIGHT", -4, 0)
+		
+		ToggleBagsButton:SkinMaxUIButton()
+		ToggleBagsButton:SetSize(22, 22)
+		ToggleBagsButton:ClearAllPoints()
+		ToggleBagsButton:SetPoint("BOTTOMRIGHT", Container, "TOPRIGHT", 0, 3)
+
+		-- bags not anchoring
+		BagsContainer:ClearAllPoints()
+		BagsContainer:SetPoint("BOTTOMRIGHT", Container.MaxUIHeader, "TOPRIGHT", -0, 3)
+		--BagsContainer:CreateBackdrop()
+		--BagsContainer:CreateShadow()
+		
+		SortButton:SkinMaxUIButton()
+		SortButton:SetSize(22, 22)
+		SortButton:ClearAllPoints()
+		SortButton:SetPoint("RIGHT", ToggleBagsButton, "LEFT", -3, 0)
+
+		if T.BCC or T.WotLK then
+			Keys:SetSize(22, 22)
+			Keys:ClearAllPoints()
+			Keys:SetPoint("RIGHT", SortButton, "LEFT", -3, 0)
 		end
 
+		SearchBox:SkinMaxUIEditBox()
+		SearchBox:SetHeight(26)
+		SearchBox:ClearAllPoints()
+		SearchBox:SetPoint("BOTTOMLEFT", Container, "TOPLEFT", 7, 1)
+		if T.BCC or T.WotLK then
+			SearchBox:SetPoint("BOTTOMRIGHT", Keys, "BOTTOMLEFT", -10, 0)
+		else
+			SearchBox:SetPoint("BOTTOMRIGHT", SortButton, "BOTTOMLEFT", -10, 0)
+		end
 		SearchBox.Title:Kill()		
 		SearchBoxTitle = SearchBox:CreateFontString(nil, "OVERLAY")
 		SearchBoxTitle:SetAllPoints()
 		SearchBoxTitle:SetFontObject(T.GetFont(C["Bags"]["Font"]))
 		SearchBoxTitle:SetScale(C["Bags"]["FontSize"]/10)
 		SearchBoxTitle:SetJustifyH("CENTER")
-		SearchBoxTitle:SetText("Type here to search an item")
-		
-		BagsContainer:ClearAllPoints()
-		BagsContainer:SetPoint("BOTTOMRIGHT", Container.MaxUIHeader, "TOPRIGHT", 0, 3)
+		SearchBoxTitle:SetText("Click and type here to search an item")
+		SearchBox:SetScript("OnEditFocusLost", function(self) SearchBoxTitle:Show() self.Backdrop:SetBorderColor(.3, .3, .3, 1) end)
+		SearchBox:SetScript("OnEditFocusGained", function(self) SearchBoxTitle:Hide() self.Backdrop:SetBorderColor(1, 1, 1, 1) end)
 
-		Sort:HookScript("OnEnter", function(self)
-			Sort.Texture:SetVertexColor(unpack(ClassColor))
-		end)
 
-		Sort:HookScript("OnLeave", function(self)
-			Sort.Texture:SetVertexColor(1,1,1)
-		end)
+		for _, Button in pairs(BlizzardBags) do
+			if Button then
+				local Count = _G[Button:GetName().."Count"]
+				local Icon = _G[Button:GetName().."IconTexture"]
+				local SlotIconTexture = _G[Button:GetName().."IconTexture"]
+				local SlotNormalTexture = _G[Button:GetName().."NormalTexture"]
 
-		ToggleBags:HookScript("OnEnter", function(self)
-			ToggleBags.Texture:SetVertexColor(unpack(ClassColor))
-		end)
+				Button:SkinMaxUIFrame()
+				Button.CircleMask:Hide()
+				Button.AnimIcon:Hide()
+				Button.SlotHighlightTexture:Hide()
+				--Button.:Hide()
+				if SlotIconTexture then
+					SlotIconTexture:SetInside(Button)
+				end
 
-		ToggleBags:HookScript("OnLeave", function(self)
-			ToggleBags.Texture:SetVertexColor(1,1,1)
-		end)
+				if SlotNormalTexture then
+					SlotNormalTexture:SetAlpha(0)
+				end
 
-		ToggleBagsContainer:SkinCloseButton()
-		ToggleBagsContainer:ClearAllPoints()
-		ToggleBagsContainer:SetPoint("RIGHT", Container.MaxUIHeader, "RIGHT", -4, 0)
-		
-		ToggleBags:ClearAllPoints()
-		ToggleBags:SetPoint("TOPRIGHT", Container, "TOPRIGHT", -6, -6)
+				Button:ClearAllPoints()
+				if Button == CharacterBag0Slot then
+					Button:SetPoint("TOPRIGHT", TukuiBag, "TOPLEFT", -4, -6)
+				elseif Button == CharacterBag1Slot then
+					Button:SetPoint("TOP", CharacterBag0Slot, "BOTTOM", 0, -6)
+				elseif Button == CharacterBag2Slot then
+					Button:SetPoint("TOP", CharacterBag1Slot, "BOTTOM", 0, -6)
+				elseif Button == CharacterBag3Slot then
+					Button:SetPoint("TOP", CharacterBag2Slot, "BOTTOM", 0, -6)
+				end
+			end
+		end
 
+	-- reagentbag (right)
 	elseif (storagetype == "BagReagent") then
 		Container.Title:Kill()
 
-		Container:ClearAllPoints()
-		Container:SetPoint("TOPRIGHT", TukuiBag, "TOPLEFT", -6, 0)
-
 		Container:CreateMaxUIHeader("Reagents")
+		Container:ClearAllPoints()
+		
+		if not C.Bags.ReagentInsideBag then
+			if C.Bags.PositionReagentBag.Value == "TOPLEFT" then
+				Container:SetPoint("TOPRIGHT", TukuiBag, "TOPLEFT", -6, 25)
+			elseif C.Bags.PositionReagentBag.Value == "TOP" then
+				Container:SetPoint("BOTTOM", TukuiBag, "TOP", 0, 53)
+			elseif C.Bags.PositionReagentBag.Value == "BOTTOM" then
+				Container:SetPoint("TOP", TukuiBag, "BOTTOM", 0, -28)
+			else
+				Container:SetPoint("TOPRIGHT", TukuiBag, "TOPLEFT", -6, 25)
+			end
+		end
+
+		for _, Button in pairs(BlizzardBags) do
+			if Button then
+				if Button == CharacterReagentBag0Slot then
+					Button:ClearAllPoints()
+					Button:SetPoint("TOPRIGHT", Container, "TOPLEFT", -4, -6)
+				end
+			end
+		end
 
 	else	
 	-- bank (left)
@@ -117,16 +183,19 @@ function Bags:CreateContainer(storagetype, ...)
 		local Purchase = BankFramePurchaseInfo
 		local SortButton = Container.SortButton
 		local SwitchReagentButton = Container.ReagentButton
-		local Bank = BankFrame
 		
+		BankFrameTitleText:Kill()
+		BankFramePortrait:Kill()
+
 		Container:ClearAllPoints()
 		Container:SetPoint("LEFT", UIParent, "LEFT", 6, 0)
 		
 		Container:CreateMaxUIHeader("Bank")
 		Container.MaxUIHeader:ClearAllPoints()
-		Container.MaxUIHeader:SetPoint("BOTTOMLEFT", Container, "TOPLEFT", 0, 27)
-		Container.MaxUIHeader:SetPoint("BOTTOMRIGHT", Container, "TOPRIGHT", 0, 27)
+		Container.MaxUIHeader:SetPoint("BOTTOMLEFT", Container, "TOPLEFT", 0, 28)
+		Container.MaxUIHeader:SetPoint("BOTTOMRIGHT", Container, "TOPRIGHT", 0, 28)
 		
+		Purchase:SkinMaxUIButton(true)
 		Purchase:ClearAllPoints()
 		Purchase:SetPoint("TOP", Container, "BOTTOM", -25, -3)
 		Purchase.Backdrop:SetAlpha(0.7)
@@ -135,6 +204,10 @@ function Bags:CreateContainer(storagetype, ...)
 		BankBagsContainer:SetFrameLevel(Container.MaxUIHeader:GetFrameLevel() +3)
 		BankBagsContainer:SetPoint("BOTTOMLEFT", Container.MaxUIHeader, "TOPLEFT", 0, 3)
 		
+		SwitchReagentButton:SkinMaxUIButton(true)
+		SwitchReagentButton:ClearAllPoints()
+		SwitchReagentButton:SetPoint("BOTTOMLEFT", Container, "TOPLEFT", 0, 3)
+		SwitchReagentButton:SetHeight(22)
 		SwitchReagentButton.Text:Kill()
 		SwitchReagentButtonText = SwitchReagentButton:CreateFontString(nil, "OVERLAY")
 		SwitchReagentButtonText:SetFontObject(T.GetFont(C["Bags"]["Font"]))
@@ -143,6 +216,10 @@ function Bags:CreateContainer(storagetype, ...)
 		SwitchReagentButtonText:SetPoint("CENTER")
 		SwitchReagentButtonText:SetText("Switch to: "..REAGENT_BANK)
 		
+		SortButton:SkinMaxUIButton(true)
+		SortButton:ClearAllPoints()
+		SortButton:SetPoint("LEFT", SwitchReagentButton, "RIGHT", 2, 0)
+		SortButton:SetHeight(22)
 		SortButton.Text:Kill()
 		SortButtonText = SortButton:CreateFontString(nil, "OVERLAY")
 		SortButtonText:SetFontObject(T.GetFont(C["Bags"]["Font"]))
@@ -150,12 +227,6 @@ function Bags:CreateContainer(storagetype, ...)
 		SortButtonText:SetJustifyH("LEFT")
 		SortButtonText:SetPoint("CENTER")
 		SortButtonText:SetText(BAG_FILTER_CLEANUP)
-		
-		if C["Skins"]["InventoryFilter"] == true then 
-			SwitchReagentButton:CreateMaxUIFilter()
-			SortButton:CreateMaxUIFilter()
-			BankFramePurchaseButton:CreateMaxUIFilter()
-		end
 	end
 end
 ------------------------------------------------------------------------------------------
@@ -165,10 +236,8 @@ function Bags:CreateReagentContainer()
 	baseCreateReagentContainer(self)
 	
 	if not (C.General.Themes.Value == "MaxUI") then return end
-
-	local BackdropR, BackdropG, BackdropB = unpack(C["General"]["BackdropColor"])
-	local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
-	local BackdropAlpha = C["Bags"]["BagsAlpha"]
+	if not (C.Skins.Inventory) then return end
+	
 	local Reagent = self.Reagent
 	local Deposit = ReagentBankFrame.DespositButton
 	local SwitchBankButton = self.Reagent.SwitchBankButton
@@ -179,11 +248,12 @@ function Bags:CreateReagentContainer()
 	Reagent.MaxUIHeader:SetPoint("BOTTOMLEFT", Reagent, "TOPLEFT", 0, 27)
 	Reagent.MaxUIHeader:SetPoint("BOTTOMRIGHT", Reagent, "TOPRIGHT", 0, 27)
 
-	-- cosmetic
 	Reagent:ClearAllPoints()
 	Reagent:SetPoint("LEFT", UIParent, "LEFT", 15, 10)
-	Reagent.Backdrop:SetBackdropColor(BackdropR, BackdropG, BackdropB, BackdropAlpha)
+	Reagent:SkinMaxUIFrame(true)
+	Reagent:SetFrameLevel(20)
 
+	SwitchBankButton:SkinMaxUIButton(true)
 	SwitchBankButton:ClearAllPoints()
 	SwitchBankButton:SetHeight(20)
 	SwitchBankButton:SetPoint("BOTTOMLEFT", Reagent, "TOPLEFT", 0, 3)
@@ -195,6 +265,7 @@ function Bags:CreateReagentContainer()
 	SwitchBankButtonText:SetScale(C["Bags"]["FontSize"]/10)
 	SwitchBankButtonText:SetText("Switch to: "..BANK)
 	
+	SortButton:SkinMaxUIButton(true)
 	SortButton:ClearAllPoints()
 	SortButton:SetHeight(20)
 	SortButton:SetPoint("BOTTOMRIGHT", Reagent, "TOPRIGHT", 0, 3)
@@ -207,21 +278,14 @@ function Bags:CreateReagentContainer()
 	SortButtonText:SetText(BAG_FILTER_CLEANUP)
 	SortButton:SetScript("OnClick", BankFrame_AutoSortButtonOnClick)
 
+	Deposit:SkinMaxUIButton(true)
 	Deposit:ClearAllPoints()
 	Deposit:SetHeight(20)
 	Deposit:SetPoint("TOP", Reagent, "BOTTOM", 0, -3)
+	ReagentBankFrameText:SetTextColor(1, 1, 1)
 
-	if C["Skins"]["InventoryBGFilter"] == true then 
-		Reagent:CreateMaxUIFilter()
-	end
-
-	if C["Skins"]["InventoryFilter"] == true then 
-		SwitchBankButton:CreateMaxUIFilter()
-		SortButton:CreateMaxUIFilter()
-		Deposit:CreateMaxUIFilter()
-		for i = 1, 98 do
-			local Button = _G["ReagentBankFrameItem"..i]
-			Button:CreateMaxUIFilterInside()
-		end
+	for i = 1, 98 do
+		local Button = _G["ReagentBankFrameItem"..i]
+		Button:SkinMaxUIFrame()
 	end
 end

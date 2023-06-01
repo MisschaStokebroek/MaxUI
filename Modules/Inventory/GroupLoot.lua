@@ -1,6 +1,6 @@
 ﻿------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 04-01-2023
+-- latest update: 01-05-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up LOOT
@@ -15,17 +15,15 @@ local baseSkinGroupLoot = GroupLoot.SkinGroupLoot
 local baseUpdateGroupLootContainer = GroupLoot.UpdateGroupLootContainer
 
 local function SkinLootRollsFrame()
-	--LootHistoryFrame:SkinMaxUIBasicFrame()
+	--LootHistoryFrame:SkinMaxUIBasicFrame(true, nil)
 
 
 end
 
-
-
 function GroupLoot:SkinGroupLoot(Frame)
 	baseSkinGroupLoot(self, Frame)
 	
-	if C["General"]["Themes"]["Value"] == "MaxUI" then 
+	if C["General"]["Themes"]["Value"] == "MaxUI" and C["Skins"]["Loot"] then 
 		Frame.OverlayContrainerFrame.Backdrop:SetOutside(Frame.OverlayContrainerFrame)
 		Frame.Timer.Backdrop:SetOutside(Frame.Timer)
 		Frame.IconFrame.Backdrop:SetOutside(Frame.IconFrame)
@@ -42,11 +40,11 @@ function GroupLoot:SkinGroupLoot(Frame)
 			Frame.IconFrame.Border:Hide()
 		end
 		
-		if C["Skins"]["InventoryFilter"] then
-			Frame.OverlayContrainerFrame.Backdrop:CreateMaxUIFilter()
-			Frame.Timer.Backdrop:CreateMaxUIFilter()
-			Frame.IconFrame.Backdrop:CreateMaxUIFilter()
-		end
+		--if C["Skins"]["Loot"] then
+			Frame.OverlayContrainerFrame:SkinMaxUIFrame()
+			Frame.Timer:SkinMaxUIStatusBar()
+			Frame.IconFrame:SkinMaxUIFrame()
+		--end
 
 		SkinLootRollsFrame()
 	end
@@ -55,7 +53,7 @@ end
 function GroupLoot:UpdateGroupLootContainer()
 	baseUpdateGroupLootContainer(self)
 	
-	if C["General"]["Themes"]["Value"] == "MaxUI" then 
+	if C["General"]["Themes"]["Value"] == "MaxUI" and C["Skins"]["Loot"] then 
 		for i = 1, NUM_GROUP_LOOT_FRAMES do
 			local Frame = _G["GroupLootFrame" .. i]
 			local Mover = GroupLoot.Mover

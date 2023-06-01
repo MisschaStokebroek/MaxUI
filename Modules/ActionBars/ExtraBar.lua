@@ -141,10 +141,10 @@ function ActionBars:SetupExtraButton()
 	--	self:MaxUIStyleExtraBar()
 	--end
 	
-	Movers:RegisterFrame(Button, "Extra Skill Button")
+	--Movers:RegisterFrame(Button, "Extra Skill Button")
 
 	-- filter
 	if C["Skins"]["ActionBarButtonFilter"] == true then 
-		Button:CreateMaxUIFilterInside()
+		Button:CreateMaxUIFilter()
 	end
 end

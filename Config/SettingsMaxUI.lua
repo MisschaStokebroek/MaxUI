@@ -16,19 +16,19 @@ local ClassTextColor = T.RGBToHex(unpack(T.Colors.class[select(2, UnitClass("pla
 ------------------------------------------------------------------------------------------
 C["AddOns"] = {
 
-	["HekiliSkin"] = false,
+	["HekiliSkin"] = true,
 
-	["BugSackSkin"] = false,
+	["BugSackSkin"] = true,
 	["BugSackWidth"] = 800,
 	["BugSackHeight"] = 420,
 
-	["SimulationcraftSkin"] = false,
+	["SimulationcraftSkin"] = true,
 
-	["ImmersionSkin"] = false,
-	["ImmersionTopEdge"] = false,
+	["ImmersionSkin"] = true,
+	["ImmersionTopEdge"] = true,
 
-	["DBMSkin"] = false,
-	["DBMSkinEdge"] = false,
+	["DBMSkin"] = true,
+	["DBMSkinEdge"] = true,
 	["DBMBarBackdropAlpha"] = 0.8,
 	["DBMIconBarSpacing"] = 6,
 	["DBMBarTextPosition"] = {
@@ -40,11 +40,11 @@ C["AddOns"] = {
 		["Value"] = "Inside",
 	},
 
-	["ColorPickerPlusSkin"] = false,
+	["ColorPickerPlusSkin"] = true,
 	
 	["CliqueSkin"] = false,
 	
-	["ProjectAzilrokaSkin"] = false,
+	["ProjectAzilrokaSkin"] = true,
 	
 	--["PawnSkin"] = false,
 
@@ -111,25 +111,25 @@ C["General"]["FaderTime"] = 1
 -- fonts
 C["General"]["FontSize"] = 12 
 
+C["General"]["GlobalFont"]["Options"]["Bold"] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\Bold.ttf"
 C["General"]["GlobalFont"]["Options"]["Cartoon"] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\cartoon.ttf"
 C["General"]["GlobalFont"]["Options"]["Comic"] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\comic.ttf"
+C["General"]["GlobalFont"]["Options"]["Warcraft"] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\LifeCraft.ttf"
 C["General"]["GlobalFont"]["Options"]["MaxUI"] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\MaxUI.ttf"
 C["General"]["GlobalFont"]["Options"]["MaxUI It."] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\MaxUIitalic.ttf"
-C["General"]["GlobalFont"]["Options"]["Bold"] = "Interface\\AddOns\\MaxUI\\Medias\\Bold\\MaxUI.ttf"
-C["General"]["GlobalFont"]["Options"]["Warcraft"] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\LifeCraft.ttf"
 C["General"]["GlobalFont"]["Options"]["Morpheus"] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\Morpheus.ttf"
-C["General"]["GlobalFont"]["Options"]["Kimberley"] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\kimberley.ttf"
+
 C["General"]["GlobalFont"]["Value"] = "Interface\\AddOns\\MaxUI\\Medias\\Fonts\\MaxUI.ttf"
 
 C["General"]["FontFlag"] = {
 	["Options"] = {
-		["Thin Outline"] = "THINOUTLINE",
+		["Thin Outline"] = "THINOUTLINE" ,
 		["Outline"] = "OUTLINE",
-		["Thick Outline"] = "THICKOUTLINE",
-		["Monochrome"] = "MONOCHROME",
+		["Thick Outline"] = "THICKOUTLINE" ,
+		["Monochrome"] = "MONOCHROME" ,
 		["none"] = "",	
 	},
-	["Value"] = "THINOUTLINE",
+	["Value"] = "OUTLINE" ,
 }
 
 -- panels and frames
@@ -231,6 +231,23 @@ C["General"]["ClassShadowExcludeUF"] = false
 C["ActionBars"]["ABAlpha"] = 0.7
 
 C["ActionBars"]["ABFontSize"] = 10
+
+
+-- proc anim
+C["ActionBars"]["ProcAnim+"] = {
+	["Options"] = {
+		["No proc animation"] = "Hide",
+		["Border"] = "Border",
+		["Backdrop"] = "Backdrop",
+		["Border"] = "Border",
+		["Overlay"] = "Overlay",
+		["Border & Backdrop"] = "BorderAndBackdrop",
+		["Border & Overlay"] = "BorderAndOverlay",
+	},
+	["Value"] = "BorderAndBackdrop",
+}
+C["ActionBars"]["ProcAnimColor"] = {1, 1, 0} 
+
 
 -- cooldown text
 C["ActionBars"]["CooldownFlash"] = false
@@ -378,14 +395,6 @@ C["ActionBars"]["TrinketBarLayout"] = {
 	},
 	["Value"] = "Horizontal",
 }
-
-C["ActionBars"]["Bar6ButtonsPerRow"] = 6
-C["ActionBars"]["Bar7ButtonsPerRow"] = 6
-C["ActionBars"]["Bar8ButtonsPerRow"] = 12
-
---C["ActionBars"]["Bar6NumButtons"] = 12
---C["ActionBars"]["Bar7NumButtons"] = 12
---C["ActionBars"]["Bar8NumButtons"] = 12
 
 -- Actionbars Button Size settings 
 C["ActionBars"]["ActionBar1ButtonSize"] = 26
@@ -919,8 +928,15 @@ C["Auras"]["AurasDebuffCombatState"] = {
 -- fonts
 C["Bags"]["Font"] = "MaxUI Outlined"
 C["Bags"]["FontSize"] = 12 
-C["Bags"]["BagsAlpha"] = 0.7 
-C["Bags"]["Art"] = false 
+
+C["Bags"]["PositionReagentBag"] = {
+	["Options"] = {
+		["Top"] = "TOP",
+		["Bottom"] = "BOTTOM",
+		["Topleft"] = "TOPLEFT",
+	},
+	["Value"] = "BOTTOM",
+}
 
 ------------------------------------------------------------------------------------------	
 -- CHARACTER INFO	
@@ -1113,8 +1129,8 @@ C["Location"] = {
 ------------------------------------------------------------------------------------------
 -- MISC
 ------------------------------------------------------------------------------------------
---C["Misc"]["MicroStyle"]["Options"]["|cffFFFF99MaxUI Game Menu|r"] = "MaxUI Game Menu"
---C["Misc"]["MicroStyle"]["Value"] = "MaxUI Game Menu"
+--C["Misc"]["MicroStyle"]["Options"]["|cffFFFF99Micro Game Menu|r"] = "MaxUI Micro Menu"
+--C["Misc"]["MicroStyle"]["Value"] = "MaxUI Micro Menu"
 
 C["Misc"]["ErrorSpeechEnable"] = true
 C["Misc"]["ErrorSpeechCombatState"] = {
@@ -1697,20 +1713,20 @@ C["Skins"] = {
 
 	--["MaxUIAddOnSkins"] = false,
 	--["MaxUISkins"] = false,
-	["MaxUISkinsBlizzard"] = false,
-	["MaxUISkinsAddons"] = false,
+	["MaxUISkinsBlizzard"] = true,
+	["MaxUISkinsAddons"] = true,
 	
 	-- system
-	["GameMenu"] = false,
+	["GameMenu"] = true,
 	["CustomerSupport"] = false,
-	["WhatsNew"] = false,
+	["WhatsNew"] = true,
 	["Report"] = false,
 	["SettingsPanel"] = false,
-	["Popups"] = false,
+	["Popups"] = true,
 	["Keybinds"] = false,
 	["Macros"] = false,
-	["AddOns"] = false,
-	["ColorPicker"] = false,
+	["AddOns"] = true,
+	["ColorPicker"] = true,
 
 	-- character
 	["Character"] = false,
@@ -1737,6 +1753,8 @@ C["Skins"] = {
 	["Tradeskill"] = false,
 	["Trainer"] = false,
 	["AuctionHouse"] = false,
+	["Inventory"] = true,
+	["Loot"] = true,
 	
 	-- support
 	
@@ -1744,7 +1762,7 @@ C["Skins"] = {
 	["StopWatch"] = false,
 
 	-- uncategorised
-	["Mail"] = false,
+	["Mail"] = true,
 	["Other"] = false,
 	["Achievements"] = false,
 	["Collections"] = false,
@@ -1756,8 +1774,8 @@ C["Skins"] = {
 	["DataCenterFilter"] = false,
 	["DataTextFilter"] = false,
 	["DataBarFilter"] = false,
-	["InventoryFilter"] = false,
-	["InventoryBGFilter"] = false,
+	--["InventoryFilter"] = false,
+	--["InventoryBGFilter"] = false,
 	["TooltipFilter"] = false,
 	["TooltipHealthFilter"] = false,
 	["ObjectiveTrackerFilter"] = false,

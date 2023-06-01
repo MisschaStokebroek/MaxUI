@@ -6,14 +6,16 @@
 ## RequiredDeps: Tukui
 ## OptionalDeps: ProjectAzilroka, AddOnSkins, LibSharedMedia-3.0
 ## Thanks to: Tukz, Hydra, Darth Predator, Azilroka, Blazeflack and all other members of Tukui.org community.
-## X-Tukui-ProjectID: 26
-## X-Tukui-ProjectFolders: MaxUI
 
 Medias\Init.xml
 Libs\Init.xml
 Libs\UTF8.xml
 Core\Init.xml
 Config\Init.xml
+
+Modules\Skins\Addons\Init.xml
+Modules\Skins\Blizzard\Init.xml
+Modules\Skins\Tukui\Init.xml
 
 Modules\Panels\Init.xml
 Modules\ChatFrames\Init.xml

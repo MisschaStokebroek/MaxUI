@@ -1,0 +1,10 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="ThreatBar.lua"/>
+	<Script file="ExperienceBar.lua"/>
+	<Script file="ReputationBar.lua"/>
+	<Script file="AltPowerBar.lua"/>
+	<Script file="HonorBar.lua"/>
+	<Script file="AnimaBar.lua"/>
+	<Script file="AzeriteBar.lua"/>
+	<Script file="MirrorBars.lua"/>
+</Ui>

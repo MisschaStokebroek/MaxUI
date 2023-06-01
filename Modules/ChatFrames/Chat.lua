@@ -26,18 +26,14 @@ ChatPlayerModel:SetUnit('player')
 ------------------------------------------------------------------------------------------
 -- Skin adjustments blizzard frame
 ------------------------------------------------------------------------------------------
-EmoteMenu.NineSlice:StripTextures()
-ChatMenu.NineSlice:StripTextures()
-LanguageMenu.NineSlice:StripTextures()
-VoiceMacroMenu.NineSlice:StripTextures()
-
-EmoteMenu:CreateBackdrop("Transparent")
-ChatMenu:CreateBackdrop("Transparent")
-LanguageMenu:CreateBackdrop("Transparent")
-VoiceMacroMenu:CreateBackdrop("Transparent")
-
-DropDownList1MenuBackdrop:SetAlpha(0.8)
-DropDownList2MenuBackdrop:SetAlpha(0.8)
+local function SkinChatTooltipsAndMenus()
+	EmoteMenu:SkinMaxUIFrame(true)
+	ChatMenu:SkinMaxUIFrame(true)
+	LanguageMenu:SkinMaxUIFrame(true)
+	VoiceMacroMenu:SkinMaxUIFrame(true)
+--DropDownList1MenuBackdrop:SetAlpha(0.8)
+--DropDownList2MenuBackdrop:SetAlpha(0.8)
+end
 
 ------------------------------------------------------------------------------------------
 -- CHAT TAB COLORING
@@ -112,12 +108,12 @@ function Chat:CreateChatTabs()
 		local tab = _G["ChatFrame"..i.."Tab"]
 
 		local ChatTabSplitter = CreateFrame("Frame", "ChatTabSplitter", tab)
-		ChatTabSplitter:SetHeight(20)
+		ChatTabSplitter:SetHeight(18)
 		ChatTabSplitter:SetWidth(2)
-		ChatTabSplitter:SetPoint("LEFT", tab, "RIGHT", 0, -6)
-		ChatTabSplitter:SetFrameStrata("BACKGROUND")
-		ChatTabSplitter:SetFrameLevel(4)
+		ChatTabSplitter:SetPoint("LEFT", tab, "RIGHT", 0, -7)
 		ChatTabSplitter:CreateBackdrop()
+		ChatTabSplitter.Backdrop:CreateShadow()
+
 
 		if C["Chat"]["LeftChatBGCombatState"]["Value"] == "Hide" then
 			RegisterStateDriver(ChatTabSplitter, "visibility", "[combat] hide; show")
@@ -257,14 +253,6 @@ function Chat:CreateChatTools()
 			ChatButtons:SetPoint("BOTTOMLEFT", LeftChatBG, "TOPLEFT", 4, 12)
 		end	
 	end
-
-	if C["Skins"]["TooltipFilter"] == true then 
-		EmoteMenu.Backdrop:CreateMaxUIFilterInside()
-		ChatMenu.Backdrop:CreateMaxUIFilterInside()
-		LanguageMenu.Backdrop:CreateMaxUIFilterInside()
-		VoiceMacroMenu.Backdrop:CreateMaxUIFilterInside()
-	end
-
 	ChatButtons = self.ChatButtons
 end
 
@@ -272,7 +260,6 @@ function Chat:CreateChatToolsButtons()
 	-- Say Button
 	ChatButtons.CreateMaxUIButton("SayButton", ChatButtons, 14, 14, "", "Open chat:", "Say (leftclick)\n|cffFF3F40Yell|r (rightclick) ",  ChatButtons)
 	SayButton:SetPoint("RIGHT", ChatButtons, "RIGHT", -4, 0)
-	SayButton:CreateShadow()
 	SayButton.Backdrop:SetBackdropColor(1,1,1)
 	
 	local SayButtonOnMouseUp = function(self)
@@ -291,7 +278,6 @@ function Chat:CreateChatToolsButtons()
 	-- Guild Button
 	ChatButtons.CreateMaxUIButton("GuildButton", ChatButtons, 14, 14, "", "Open chat:", "|cff3CE13FGuild|r (leftclick)\n|cff40BC40Officer|r (rightclick) ", ChatButtons)
 	GuildButton:SetPoint("RIGHT", SayButton, "LEFT", -4, 0)
-	GuildButton:CreateShadow()
 	GuildButton.Backdrop:SetBackdropColor(0.25, 1, 0.25)
 	
 	local GuildButtonOnMouseUp = function(self)
@@ -310,7 +296,6 @@ function Chat:CreateChatToolsButtons()
 	-- Party Button
 	ChatButtons.CreateMaxUIButton("PartyButton", ChatButtons, 14, 14, "", "Open chat:", "|cff77C8FFParty|r (any) ", ChatButtons)
 	PartyButton:SetPoint("RIGHT", GuildButton, "LEFT", -4, 0)
-	PartyButton:CreateShadow()
 	PartyButton.Backdrop:SetBackdropColor(0.65, 0.65, 1)
 	
 	local PartyButtonOnMouseUp = function(self)
@@ -330,7 +315,6 @@ function Chat:CreateChatToolsButtons()
 	end
 		
 	InstanceButton:SetPoint("RIGHT", PartyButton, "LEFT", -4, 0)
-	InstanceButton:CreateShadow()
 	InstanceButton.Backdrop:SetBackdropColor(1, 0.5, 0)
 	
 	local InstanceButtonOnMouseUp = function(self)
@@ -357,7 +341,6 @@ function Chat:CreateChatToolsButtons()
 	-- Whisper Reply Button
 	ChatButtons.CreateMaxUIButton("WhisperButton", ChatButtons, 14, 14, "", "Open chat:", "|cffFF7EFFWhisper Target|r (leftclick)\n|cffFF7EFFReply Whisper|r (rightclick) ", ChatButtons)
 	WhisperButton:SetPoint("RIGHT", InstanceButton, "LEFT", -4, 0)
-	WhisperButton:CreateShadow()
 	WhisperButton.Backdrop:SetBackdropColor(1, 0.5, 1)
 	
 	local WhisperButtonOnMouseUp = function(self)
@@ -385,11 +368,10 @@ function Chat:CreateChatToolsButtons()
 	--language and emote Button
 	ChatButtons.CreateMaxUIButton("LanguageEmoteButton", ChatButtons, 28, 14, "", "Chat:", "Language and emotes ", ChatButtons)
 	LanguageEmoteButton:SetPoint("RIGHT", WhisperButton, "LEFT", -4, 0)
-	LanguageEmoteButton:CreateShadow()
 	
 	LanguageEmoteButton.icon = LanguageEmoteButton:CreateTexture(nil, "OVERLAY")
-	LanguageEmoteButton.icon:SetWidth(10)
-	LanguageEmoteButton.icon:SetHeight(10)
+	LanguageEmoteButton.icon:SetWidth(12)
+	LanguageEmoteButton.icon:SetHeight(12)
 	LanguageEmoteButton.icon:SetPoint("CENTER", LanguageEmoteButton, "CENTER", 0, 0)
 	LanguageEmoteButton.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\Chat.tga]])
 	
@@ -781,6 +763,8 @@ end
 function Chat:Enable()
     baseChatEnable(self)
     
+    SkinChatTooltipsAndMenus()
+
     local EditBox = ChatFrame1EditBox
 	local TabsBGLeft = T.Chat.Panels.LeftChatTabs 
 

@@ -15,7 +15,7 @@ local Minimap = T.Maps.Minimap
 -- functions
 local baseAurasSkin = Auras.Skin
 local baseCreateHeaders = Auras.CreateHeaders
-local baseAurasUpdateAura = Auras.OnUpdate
+local baseAurasUpdateAura = Auras.UpdateAura
 
 ------------------------------------------------------------------------------------------
 -- AURAS (BUFFS AND DEBUFFS)	
@@ -27,11 +27,6 @@ function Auras:Skin()
 	local Duration = self.Duration
 	local Bar = self.Bar
 	local Holder = self.Holder
-
-	--if not InCombatLockdown() then
-	--	self:SetScale(C["Auras"]["AurasSize"]/100)
-	--end
-
 
 	if (C["Auras"]["Duration"]) then
 		Duration:ClearAllPoints()
@@ -139,3 +134,11 @@ function Auras:CreateHeaders()
 	self:PositionAuras()
 	self:CombatStateAuras()
 end
+
+--[[
+function Auras:UpdateAura(index)
+ 	if (not C.Auras.Enable) then return	end
+	baseAurasUpdateAura(self, index)
+	self:SetScale(C["Auras"]["AurasSize"]/100)
+end
+]]

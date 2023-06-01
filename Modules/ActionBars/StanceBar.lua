@@ -140,8 +140,6 @@ end
 
 function ActionBars:MaxUIStyleStanceBar()
 	local StanceBar = ActionBars.Bars.Stance
-	local BackdropR, BackdropG, BackdropB = unpack(C["General"]["BackdropColor"])
-	local BackdropAlpha = (C["ActionBars"]["ABAlpha"])
 
 	StanceBar:SetFrameLevel(4)
 	StanceBar:SetFrameStrata("BACKGROUND")
@@ -151,10 +149,7 @@ function ActionBars:MaxUIStyleStanceBar()
 	end	
 
 	if C["ActionBars"]["StanceBarBackdrop"]== true then 
-		StanceBar.Shadow:SetAlpha(1)
-		StanceBar.Backdrop:SetOutside()
-		StanceBar.Backdrop:SetAlpha(BackdropAlpha)
-		StanceBar.Backdrop:SetBackdropColor(BackdropR, BackdropG, BackdropB)
+		StanceBar:SkinMaxUIFrame()
 	else
 		StanceBar.Shadow:Hide()
 		StanceBar.Shadow:SetAlpha(0)
@@ -164,7 +159,6 @@ function ActionBars:MaxUIStyleStanceBar()
 			Button:CreateShadow()
 		end	
 	end
-	--RegisterStateDriver(StanceBar, "visibility", "[vehicleui] hide; show")
 end
 
 function ActionBars:StylingStanceBar()
