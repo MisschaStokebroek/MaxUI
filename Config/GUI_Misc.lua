@@ -89,7 +89,7 @@ local Bags = function(self)
 		Window:CreateSpacer("All", 25)
 	else
 		Window:CreateSpacer("All", 11)
-		Window:CreateSpacer("All", 12)
+		Window:CreateSpacer("All", 15)
 		Window:CreateSpacer("All", 20)
 		Window:CreateSpacer("All", 23)
 	end
@@ -395,16 +395,6 @@ if T.Retail then
 	Window:CreateSpacer("All", 37)
 	Window:CreateSpacer("All", 40)	
 else
-	Window:CreateSpacer("All", 11 +1)
-	Window:CreateSpacer("All", 14 +1)
-	Window:CreateSpacer("All", 17 +1)
-	Window:CreateSpacer("All", 20 +1)
-	Window:CreateSpacer("All", 23 +1)
-	Window:CreateSpacer("All", 27 +1)
-	Window:CreateSpacer("All", 31 +1)
-	Window:CreateSpacer("All", 34 +1)
-
-	--[[ should be
 	Window:CreateSpacer("All", 11)
 	Window:CreateSpacer("All", 14)
 	Window:CreateSpacer("All", 17)
@@ -413,7 +403,6 @@ else
 	Window:CreateSpacer("All", 27)
 	Window:CreateSpacer("All", 31)
 	Window:CreateSpacer("All", 34)
-	]]
 end
 
 	Window:CreateSection("All", "UI Error Frame Extended")
@@ -450,7 +439,7 @@ local Quests = function(self)
 	Window:CreateSwitch("Retail", "Quests", "TrackerFixed", "|cffFFFF99Anchor the objective tracker to the quest datatext|r")
 	Window:CreateSwitch("Retail", "Quests", "TrackerCollapsedOnLogin", "|cffFFFF99Start with a closed objective tracker|r")
 	Window:CreateDropdown("Retail", "Quests", "FilterTracking", "|cffFFFF99Set filter for quests tracked in the objective tracker|r")
-	Window:CreateSpacerNoPos("All")
+	Window:CreateSpacerNoPos("Retail")
 	
 	Window:CreateSection("All", "Combat State")
 	Window:CreateDropdown("All", "Quests", "QuestTrackerCombatState", "Set combat state for tracker")

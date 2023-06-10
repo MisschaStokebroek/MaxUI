@@ -1,10 +1,11 @@
 ## Interface: 30400
 ## Author: Maximvs
-## Version: 6.700
+## Version: 6.701
 ## Title:MaxUI
 ## Notes: MaxUI, edit for Tukui 20 and World of Warcraft - Wrath of the Lich King Classic. See tukui.org for more information.
 ## RequiredDeps: Tukui
 ## OptionalDeps: ProjectAzilroka, AddOnSkins, LibSharedMedia-3.0
+## IconTexture: Interface\AddOns\MaxUI\Medias\MaxUI\MaxUI_LOGO_Mini
 ## Thanks to: Tukz, Hydra, Darth Predator, Azilroka, Blazeflack and all other members of Tukui.org community.
 
 Medias\Init.xml
@@ -22,6 +23,9 @@ Modules\ChatFrames\Init.xml
 Modules\DataTexts\Init.xml
 Modules\Maps\Init.xml
 Modules\ActionBars\Init.xml
+Modules\DataBars\Init.xml
+Modules\MicroMenu\Init.xml
+Modules\ObjectiveTracker\ObjectiveTracker_WOTLK.lua
 Modules\Miscellaneous\Init.xml
 Modules\Auras\Init.xml
 Modules\UnitFrames\Core\Init.xml

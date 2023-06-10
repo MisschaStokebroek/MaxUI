@@ -133,7 +133,7 @@ C["General"]["FontFlag"] = {
 }
 
 -- panels and frames
-C["General"]["GeneralPanelAlpha"] = 1
+C["General"]["GeneralPanelAlpha"] = 0.8
 C["General"]["thickness"] = 1
 C["General"]["ABLineThickness"] = 1
 C["General"]["HeaderHeight"] = 22

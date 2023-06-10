@@ -63,7 +63,8 @@ function Bags:CreateContainer(storagetype, ...)
 		local ToggleBagsButton = Container.ToggleBags
 		local BagsContainer = Container.BagsContainer
 		local SearchBox = Container.SearchBox
-		
+		local Keys = Container.Keys
+	
 		Container:ClearAllPoints()
 		Container:SetPoint("RIGHT", UIParent, "RIGHT", -6, 0)
 		Container:CreateMaxUIHeader("Bags")
@@ -91,6 +92,7 @@ function Bags:CreateContainer(storagetype, ...)
 		SortButton:SetPoint("RIGHT", ToggleBagsButton, "LEFT", -3, 0)
 
 		if T.BCC or T.WotLK then
+			Keys:SkinMaxUIButton()
 			Keys:SetSize(22, 22)
 			Keys:ClearAllPoints()
 			Keys:SetPoint("RIGHT", SortButton, "LEFT", -3, 0)
@@ -124,9 +126,12 @@ function Bags:CreateContainer(storagetype, ...)
 				local SlotNormalTexture = _G[Button:GetName().."NormalTexture"]
 
 				Button:SkinMaxUIFrame()
-				Button.CircleMask:Hide()
-				Button.AnimIcon:Hide()
-				Button.SlotHighlightTexture:Hide()
+
+				if T.Retail then
+					Button.CircleMask:Hide()
+					Button.AnimIcon:Hide()
+					Button.SlotHighlightTexture:Hide()
+				end
 				--Button.:Hide()
 				if SlotIconTexture then
 					SlotIconTexture:SetInside(Button)
@@ -185,8 +190,10 @@ function Bags:CreateContainer(storagetype, ...)
 		local SwitchReagentButton = Container.ReagentButton
 		
 		BankFrameTitleText:Kill()
-		BankFramePortrait:Kill()
-
+		if T.Retail then 
+			BankFramePortrait:Kill()
+		end
+		
 		Container:ClearAllPoints()
 		Container:SetPoint("LEFT", UIParent, "LEFT", 6, 0)
 		
