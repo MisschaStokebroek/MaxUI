@@ -27,7 +27,7 @@ local function SkinProjectAzilrokaToMaxUIStyle()
 		SquareMinimapButtonBar:ClearAllPoints()
 		if C["AddOns"]["MBBMaxUIFrameStyle"] then
 			SquareMinimapButtonBar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -29)
-			SquareMinimapButtonBar:CreateMaxUIHeader("Minimap buttons", true)
+			SquareMinimapButtonBar:CreateMaxUIHeader(" ", true)
 		else	
 			SquareMinimapButtonBar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -6)
 		end

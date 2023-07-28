@@ -45,7 +45,7 @@ C["AddOns"] = {
 	["CliqueSkin"] = false,
 	
 	["ProjectAzilrokaSkin"] = true,
-	["MBBMaxUIFrameStyle"] = true,
+	["MBBMaxUIFrameStyle"] = false,
 	
 	--["PawnSkin"] = false,
 

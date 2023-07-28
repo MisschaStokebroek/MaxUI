@@ -1,6 +1,6 @@
 ## Interface: 11403
 ## Author: Maximvs
-## Version: 6.703
+## Version: 6.704
 ## Title:MaxUI
 ## Notes: MaxUI, edit for Tukui 20 and World of Warcraft - Classic Era/Season of Mastery. See tukui.org for more information.
 ## RequiredDeps: Tukui
