@@ -13,6 +13,7 @@ local Inventory = T["Inventory"]
 local GroupLoot = Inventory.GroupLoot
 local baseSkinGroupLoot = GroupLoot.SkinGroupLoot
 local baseUpdateGroupLootContainer = GroupLoot.UpdateGroupLootContainer
+local NUM_GROUP_LOOT_FRAMES = NUM_GROUP_LOOT_FRAMES or 4
 
 local function SkinLootRollsFrame()
 	--LootHistoryFrame:SkinMaxUIBasicFrame(true, nil)

@@ -17,13 +17,19 @@ local ProjectAzilrokaSkin = CreateFrame("Frame")
 local function SkinProjectAzilrokaToMaxUIStyle()
 	local Minimap = T.Maps.Minimap
 	if not SquareMinimapButtonBar.IsMaxUISkinned then
-	
-		SquareMinimapButtonBar:ClearAllPoints()
-		SquareMinimapButtonBar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -6)
 
-		local PASquareMinimapButtonBarChildren = {SquareMinimapButtonBar:GetChildren()}
-		for _, child in ipairs(PASquareMinimapButtonBarChildren) do
-			child:SkinMaxUIFrame(true)
+		SquareMinimapButtonBar.Backdrop:Kill()
+
+		local SquareMinimapButtonBarBackdrop = CreateFrame("Frame", SquareMinimapButtonBarBackdrop, SquareMinimapButtonBar)
+		SquareMinimapButtonBarBackdrop:SetAllPoints(SquareMinimapButtonBar)
+		SquareMinimapButtonBarBackdrop:SkinMaxUIFrame(true)
+
+		SquareMinimapButtonBar:ClearAllPoints()
+		if C["AddOns"]["MBBMaxUIFrameStyle"] then
+			SquareMinimapButtonBar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -29)
+			SquareMinimapButtonBar:CreateMaxUIHeader("Minimap buttons", true)
+		else	
+			SquareMinimapButtonBar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -6)
 		end
 		SquareMinimapButtonBar.IsMaxUISkinned = true
 	end	

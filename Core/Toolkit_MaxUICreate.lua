@@ -449,9 +449,9 @@ API.CreateMaxUIHeader = function(frame, text, closebutton)
 	frame:SetMovable(true)
 	frame:SetUserPlaced(true)
 
-	--if closebutton then
-	--frame:CreateMaxUICloseButton(frame.MaxUIHeader)
-	--end
+	if closebutton then
+		frame:CreateMaxUICloseButton(MaxUIHeader)
+	end
 			
 	frame.MaxUIHeader = MaxUIHeader
 end

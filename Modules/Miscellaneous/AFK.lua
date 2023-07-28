@@ -13,14 +13,12 @@
 local T, C, L = Tukui:unpack()
 local AFK = T.Miscellaneous.AFK
 local baseEnable = AFK.Enable
+
 local ClassTextColor = T.RGBToHex(unpack(T.Colors.class[select(2, UnitClass("player"))]))
 local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
+
 local PlayerModelFrame = CreateFrame("Frame", PlayerModelFrame, AFK.BottomPanel)
 --local myPlayerModel = CreateFrame("PlayerModel", nil, AFK.BottomPanel)
-local WelcomeMessage = "Thank you for using MaxUI.\n\n Check the HELP section for slash commands.\n\nFor more information, support or\nfeedback, go to www.tukui.org,\njoin the Tukui Discord or\n\n|cff2299ffMaxUI Discord|r: https://discord.gg/vzUFmUm \n\n|cffFFFF99colored items|r = MaxUI Theme or Unitframes only. "
-
-T.MaxUIversion = GetAddOnMetadata("MaxUI", "Version")
-
 local CharacterSpec = ""
 
 -- WoW Globals
@@ -32,6 +30,24 @@ local GetNumSpecializations = GetNumSpecializations
 local GetSpecializationInfo = GetSpecializationInfo
 local GetLootSpecialization = GetLootSpecialization
 local SetLootSpecialization = SetLootSpecialization
+
+T.version = GetAddOnMetadata("Tukui", "Version")
+T.MaxUIversion = GetAddOnMetadata("MaxUI", "Version")
+local MaxUIVersion = "|cffFFFF99version:|r "..T.MaxUIversion..""
+local TukuiVersion = "|cffFFFF99version:|r "..T.version..""
+local GameVersion
+if T.Retail then
+	GameVersion	= "|cffFFFF99Retail|r" 
+elseif T.BCC then
+	GameVersion	= "|cffFFFF99The Burning Crusade Classic|r" 
+elseif T.WotLK then	
+	GameVersion	= "|cffFFFF99Wrath of the Lich King Classic|r" 
+elseif T.Classic then	
+	GameVersion	= "|cffFFFF99Classic Era / Season of Mastery|r" 
+else
+	GameVersion	= "|cffFFFF99World of Warcraft|r" 
+end
+local version, build, date, tocversion = GetBuildInfo()
 
 ------------------------------------------------------------------------------------------
 -- AFK SCREEN ADJUSTMENTS
@@ -115,53 +131,33 @@ function AFK:AFKPlayerInfoFrame()
 	PlayerModelFrame.Logoclass:SetHeight(256)
 	PlayerModelFrame.Logoclass:SetPoint("TOPLEFT", PlayerModelFrame, "TOPLEFT", -12, -122)
 
-	if select(2, UnitClass('player')) == "DRUID" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DRUID.tga]])
-	end
-	
-	if select(2, UnitClass('player')) == "MONK" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MONK.tga]])
-	end
-	
-	if select(2, UnitClass('player')) == "ROGUE" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\ROGUE.tga]])
-	end
-	
-	if select(2, UnitClass('player')) == "MAGE" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MAGE.tga]])
-	end
-	
-	if select(2, UnitClass('player')) == "PRIEST" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PRIEST.tga]])
-	end
-	
-	if select(2, UnitClass('player')) == "WARLOCK" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARLOCK.tga]])
-	end
-	
-	if select(2, UnitClass('player')) == "SHAMAN" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\SHAMAN.tga]])
-	end
-	
-	if select(2, UnitClass('player')) == "HUNTER" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\HUNTER.tga]])
-	end
-	
-	if select(2, UnitClass('player')) == "DEATHKNIGHT" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEATHKNIGHT.tga]])
-	end
-	
-	if select(2, UnitClass('player')) == "WARRIOR" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARRIOR.tga]])
-	end
-
-	if select(2, UnitClass('player')) == "PALADIN" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PALADIN.tga]])
-	end
-
-	if select(2, UnitClass('player')) == "DEMONHUNTER" then
-		PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEMONHUNTER.tga]])
-	end
+		if select(2, UnitClass('player')) == "DRUID" then
+			PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DRUID.tga]])
+		elseif select(2, UnitClass('player')) == "EVOKER" then
+			PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\EVOKER.tga]])
+		elseif select(2, UnitClass('player')) == "MONK" then
+			PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MONK.tga]])
+		elseif select(2, UnitClass('player')) == "ROGUE" then
+			PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\ROGUE.tga]])
+		elseif select(2, UnitClass('player')) == "MAGE" then
+			PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MAGE.tga]])
+		elseif select(2, UnitClass('player')) == "PRIEST" then
+			PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PRIEST.tga]])
+		elseif select(2, UnitClass('player')) == "WARLOCK" then
+			PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARLOCK.tga]])
+		elseif select(2, UnitClass('player')) == "SHAMAN" then
+			PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\SHAMAN.tga]])
+		elseif select(2, UnitClass('player')) == "HUNTER" then
+			PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\HUNTER.tga]])
+		elseif select(2, UnitClass('player')) == "DEATHKNIGHT" then
+			PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEATHKNIGHT.tga]])
+		elseif select(2, UnitClass('player')) == "WARRIOR" then
+			PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARRIOR.tga]])
+		elseif select(2, UnitClass('player')) == "PALADIN" then
+			PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PALADIN.tga]])
+		elseif select(2, UnitClass('player')) == "DEMONHUNTER" then
+			PlayerModelFrame.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEMONHUNTER.tga]])
+		end
 
 	local CharacterDescriptionSummary = PlayerModelFrame:CreateFontString(nil, "OVERLAY")
 	CharacterDescriptionSummary:SetPoint("TOPLEFT", PlayerModelFrame.Logoclass, "TOPRIGHT", 0, 0)
@@ -208,6 +204,75 @@ function AFK:AFKPlayerInfoFrame()
 		CharacterDescriptionGuild2:SetPoint("LEFT", PlayerModelFrame.Logoclass, "RIGHT", 0, -65)
 		CharacterDescriptionGuild2:SetFontTemplate(Font, 14, 1.25, 1.25)
 	end
+
+	-- game art
+	local AFKGameVersionArt = CreateFrame("Frame", "AFKGameVersionArt", PlayerModelFrame)
+	AFKGameVersionArt:SetPoint("BOTTOM", PlayerModelFrame, "BOTTOM", 0, 48)
+	AFKGameVersionArt:SetSize(PlayerModelFrame:GetWidth()-48, PlayerModelFrame:GetWidth()-48)
+	AFKGameVersionArt:CreateBackdrop("Transparent")
+	AFKGameVersionArt:EnableMouse(false)
+	AFKGameVersionArt:CreateShadow()
+
+	AFKGameVersionArt.ArtBG = AFKGameVersionArt:CreateTexture(nil, "ARTWORK")
+	AFKGameVersionArt.ArtBG:SetInside(AFKGameVersionArt)
+	AFKGameVersionArt.ArtBG:SetAlpha(0.7)
+
+	AFKGameVersionArt.logo = AFKGameVersionArt:CreateTexture(nil, "OVERLAY")
+	AFKGameVersionArt.logo:SetPoint("TOP", AFKGameVersionArt, "TOP")
+	AFKGameVersionArt.logo:SetSize(200, 100)
+	AFKGameVersionArt.logo:SetAlpha(1)
+
+		AFKGameVersionArt.WoWVersiontext = AFKGameVersionArt:CreateFontString(nil, "OVERLAY")
+		AFKGameVersionArt.WoWVersiontext:SetFont(C.Medias.Font, 12)
+		AFKGameVersionArt.WoWVersiontext:SetPoint("TOP", AFKGameVersionArt.logo, "BOTTOM", 0, 4)
+		AFKGameVersionArt.WoWVersiontext:SetTextColor(1, 1, 1)
+		AFKGameVersionArt.WoWVersiontext:SetShadowColor(0, 0, 0)
+		AFKGameVersionArt.WoWVersiontext:SetShadowOffset(1, -1)
+		AFKGameVersionArt.WoWVersiontext:SetText(version)	
+		
+		if tocversion >= 10000 and tocversion <= 19999 then
+			AFKGameVersionArt.logo:SetTexture(T.GetTexture("yLogoClassic"))
+		elseif tocversion >= 20000 and tocversion <= 29999 then
+			AFKGameVersionArt.logo:SetTexture(T.GetTexture("yLogoBurningCrusade"))
+		elseif tocversion >= 30000 and tocversion <= 39999 then
+			AFKGameVersionArt.logo:SetTexture(T.GetTexture("yLogoWotLK"))
+		elseif tocversion >= 40000 and tocversion <= 49999 then
+			AFKGameVersionArt.logo:SetTexture(T.GetTexture("yLogoCataclysm"))
+		elseif tocversion >= 50000 and tocversion <= 59999 then
+			AFKGameVersionArt.logo:SetTexture(T.GetTexture("yLogoMistsOfPandaria"))
+		elseif tocversion >= 60000 and tocversion <= 69999 then
+			AFKGameVersionArt.logo:SetTexture(T.GetTexture("yLogoWarlordsOfDraenor"))
+		elseif tocversion >= 70000 and tocversion <= 79999 then
+			AFKGameVersionArt.logo:SetTexture(T.GetTexture("yLogoLegion"))
+		elseif tocversion >= 80000 and tocversion <= 89999 then
+			AFKGameVersionArt.logo:SetTexture(T.GetTexture("yLogoBattleForAzeroth"))
+		elseif tocversion >= 90000 and tocversion <= 99999 then
+			AFKGameVersionArt.logo:SetTexture(T.GetTexture("yLogoShadowlands"))
+		elseif tocversion >= 100000 and tocversion <= 109999 then
+			AFKGameVersionArt.logo:SetTexture(T.GetTexture("yLogoDragonflight"))
+		end
+
+		if tocversion >= 10000 and tocversion <= 19999 then
+			AFKGameVersionArt.ArtBG:SetTexture(T.GetTexture("zClassicBG"))
+		elseif tocversion >= 20000 and tocversion <= 29999 then
+			AFKGameVersionArt.ArtBG:SetTexture(T.GetTexture("zBurningCrusadeBG"))
+		elseif tocversion >= 30000 and tocversion <= 39999 then
+			AFKGameVersionArt.ArtBG:SetTexture(T.GetTexture("zWotLKBG"))
+		elseif tocversion >= 40000 and tocversion <= 49999 then
+			AFKGameVersionArt.ArtBG:SetTexture(T.GetTexture("zCataclysmBG"))
+		elseif tocversion >= 50000 and tocversion <= 59999 then
+			AFKGameVersionArt.ArtBG:SetTexture(T.GetTexture("zMistsOfPandariaBG"))
+		elseif tocversion >= 60000 and tocversion <= 69999 then
+			AFKGameVersionArt.ArtBG:SetTexture(T.GetTexture("zWarlordsOfDraenorBG"))
+		elseif tocversion >= 70000 and tocversion <= 79999 then
+			AFKGameVersionArt.ArtBG:SetTexture(T.GetTexture("zLegionBG"))
+		elseif tocversion >= 80000 and tocversion <= 89999 then
+			AFKGameVersionArt.ArtBG:SetTexture(T.GetTexture("zBattleForAzerothBG"))
+		elseif tocversion >= 90000 and tocversion <= 99999 then
+			AFKGameVersionArt.ArtBG:SetTexture(T.GetTexture("zShadowlandsBG"))
+		elseif tocversion >= 100000 and tocversion <= 109999 then
+			AFKGameVersionArt.ArtBG:SetTexture(T.GetTexture("zDragonFlightBG"))
+		end
 end
 
 function AFK:AFKRightInfoPanel()
@@ -270,15 +335,7 @@ function AFK:AFKRightInfoPanel()
 	LineBottom:SetStatusBarColor(unpack(ClassColor))
 	LineBottom.Backdrop:CreateShadow()
 
-		RightAFKFrame.MaxUIWelcometext = RightAFKFrame:CreateFontString(nil, "OVERLAY")
-		RightAFKFrame.MaxUIWelcometext:SetFontTemplate(C.Medias.Font, 14, 1.25, 1.25)
-		RightAFKFrame.MaxUIWelcometext:SetPoint("TOP", LineBottom, "BOTTOM", 0, -48)
-		RightAFKFrame.MaxUIWelcometext:SetTextColor(1, 1, 1)
-		RightAFKFrame.MaxUIWelcometext:SetShadowColor(0, 0, 0)
-		RightAFKFrame.MaxUIWelcometext:SetShadowOffset(1, -1)
-		RightAFKFrame.MaxUIWelcometext:SetText(WelcomeMessage)	
-
-
+	-- tukui
 	Name:ClearAllPoints()
 	Name:SetPoint("BOTTOM", RightAFKFrame, "BOTTOM", 0, 96)
 	Name:SetSize(128,128)

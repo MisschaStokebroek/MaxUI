@@ -48,6 +48,20 @@ local MaxUIChangelog = function(self)
 	Window:CreateTextLine("All", "|cffFFFF99with a screenshot and a textmessage of the lua error.|r")
 	Window:CreateSpacerNoPos("All")
 	
+	Window:CreateSection("All", "MaxUI 6.703")
+	Window:CreateTextLine("All", "Matching Tukui 20.38")
+	Window:CreateTextLine("All", "Minimap Button Bar skin (Project Azilroka)")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "MaxUI 6.702")
+	Window:CreateTextLine("All", "AFK Screen cleanup")
+	Window:CreateTextLine("All", "some code cleanup")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "MaxUI 6.701")
+	Window:CreateTextLine("All", "Minor Fixes for WotLK and Classic to load correctly")
+	Window:CreateSpacerNoPos("All")
+
 	Window:CreateSection("All", "MaxUI 6.700")
 	Window:CreateTextLine("All", "TUKUI 20.36/37")
 	Window:CreateTextLine("All", "- WOTLK: updated, matched or fixed bugs for Tukui 20.37")

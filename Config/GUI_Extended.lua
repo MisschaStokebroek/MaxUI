@@ -760,6 +760,12 @@ local AddOns = function(self)
 		Window:CreateSpacerNoPos("All")
 	end
 
+	if IsAddOnLoaded('ProjectAzilroka') and C.Skins.MaxUISkinsAddons and C.AddOns.ProjectAzilrokaSkin then  
+		Window:CreateSection("All", "Project Azilroka")
+		Window:CreateSwitch("All", "AddOns", "MBBMaxUIFrameStyle", "Make the Minimap Button Bar a MaxUI movable frame")
+		Window:CreateSpacerNoPos("All")
+	end
+
 	if IsAddOnLoaded('ColorPickerPlus') and C.Skins.MaxUISkinsAddons and C.AddOns.ColorPickerPlusSkin then 
 		Window:CreateSection("All", "ColorPickerPlus")
 		Window:CreateSpacerNoPos("All")

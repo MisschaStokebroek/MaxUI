@@ -430,64 +430,40 @@ function Chat:ChatBackgroundOptions()
 		if select(2, UnitClass('player')) == "DRUID" then
 			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DRUID.tga]])
 			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DRUID.tga]])
-		end
-		
-		if select(2, UnitClass('player')) == "EVOKER" then
+		elseif select(2, UnitClass('player')) == "EVOKER" then
 			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\EVOKER.tga]])
 			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\EVOKER.tga]])
-		end
-
-		if select(2, UnitClass('player')) == "MONK" then
+		elseif select(2, UnitClass('player')) == "MONK" then
 			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MONK.tga]])
 			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MONK.tga]])
-		end
-		
-		if select(2, UnitClass('player')) == "ROGUE" then
+		elseif select(2, UnitClass('player')) == "ROGUE" then
 			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\ROGUE.tga]])
 			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\ROGUE.tga]])
-		end
-		
-		if select(2, UnitClass('player')) == "MAGE" then
+		elseif select(2, UnitClass('player')) == "MAGE" then
 			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MAGE.tga]])
 			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\MAGE.tga]])
-		end
-		
-		if select(2, UnitClass('player')) == "PRIEST" then
+		elseif select(2, UnitClass('player')) == "PRIEST" then
 			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PRIEST.tga]])
 			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PRIEST.tga]])
-		end
-		
-		if select(2, UnitClass('player')) == "WARLOCK" then
+		elseif select(2, UnitClass('player')) == "WARLOCK" then
 			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARLOCK.tga]])
 			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARLOCK.tga]])
-		end
-		
-		if select(2, UnitClass('player')) == "SHAMAN" then
+		elseif select(2, UnitClass('player')) == "SHAMAN" then
 			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\SHAMAN.tga]])
 			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\SHAMAN.tga]])
-		end
-		
-		if select(2, UnitClass('player')) == "HUNTER" then
+		elseif select(2, UnitClass('player')) == "HUNTER" then
 			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\HUNTER.tga]])
 			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\HUNTER.tga]])
-		end
-		
-		if select(2, UnitClass('player')) == "DEATHKNIGHT" then
+		elseif select(2, UnitClass('player')) == "DEATHKNIGHT" then
 			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEATHKNIGHT.tga]])
 			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEATHKNIGHT.tga]])
-		end
-		
-		if select(2, UnitClass('player')) == "WARRIOR" then
+		elseif select(2, UnitClass('player')) == "WARRIOR" then
 			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARRIOR.tga]])
 			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\WARRIOR.tga]])
-		end
-	
-		if select(2, UnitClass('player')) == "PALADIN" then
+		elseif select(2, UnitClass('player')) == "PALADIN" then
 			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PALADIN.tga]])
 			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\PALADIN.tga]])
-		end
-
-		if select(2, UnitClass('player')) == "DEMONHUNTER" then
+		elseif select(2, UnitClass('player')) == "DEMONHUNTER" then
 			LeftChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEMONHUNTER.tga]])
 			RightChatBG.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEMONHUNTER.tga]])
 		end

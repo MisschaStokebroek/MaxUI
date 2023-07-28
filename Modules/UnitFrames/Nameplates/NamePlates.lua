@@ -269,6 +269,5 @@ function TukuiUnitFrames:Nameplates()
 			Badge:SetPoint('CENTER', PvPIndicator, 'CENTER', 0, 0)
 			PvPIndicator.Badge = Badge
 		end
-	end	
-
+	end
 end

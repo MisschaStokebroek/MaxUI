@@ -1,6 +1,6 @@
-## Interface: 100100
+## Interface: 100105
 ## Author: Maximvs
-## Version: 6.701
+## Version: 6.703
 ## Title:MaxUI
 ## Notes: MaxUI, edit for Tukui 20 and World of Warcraft Retail. See tukui.org for more information.
 ## RequiredDeps: Tukui

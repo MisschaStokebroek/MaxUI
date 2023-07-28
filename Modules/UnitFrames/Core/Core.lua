@@ -163,6 +163,18 @@ function UnitFrames:EmpoweredCastBarUpdate(event)
 end
 
 ------------------------------------------------------------------------------------------
+-- Death Icon
+------------------------------------------------------------------------------------------
+local function CreateDeathIcon(self)
+	self.Deathicon = self:CreateTexture(nil, "ARTWORK")
+	self.Deathicon:SetPoint("CENTER", self, "CENTER", 0, 0)
+	self.Deathicon:SetWidth(28)
+	self.Deathicon:SetHeight(28)
+	self.Deathicon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Custom\DeathIcon.tga]])
+	self.Deathicon:SetAlpha(0)
+end
+
+------------------------------------------------------------------------------------------
 -- DARK THEME
 ------------------------------------------------------------------------------------------
 function UnitFrames:PreUpdateHealth(unit)
@@ -172,7 +184,9 @@ function UnitFrames:PreUpdateHealth(unit)
 	local Gradient = C["UnitFrames"]["Colorstyle"]["Value"] == "Gradient"
 	local Class = C["UnitFrames"]["Colorstyle"]["Value"] == "Class"
 	local Custom = C["UnitFrames"]["Colorstyle"]["Value"] == "Custom"
-	
+
+	--CreateDeathIcon(self, unit)
+
 	if (Gradient == true) then 
 		self.colorClass = false
 		self.colorReaction = false
@@ -207,7 +221,13 @@ function UnitFrames:PreUpdateHealth(unit)
 		self.colorSmooth = false
 		self:SetStatusBarColor(unpack(C["UnitFrames"]["StatusBarColor"]))
 		self.Background:SetVertexColor(unpack(C["UnitFrames"]["ColorTexture"]))
-	end	
+	end
+
+	--if (UnitIsDead(unit) or UnitIsGhost(unit)) then
+	--	self.Deathicon:SetAlpha(1)
+	--else	
+	--	self.Deathicon:SetAlpha(0)
+	--end
 end
 
 ------------------------------------------------------------------------------------------
@@ -233,7 +253,13 @@ function UnitFrames:PostUpdateHealth(unit, min, max)
 			self:SetStatusBarColor(unpack(C["UnitFrames"]["StatusBarColor"]))
 			self.Background:SetVertexColor(unpack(C["UnitFrames"]["ColorTexture"]))
 		end
-	end	
+	end
+
+	--if (UnitIsDead(unit) or UnitIsGhost(unit)) then
+	--	self.Deathicon:SetAlpha(1)
+	--else	
+	--	self.Deathicon:SetAlpha(0)
+	--end
 end
 
 ------------------------------------------------------------------------------------------

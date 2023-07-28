@@ -86,6 +86,15 @@ end
 ------------------------------------------------------------------------------------------
 -- MAXUI DT'S
 ------------------------------------------------------------------------------------------
+function DataTexts:BottomDataTextToggle()
+	local BottomLine = BottomLine
+
+	BottomLine:CreateMaxUIButton(BottomLineToggle, BottomLine, 200, 22, "", "" )
+	BottomLineToggle:SetPoint("BOTTOM", BottomLine, "TOP", 0, 3)
+end
+
+
+
 function DataTexts:CreateAnchors()
 	local BottomLine = BottomLine
 	local TopLine = TopLine
@@ -107,6 +116,30 @@ function DataTexts:CreateAnchors()
 		local TotalAmount = AmountBottom + AmountTop + AmountDataCenter
 		self.NumAnchors = AmountBottom + AmountTop + AmountDataCenter
 		
+--[[	BottomLine:slideIn(0, -26, 1)
+		BottomLine:slideOut(0, 26, 1)
+
+		local BottomLineToggle = CreateFrame("Frame", "BottomLineToggle", BottomLine)
+		BottomLineToggle:SkinMaxUIFrame()
+		BottomLineToggle:SetSize(200, 20)
+		BottomLineToggle:SetPoint("BOTTOM", BottomLine, "TOP", 0, 3)
+		BottomLineToggle:SetAlpha(0)
+		
+		BottomLineToggle:SkinMaxUIFrame()
+		
+		BottomLineToggle:HookScript("OnEnter", function(self) 
+			BottomLineToggle:SetAlpha(1)
+		end)
+
+		BottomLineToggle:HookScript("OnLeave", function(self)
+			BottomLineToggle:SetAlpha(0)
+		end)	
+
+		BottomLineToggle:SetScript("OnMouseDown", function(self)
+			BottomLine:slideToggle()
+		end)
+--]]
+
 		for i = 1, self.NumAnchors do
 			local Frame = CreateFrame("Button", nil, UIParent)
 			if C["General"]["thickness"] >= 20 then
