@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-08-2022
+-- latest update: 08-08-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up GAME MENU DATATEXT, BAR AND BUTTON.
@@ -102,12 +102,14 @@ local function CreateGameMenuButtons()
 				GuildFrame_LoadUI()
 			end
 			ToggleGuildFrame()
-		elseif T.Retail then
-			if (not LookingForGuildFrame) then
-				LookingForGuildFrame_LoadUI()
+
+			if T.Retail then
+				if (not LookingForGuildFrame) then
+					LookingForGuildFrame_LoadUI()
+				end
+				LookingForGuildFrame_Toggle()
 			end
-			LookingForGuildFrame_Toggle()
-		end
+		end	
 	end)
 
 	--Button 5 - Social
@@ -159,13 +161,7 @@ local function CreateGameMenuButtons()
 		GameMenuButton08.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\cLocation.tga]])
 	end
 	GameMenuButton08:SetScript("OnMouseDown", function(self)
-		--ShowUIPanel(WorldMapFrame)
-		--MaximizeUIPanel(WorldMapFrame)
-		if WorldMapFrame:IsShown() then
-			WorldMapFrame:Hide()
-		else
-			WorldMapFrame:Show()
-		end
+		ToggleFrame(WorldMapFrame)
 	end)
 
 	--Button 9 - Customer Support
@@ -181,24 +177,13 @@ local function CreateGameMenuButtons()
 	end)
 
 	--Button 10 - Compose a Tweet
-	GameMenuBG.CreateMaxUIButton("GameMenuButton10", GameMenuBG, buttonsize, buttonsize, "", "Tweet: ", "Compose a tweet (if account is linked) ", GameMenuBG.MaxUIHeader)
+	GameMenuBG.CreateMaxUIButton("GameMenuButton10", GameMenuBG, buttonsize, buttonsize, "", "", "", GameMenuBG.MaxUIHeader)
 	GameMenuButton10:SetPoint("LEFT", GameMenuButton09, "RIGHT", spacing, 0)
 	if C["General"]["ButtonStyle"]["Value"] == "Blizzard" then
-			GameMenuButton10.icon:SetTexture("Interface\\Icons\\Ability_garrison_orangebird")
+
 	else
-		GameMenuButton10.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\cTwitter.tga]])
+
 	end
-	GameMenuButton10:SetScript("OnMouseUp", function(self)
-		if not SocialPostFrame then
-			LoadAddOn("Blizzard_SocialUI")
-		end
-		local IsTwitterEnabled = C_Social.IsSocialEnabled()
-		if IsTwitterEnabled then
-			Social_SetShown(true)
-		else
-			T.Print(SOCIAL_TWITTER_TWEET_NOT_LINKED)
-		end
-	end)
 
  -- RETAIL EXTRA BUTTONS
 	if T.Retail then 

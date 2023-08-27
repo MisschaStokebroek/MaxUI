@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 29-11-2022
+-- latest update: 21-08-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up CHAT.
@@ -31,8 +31,6 @@ local function SkinChatTooltipsAndMenus()
 	ChatMenu:SkinMaxUIFrame(true)
 	LanguageMenu:SkinMaxUIFrame(true)
 	VoiceMacroMenu:SkinMaxUIFrame(true)
---DropDownList1MenuBackdrop:SetAlpha(0.8)
---DropDownList2MenuBackdrop:SetAlpha(0.8)
 end
 
 ------------------------------------------------------------------------------------------
@@ -113,7 +111,6 @@ function Chat:CreateChatTabs()
 		ChatTabSplitter:SetPoint("LEFT", tab, "RIGHT", 0, -7)
 		ChatTabSplitter:CreateBackdrop()
 		ChatTabSplitter.Backdrop:CreateShadow()
-
 
 		if C["Chat"]["LeftChatBGCombatState"]["Value"] == "Hide" then
 			RegisterStateDriver(ChatTabSplitter, "visibility", "[combat] hide; show")
@@ -232,34 +229,51 @@ end
 -- CHAT EDIT BOX SHORTCUT BUTTONS
 ------------------------------------------------------------------------------------------
 function Chat:CreateChatTools()
+	local ChatShortcutsButtonWidth = C.Chat.ChatShortcutsButtonWidth
+	local ChatShortcutsButtonHeight = C.Chat.ChatShortcutsButtonHeight
+	local ChatShortcutsButtonSpace = 3
 	local LeftChatBG = T.Chat.Panels.LeftChat
 
 	local ChatButtons = CreateFrame("Frame", "ChatButtons", LeftChatBG)
-	ChatButtons:SetWidth((7*14) + (7*4))
-	ChatButtons:SetHeight(24)
+	ChatButtons:SetWidth((7*ChatShortcutsButtonWidth) + (8*ChatShortcutsButtonSpace))
+	ChatButtons:SetHeight(ChatShortcutsButtonHeight + (2*ChatShortcutsButtonSpace))
 	ChatButtons:SetFrameStrata("MEDIUM")
+	--ChatButtons:SkinMaxUIFrame()
+	ChatButtons:CreateBackdrop("Transparent")
+	ChatButtons.Backdrop:CreateShadow()
+
 	if (C.General.Themes.Value == "MaxUI") then 
-		if C["Tools"]["ChatShortcutsPosition"]["Value"] == "Topright" then
-			ChatButtons:SetPoint("BOTTOMRIGHT", LeftChatBG, "TOPRIGHT", -4, 1)
-		
-		elseif C["Tools"]["ChatShortcutsPosition"]["Value"] == "Topleft" then
-			ChatButtons:SetPoint("BOTTOMLEFT", LeftChatBG, "TOPLEFT", 4, 1)
+		if C["Chat"]["ChatShortcutsPosition"]["Value"] == "Topright" then
+			ChatButtons:SetPoint("BOTTOMRIGHT", LeftChatBG, "TOPRIGHT", 0, 6)
+		elseif C["Chat"]["ChatShortcutsPosition"]["Value"] == "Topleft" then
+			ChatButtons:SetPoint("BOTTOMLEFT", LeftChatBG, "TOPLEFT", 0, 6)
+		elseif C["Chat"]["ChatShortcutsPosition"]["Value"] == "Unanchored" then
+			ChatButtons:SetPoint("BOTTOM", LeftChatBG, "TOP", 0, 6)
+			Movers:RegisterFrame(ChatButtons, "Chat Shortcuts")
 		end	
 	else
-		if C["Tools"]["ChatShortcutsPosition"]["Value"] == "Topright" then
+		if C["Chat"]["ChatShortcutsPosition"]["Value"] == "Topright" then
 			ChatButtons:SetPoint("BOTTOMRIGHT", LeftChatBG, "TOPRIGHT", -4, 12)
-		
-		elseif C["Tools"]["ChatShortcutsPosition"]["Value"] == "Topleft" then
+		elseif C["Chat"]["ChatShortcutsPosition"]["Value"] == "Topleft" then
 			ChatButtons:SetPoint("BOTTOMLEFT", LeftChatBG, "TOPLEFT", 4, 12)
+		elseif C["Chat"]["ChatShortcutsPosition"]["Value"] == "Unanchored" then
+			ChatButtons:SetPoint("BOTTOM", LeftChatBG, "TOP", 0, 12)
+			Movers:RegisterFrame(ChatButtons, "Chat Shortcuts")
 		end	
 	end
+
 	ChatButtons = self.ChatButtons
 end
 
 function Chat:CreateChatToolsButtons()
+	local canEditOfficerNote = C_GuildInfo.CanEditOfficerNote()
+	local ChatShortcutsButtonWidth = C.Chat.ChatShortcutsButtonWidth
+	local ChatShortcutsButtonHeight = C.Chat.ChatShortcutsButtonHeight
+	local ChatShortcutsButtonSpace = C.Chat.ChatShortcutsButtonSpace or 3
+
 	-- Say Button
-	ChatButtons.CreateMaxUIButton("SayButton", ChatButtons, 14, 14, "", "Open chat:", "Say (leftclick)\n|cffFF3F40Yell|r (rightclick) ",  ChatButtons)
-	SayButton:SetPoint("RIGHT", ChatButtons, "RIGHT", -4, 0)
+	ChatButtons.CreateMaxUIButton("SayButton", ChatButtons, ChatShortcutsButtonWidth, ChatShortcutsButtonHeight, "", "Open chat:", "Say (leftclick)\n|cffFF3F40Yell|r (rightclick) ",  ChatButtons)
+	SayButton:SetPoint("RIGHT", ChatButtons, "RIGHT", -ChatShortcutsButtonSpace, 0)
 	SayButton.Backdrop:SetBackdropColor(1,1,1)
 	
 	local SayButtonOnMouseUp = function(self)
@@ -276,8 +290,8 @@ function Chat:CreateChatToolsButtons()
 	end)
 	
 	-- Guild Button
-	ChatButtons.CreateMaxUIButton("GuildButton", ChatButtons, 14, 14, "", "Open chat:", "|cff3CE13FGuild|r (leftclick)\n|cff40BC40Officer|r (rightclick) ", ChatButtons)
-	GuildButton:SetPoint("RIGHT", SayButton, "LEFT", -4, 0)
+	ChatButtons.CreateMaxUIButton("GuildButton", ChatButtons, ChatShortcutsButtonWidth, ChatShortcutsButtonHeight, "", "Open chat:", "|cff3CE13FGuild|r (leftclick)\n|cff40BC40Officer|r (rightclick) ", ChatButtons)
+	GuildButton:SetPoint("RIGHT", SayButton, "LEFT", -ChatShortcutsButtonSpace, 0)
 	GuildButton.Backdrop:SetBackdropColor(0.25, 1, 0.25)
 	
 	local GuildButtonOnMouseUp = function(self)
@@ -286,16 +300,22 @@ function Chat:CreateChatToolsButtons()
 	GuildButton:SetScript("OnMouseUp", GuildButtonOnMouseUp)
 	
 	GuildButton:SetScript("OnMouseDown", function(self, btn)
-		if btn == "RightButton" and CanEditOfficerNote() then
-			ChatFrame_OpenChat("/o ", chatFrame)
-		else
+		if btn == "RightButton" then
+			if canEditOfficerNote then
+				ChatFrame_OpenChat("/o ", chatFrame)
+			else
+				T.Print("No officer access available ")
+			end
+		end	
+
+		if btn == "LeftButton" then
 			ChatFrame_OpenChat("/g ", chatFrame)
 		end
 	end)
 
 	-- Party Button
-	ChatButtons.CreateMaxUIButton("PartyButton", ChatButtons, 14, 14, "", "Open chat:", "|cff77C8FFParty|r (any) ", ChatButtons)
-	PartyButton:SetPoint("RIGHT", GuildButton, "LEFT", -4, 0)
+	ChatButtons.CreateMaxUIButton("PartyButton", ChatButtons, ChatShortcutsButtonWidth, ChatShortcutsButtonHeight, "", "Open chat:", "|cff77C8FFParty|r (any) ", ChatButtons)
+	PartyButton:SetPoint("RIGHT", GuildButton, "LEFT", -ChatShortcutsButtonSpace, 0)
 	PartyButton.Backdrop:SetBackdropColor(0.65, 0.65, 1)
 	
 	local PartyButtonOnMouseUp = function(self)
@@ -309,12 +329,12 @@ function Chat:CreateChatToolsButtons()
 	
 	-- Instance/Raid Button
 	if T.Retail then
-		ChatButtons.CreateMaxUIButton("InstanceButton", ChatButtons, 14, 14, "", "Open chat:", "|cffFF7D01Instance|r (any)|n|cffFF7D01Raid|r (any) ", ChatButtons)
+		ChatButtons.CreateMaxUIButton("InstanceButton", ChatButtons, ChatShortcutsButtonWidth, ChatShortcutsButtonHeight, "", "Open chat:", "|cffFF7D01Instance|r (any)|n|cffFF7D01Raid|r (any) ", ChatButtons)
 	else
-		ChatButtons.CreateMaxUIButton("InstanceButton", ChatButtons, 14, 14, "", "Open chat:", "|cffFF7D01Raid|r (any) ", ChatButtons)
+		ChatButtons.CreateMaxUIButton("InstanceButton", ChatButtons, ChatShortcutsButtonWidth, ChatShortcutsButtonHeight, "", "Open chat:", "|cffFF7D01Raid|r (any) ", ChatButtons)
 	end
 		
-	InstanceButton:SetPoint("RIGHT", PartyButton, "LEFT", -4, 0)
+	InstanceButton:SetPoint("RIGHT", PartyButton, "LEFT", -ChatShortcutsButtonSpace, 0)
 	InstanceButton.Backdrop:SetBackdropColor(1, 0.5, 0)
 	
 	local InstanceButtonOnMouseUp = function(self)
@@ -339,8 +359,8 @@ function Chat:CreateChatToolsButtons()
 	end)
 	
 	-- Whisper Reply Button
-	ChatButtons.CreateMaxUIButton("WhisperButton", ChatButtons, 14, 14, "", "Open chat:", "|cffFF7EFFWhisper Target|r (leftclick)\n|cffFF7EFFReply Whisper|r (rightclick) ", ChatButtons)
-	WhisperButton:SetPoint("RIGHT", InstanceButton, "LEFT", -4, 0)
+	ChatButtons.CreateMaxUIButton("WhisperButton", ChatButtons, ChatShortcutsButtonWidth, ChatShortcutsButtonHeight, "", "Open chat:", "|cffFF7EFFWhisper Target|r (leftclick)\n|cffFF7EFFReply Whisper|r (rightclick) ", ChatButtons)
+	WhisperButton:SetPoint("RIGHT", InstanceButton, "LEFT", -ChatShortcutsButtonSpace, 0)
 	WhisperButton.Backdrop:SetBackdropColor(1, 0.5, 1)
 	
 	local WhisperButtonOnMouseUp = function(self)
@@ -366,15 +386,17 @@ function Chat:CreateChatToolsButtons()
 	end)
 	
 	--language and emote Button
-	ChatButtons.CreateMaxUIButton("LanguageEmoteButton", ChatButtons, 28, 14, "", "Chat:", "Language and emotes ", ChatButtons)
-	LanguageEmoteButton:SetPoint("RIGHT", WhisperButton, "LEFT", -4, 0)
+	ChatButtons.CreateMaxUIButton("LanguageEmoteButton", ChatButtons, (ChatShortcutsButtonWidth*2 + ChatShortcutsButtonSpace), ChatShortcutsButtonHeight, "", "Chat:", "Language and emotes ", ChatButtons)
+	LanguageEmoteButton:SetPoint("RIGHT", WhisperButton, "LEFT", -ChatShortcutsButtonSpace, 0)
 	
-	LanguageEmoteButton.icon = LanguageEmoteButton:CreateTexture(nil, "OVERLAY")
-	LanguageEmoteButton.icon:SetWidth(12)
-	LanguageEmoteButton.icon:SetHeight(12)
-	LanguageEmoteButton.icon:SetPoint("CENTER", LanguageEmoteButton, "CENTER", 0, 0)
-	LanguageEmoteButton.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\Chat.tga]])
-	
+	if C.Chat.ChatAndEmoteIcon then 
+		LanguageEmoteButton.icon = LanguageEmoteButton:CreateTexture(nil, "OVERLAY")
+		LanguageEmoteButton.icon:SetWidth(14)
+		LanguageEmoteButton.icon:SetHeight(14)
+		LanguageEmoteButton.icon:SetPoint("CENTER", LanguageEmoteButton, "CENTER", 0, 0)
+		LanguageEmoteButton.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\Chat.tga]])
+	end
+
 	LanguageEmoteButton:SetScript("OnMouseDown", function(self)
 		local LeftBG = T.Chat.Panels.LeftChat
 		if InCombatLockdown() then
@@ -671,11 +693,6 @@ function Chat:MaxUIStyleChat()
 		TabsBGRight:Hide()
 	end
 
-	-- Option to show/hide the Right Chat only
-	if C["Chat"]["ShowRightChat"] == false then
-		RightChatBG:Hide()
-	end
-
 	-- Position MaxUI Theme 
 	LeftChatBG:ClearAllPoints()
 	RightChatBG:ClearAllPoints()
@@ -712,7 +729,7 @@ function Chat:AddPanels()
 	baseAddPanels(self)
 
 	self:ChatBackgroundOptions()
-	if C["Tools"]["ChatShortcuts"] == true then
+	if C["Chat"]["ChatShortcuts"] == true then
 		self:CreateChatTools()
 		self:CreateChatToolsButtons()
 	end

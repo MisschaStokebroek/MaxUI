@@ -1,9 +1,14 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="SettingsMaxUI.lua"/>
-	<Script file="SettingsTukui.lua"/>
+	<Script file="Settings_Tukui.lua"/>
+	
+	<Script file="Settings_ActionBars.lua"/>
+	<Script file="Settings_Extended.lua"/>
+	<Script file="Settings_Misc.lua"/>
+	<Script file="Settings_UnitFrames.lua"/>
+
 	<Script file="GUI_ActionBars.lua"/>
-	<Script file="GUI_UnitFrames.lua"/>
-	<Script file="GUI_Misc.lua"/>
-	<Script file="GUI_Extended.lua"/>
 	<Script file="GUI_Changelog.lua"/>
+	<Script file="GUI_Extended.lua"/>
+	<Script file="GUI_Misc.lua"/>
+	<Script file="GUI_UnitFrames.lua"/>
 </Ui>

@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 10-01-2023
+-- latest update: 27-08-2023
 ------------------------------------------------------------------------------------------
 
 -- extending the configuration menu for Tukui and MaxUI, additional options and settings.
@@ -299,6 +299,8 @@ local MaxUIConfig = function(self)
 		Window:CreateSectionButton("All", "Status", "Tukui status report", GUI.TukuiStatus)	
 		Window:CreateSectionButton("All", "Frame Stack", "Run frame stack tool", GUI.FStack)	
 		Window:CreateSectionButton("All", "Trace Events", "Tukui trace events (chat)", GUI.TukuiTraceEvents)	
+		Window:CreateSpacerNoPos("All")
+		Window:CreateSwitch("All", "ConfigMenu", "OldTukuiGUIEnable", "Show old/removed Tukui GUI sections")
 	end
 end
 GUI:AddWidgets(MaxUIConfig)
@@ -306,8 +308,8 @@ GUI:AddWidgets(MaxUIConfig)
 ------------------------------------------------------------------------------------------
 -- GENERAL
 ------------------------------------------------------------------------------------------
-local General = function(self)
-	local Window = self:GetWindow("General")
+local MaxUIGeneral = function(self)
+	local Window = self:CreateWindow("MaxUIGeneral")
 	
 	Window:CreateWindowLogo("All", "|cffFFFF99General options|r")
 	Window:CreateSpacer("All", 2)
@@ -319,65 +321,76 @@ local General = function(self)
 	Window:CreateExplanationText("All", 8, "It will change the fonts for the GUI, the tooltip descriptions,")
 	Window:CreateExplanationText("All", 9, "several blizzard frames and more.")
 	Window:CreateSpacer("All", 10)
-	
-	if (Locale ~= "koKR" or Locale ~= "zhTW" or Locale ~= "zhCN") then
-		Window:CreateSpacer("All", 13)
-		Window:CreateSpacer("All", 16)
-		Window:CreateSpacer("All", 19)
-		Window:CreateSpacer("All", 25)
-		Window:CreateSlider("All", "General", "FontSize", "Set global font size", 6, 32, 1)
-		Window:CreateSpacerNoPos("All")
-	else	
-		Window:CreateSpacer("All", 13)
-		Window:CreateSpacer("All", 16)
-		Window:CreateSpacer("All", 19)
-		Window:CreateSpacer("All", 25)
-	end
+
+	Window:CreateSection("All", "Theme")
+	Window:CreateDropdown("All", "General", "Themes", "Set UI theme")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Scaling")
+	Window:CreateSlider("All", "General", "UIScale", "Set UI scale", 0.35, 1, 0.01)
+	Window:CreateSpacerNoPos("All")
 
 	Window:CreateSection("All", "Fader Animation")
-	Window:CreateSlider("All", "General", "FaderTime", "|cffFFFFFFSet fade duration for animated elements|r", 0, 2, 0.1)
+	Window:CreateSlider("All", "General", "FaderTime", "|cffFFFF99Set fade duration for animated elements|r", 0, 2, 0.1)
 	Window:CreateSpacerNoPos("All")
-	
-	Window:CreateSection("All", "MAXUI Frames")
-	Window:CreateSlider("All", "General", "GeneralPanelAlpha", "|cffFFFF99Set line/panel transparency|r", 0, 1, 0.05)
+
+	if (Locale ~= "koKR" or Locale ~= "zhTW" or Locale ~= "zhCN") then
+		Window:CreateSection("All", "Fonts")
+		Window:CreateDropdown("All", "General", "GlobalFont", "Set global font")
+		Window:CreateSpacerNoPos("All")
+	end
+
+	Window:CreateSection("All", "Border & Backdrop")
+	Window:CreateSwitch("All", "General", "ClassColorBorder", "Overwrite border color with class color")
+	Window:CreateSwitch("All", "General", "HideShadows", "Hide frame shadows")
 	Window:CreateSpacerNoPos("All")
-	
-	Window:CreateSection("All", "MAXUI Edges & Borders")
+	Window:CreateColorSelection("All", "General", "BackdropColor", "Backdrop color")
+	Window:CreateColorSelection("All", "General", "BorderColor", "Border color")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Lines and extra panels (datatexts i.e.)")
 	Window:CreateSlider("All", "General", "thickness", "|cffFFFF99Set line/panel thickness|r", 1, 40, 1)
-	Window:CreateSlider("All", "General", "ABLineThickness", "|cffFFFF99Set actionbar edge thickness|r", 1, 40, 1)
+	Window:CreateSlider("All", "General", "GeneralPanelAlpha", "|cffFFFF99Set line/panel transparency|r", 0, 1, 0.05)
+	Window:CreateDropdown("All", "General", "ClassColorLines", "|cffFFFF99Set line/panel color|r")
+	Window:CreateDropdown("All", "General", "LineTexture", "|cffFFFF99Set general line/panel texture|r", "Texture")
 	--Window:CreateSwitch("All", "General", "TopEdgeText", "Enable text on top edge/border")
 	Window:CreateSpacerNoPos("All")
 
-	Window:CreateSection("All", "MAXUI Headers")
-	Window:CreateSlider("All", "General", "HeaderHeight", "Set height for headers", 0, 100, 1)
-	Window:CreateSpacerNoPos("All")
-
-	Window:CreateSection("All", "MAXUI Buttons")
-	Window:CreateDropdown("All", "General", "ButtonStyle", "Set style for button icons")
-	Window:CreateSwitch("All", "General", "IconDesaturate", "Enable desaturation of button icons")
-	Window:CreateSlider("All", "General", "ButtonSize", "Set button size", 10, 40, 1)
-	--Window:CreateDropdown("All", "General", "ButtonFont", "Set button font", "Font")
-	Window:CreateSlider("All", "General", "ButtonFontSize", "|cffFFFFFFSet button font size|r", 6, 32, 1)
-	Window:CreateSpacerNoPos("All")
-
-	Window:CreateSection("All", "Texture")
+	Window:CreateSection("All", "Headers")
+	Window:CreateSlider("All", "General", "HeaderHeight", "|cffFFFF99Set height for headers|r", 0, 100, 1)
+	Window:CreateDropdown("All", "General", "ClassColorHeaders", "|cffFFFF99Set header color|r")
 	Window:CreateDropdown("All", "General", "HeaderTexture", "|cffFFFF99Set general header texture|r", "Texture")
-	Window:CreateDropdown("All", "General", "LineTexture", "|cffFFFF99Set general line/panel texture|r", "Texture")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Thin edges/borders (Actionbars and some elements)")
+	Window:CreateSlider("All", "General", "ABLineThickness", "|cffFFFF99Set edge/border thickness|r", 1, 40, 1)
+	Window:CreateDropdown("All", "General", "ClassColorActionBarLines", "|cffFFFF99Set edge/border color|r")
+	--Window:CreateSwitch("All", "General", "TopEdgeText", "Enable text on top edge/border")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Buttons")
+	Window:CreateSlider("All", "General", "ButtonSize", "|cffFFFF99Set button size|r", 10, 40, 1)
+	Window:CreateDropdown("All", "General", "ButtonStyle", "|cffFFFF99Set style for button icons|r")
+	Window:CreateSwitch("All", "General", "IconDesaturate", "|cffFFFF99Enable desaturation of button icons|r")
+	--Window:CreateDropdown("All", "General", "ButtonFont", "Set button font", "Font")
+	Window:CreateSlider("All", "General", "ButtonFontSize", "|cffFFFF99Set button font size|r", 6, 32, 1)
+	Window:CreateDropdown("All", "General", "ButtonColor", "|cffFFFF99Set button color|r")
 	Window:CreateDropdown("All", "General", "TextureButton", "|cffFFFF99Set general button texture|r", "Texture")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Statusbars")
 	Window:CreateDropdown("All", "General", "StatusBarTexture", "|cffFFFF99Set general statusbar texture|r", "Texture")
 	Window:CreateSpacerNoPos("All")
 
 	Window:CreateSection("All", "Colors")
-	Window:CreateDropdown("All", "General", "ClassColorHeaders", "|cffFFFF99Set header color|r")
-	Window:CreateDropdown("All", "General", "ButtonColor", "|cffFFFF99Set button color|r")
-	Window:CreateDropdown("All", "General", "ClassColorLines", "|cffFFFF99Set line/panel color|r")
-	Window:CreateDropdown("All", "General", "ClassColorActionBarLines", "|cffFFFF99Set actionbar edge color|r")
-	Window:CreateDropdown("All", "General", "ClassShadow", "|cffFFFF99Set shadow color|r")
-	Window:CreateSwitch("All", "General", "ClassShadowExcludeUF", "|cffFFFF99Exclude unitframes from shadow color|r")
-	Window:CreateColorSelection("All", "General", "CustomColor", "|cffFFFF99Set custom color|r")
+	Window:CreateColorSelection("All", "General", "CustomColor", "|cffFFFF99Set color for above options when custom is chosen|r")
+	--Window:CreateDropdown("All", "General", "ClassShadow", "|cffFFFF99Set shadow color|r")
+	--Window:CreateSwitch("All", "General", "ClassShadowExcludeUF", "|cffFFFF99Exclude unitframes from shadow color|r")
 	Window:CreateSpacerNoPos("All")
+
+	self.WindowCount = self.WindowCount -1
 end
-GUI:AddWidgets(General)
+GUI:AddWidgets(MaxUIGeneral)
 
 ------------------------------------------------------------------------------------------
 -- QUICK SETUP	
@@ -396,7 +409,7 @@ local QuickSetup = function(self)
 	Window:CreateExplanationText("All", 9, "For more customization options go to the appropiate section.")
 	Window:CreateSpacer("All", 10)
 
-	Window:CreateSection("All", "Step 0: General theme")
+	Window:CreateSection("All", "General theme")
 	Window:CreateDropdown("All", "General", "Themes", "Set UI theme")
 	Window:CreateSpacerNoPos("All")
 
@@ -404,7 +417,7 @@ local QuickSetup = function(self)
 	Window:CreateDropdown("All", "Layout", "LayoutRole", "Set role / playstyle")
 	Window:CreateSpacerNoPos("All")
 
-	Window:CreateSection("All", "Step 2:Positioning (actionbars)")
+	Window:CreateSection("All", "Step 2: Positioning (actionbars)")
 	Window:CreateDropdown("All", "Layout", "LayoutAB", "Set predefined position(s) for certain actionbars")
 	Window:CreateSpacerNoPos("All")
 

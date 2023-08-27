@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 10-01-2023
+-- latest update: 27-08-2023
 ------------------------------------------------------------------------------------------
 
 -- extending the configuration menu for Tukui and MaxUI, additional options and settings.
@@ -227,8 +227,8 @@ local MaxUIActionBarsSpecial = function(self)
 	Window:CreateSection("All", "Pet Bar")
 	Window:CreateSwitch("All", "ActionBars", "Pet", "Enable pet bar")
 	Window:CreateSlider("All", "ActionBars", "BarPetButtonsPerRow", "Set number of buttons per row", 1, 10, 1)
-	--Window:CreateSlider("All", "ActionBars", "PetButtonSize", "|cffFFFFFFSet button size|r", 12, 60, 1)
-	Window:CreateSlider("All", "ActionBars", "PetButtonSize", "|cffFFFFFFSet button size|r", 30, 60, 1)
+	Window:CreateSlider("All", "ActionBars", "PetButtonSize", "|cffFFFFFFSet button size|r", 12, 60, 1)
+	--Window:CreateSlider("All", "ActionBars", "PetButtonSize", "|cffFFFFFFSet button size|r", 30, 60, 1)
 	Window:CreateDropdown("All", "ActionBars", "Petbar", "Set visibility")
 	Window:CreateSlider("All", "ActionBars", "PetBarAlpha", "Set mouseover transparency", 0, 1, 0.1)
 	Window:CreateDropdown("All", "ActionBars", "ActionBarPetCombatState", "Set combat state")

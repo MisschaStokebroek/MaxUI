@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-08-2022
+-- latest update: 08-08-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up LOCATION DATATEXT.
@@ -105,12 +105,7 @@ local OnMouseUp = function()
 
 		return
 	end
-	
-	if WorldMapFrame:IsShown() then
-		WorldMapFrame:Hide()
-	else
-		WorldMapFrame:Show()
-	end
+	ToggleFrame(WorldMapFrame)
 end
 
 local Enable = function(self)

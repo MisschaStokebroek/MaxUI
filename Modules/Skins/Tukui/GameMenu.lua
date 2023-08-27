@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 27-12-2022
+-- latest update: 21-08-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up MaxUISkinsBlizzard
@@ -23,7 +23,7 @@ local function SkinGameMenuFrame()
 		GameMenuFrameHeader:Kill()
 		GameMenuFrame:CreateMaxUIHeader()
 	end
-	GameMenuFrame:SkinMaxUIFrame()
+	GameMenuFrame:SkinMaxUIFrame(true)
 end
 
 local function SkinGameMenuButtons()

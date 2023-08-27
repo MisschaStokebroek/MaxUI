@@ -1,6 +1,6 @@
 ## Interface: 30402
 ## Author: Maximvs
-## Version: 6.704
+## Version: 6.705
 ## Title:MaxUI
 ## Notes: MaxUI, edit for Tukui 20 and World of Warcraft - Wrath of the Lich King Classic. See tukui.org for more information.
 ## RequiredDeps: Tukui

@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 10-01-2023
+-- latest update: 27-08-2023
 ------------------------------------------------------------------------------------------
 
 -- extending the configuration menu for Tukui and MaxUI, additional options and settings.
@@ -93,44 +93,82 @@ local Bags = function(self)
 		Window:CreateSpacer("All", 20)
 		Window:CreateSpacer("All", 23)
 	end
-
-	Window:CreateSection("Retail", "Reagent Bag")
-	Window:CreateSwitch("Retail", "Bags", "ReagentInsideBag", "Put reagent bag inside the main bag")
-	Window:CreateDropdown("Retail", "Bags", "PositionReagentBag", "Set anchorpoint for seperate reagent bag.")
-	Window:CreateSpacerNoPos("Retail")
 	
 	Window:CreateSection("All", "Fonts (WIP)")
 	Window:CreateDropdown("All", "Bags", "Font", "|cffFFFFFFSet bags font|r", "Font")
 	Window:CreateSlider("All", "Bags", "FontSize", "|cffFFFFFFSet bags font size|r", 6, 32, 1)
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("Retail", "Reagent Bag")
+	Window:CreateSwitch("Retail", "Bags", "ReagentInsideBag", "Put reagent bag inside the main bag")
+	Window:CreateDropdown("Retail", "Bags", "PositionReagentBag", "|cffFFFF99Set anchorpoint for seperate reagent bag.|r")
+	Window:CreateSpacerNoPos("Retail")
+
+	Window:CreateSection("All", "Auto Sell and repair")
+	Window:CreateSwitch("All", "Misc", "AutoSellJunk", "Sell junk automatically when visiting a vendor")
+	Window:CreateSwitch("All", "Misc", "AutoRepair", "Auto repair your equipment when visiting a vendor")
+	Window:CreateSpacerNoPos("All")
 end
 GUI:AddWidgets(Bags)
 
 ------------------------------------------------------------------------------------------
 -- CHAT
 ------------------------------------------------------------------------------------------
-local Chat = function(self)
-	local Window = self:GetWindow("Chat")
+local MaxUIChat = function(self)
+	local Window = self:CreateWindow("MaxUIChat")
 
 	Window:CreateWindowLogo("All", "|cffFFFF99Chat & Bubbles|r")
 	Window:CreateSpacer("All", 2)
 	Window:CreateSpacer("All", 3)
 	Window:CreateSpacer("All", 4)
 	Window:CreateSpacer("All", 5)
-	Window:CreateExplanationText("All", 6, "Settings for chat.")
+	Window:CreateExplanationText("All", 6, "Settings for chat and chat bubbles.")
 	Window:CreateExplanationText("All", 7, "When using Combat State 'Hide in combat',")
 	Window:CreateExplanationText("All", 8, "you can't hide the chat panel with the mouseover buttons.")
 	Window:CreateSpacer("All", 9)
 
-	Window:CreateSpacer("All", 17)
-	Window:CreateSpacer("All", 20)
-	Window:CreateTextLinePos("All", 22, "*Also works for MaxUI theme, Tukz theme excluded")
-	Window:CreateSpacer("All", 27)
-	Window:CreateSpacer("All", 37)
+	Window:CreateSection("All", "Enable")
+	Window:CreateSwitch("All", "Chat", "Enable", "Enable chat module")
+	Window:CreateSwitch("All", "Chat", "WhisperSound", "Enable whisper sound")
+	Window:CreateSpacerNoPos("All")
 
-	Window:CreateSlider("All", "Chat", "TabFontSize", "|cffFFFFFFSet chat tab font size|r", 6, 32, 1)
+	Window:CreateSection("All", "Fading and logging")
+	Window:CreateSwitch("All", "Chat", "TextFading", "Fade the chat message after inactivity?")
+	Window:CreateSlider("All", "Chat", "TextFadingTimer", "Timer that chat text should fade?", 10, 600, 10)
+	Window:CreateSlider("All", "Chat", "LogMax", "Amount of chat line you wish to save into log history", 0, 500, 10)
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Bubbles")
+	Window:CreateDropdown("All", "Chat", "Bubbles", "Chat bubbles")
+	Window:CreateSwitch("All", "Chat", "SkinBubbles", "Skin bubbles")
+	Window:CreateSlider("All", "Chat", "BubblesTextSize", "Set bubbles text size", 6, 16, 1)
+	Window:CreateSwitch("All", "Chat", "BubblesNames", "Display name in bubbles")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Size (not for Tukz theme")
+	Window:CreateSlider("All", "Chat", "LeftWidth", "Set left chat width", 300, 600, 1)
+	Window:CreateSlider("All", "Chat", "LeftHeight", "Set left chat height", 150, 600, 1)
+	Window:CreateSpacerNoPos("All")
+	Window:CreateSlider("All", "Chat", "RightWidth", "Set right chat width", 300, 600, 1)
+	Window:CreateSlider("All", "Chat", "RightHeight", "Set right chat height", 150, 600, 1)
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Styling")
+	Window:CreateSwitch("All", "Chat", "ShortChannelName", "Shorten channel names")
+	Window:CreateSlider("All", "Chat", "ScrollByX", "Set lines to scroll", 1, 6, 1)
+	Window:CreateSwitch("All", "Chat", "LinkBrackets", "Display URL links in brackets")
+	Window:CreateColorSelection("All", "Chat", "LinkColor", "Link color")
+	Window:CreateSwitch("All", "Chat", "RightChatAlignRight", "Align text to right on right chat frame")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Font")
+	Window:CreateDropdown("All", "Chat", "ChatFont", "Set chat font", "Font")
+	Window:CreateDropdown("All", "Chat", "TabFont", "Set chat tab font", "Font")
+	Window:CreateSlider("All", "Chat", "TabFontSize", "|cffFFFFFFSet chattab font size|r", 6, 32, 1)
 	Window:CreateSpacerNoPos("All")
 
 	Window:CreateSection("All", "Background & Textures")
+	Window:CreateSlider("All", "Chat", "BackgroundAlpha", "Set chat background alpha", 40, 100, 1)
 	Window:CreateDropdown("All", "Chat", "BackgroundOptions", "Set background style")
 	Window:CreateDropdown("All", "Chat", "Chattexture", "Set texture if style 'Texture' is chosen", "Texture")
 	Window:CreateSlider("All", "Chat", "ChattextureAlpha", "Set texture alpha if style 'Texture' is chosen", 0, 1, 0.1)
@@ -145,62 +183,26 @@ local Chat = function(self)
 	Window:CreateSection("All", "Position")
 	Window:CreateDropdown("All", "Chat", "Position", "|cffFFFF99Set position on screen|r")
 	Window:CreateSwitch("All", "Chat", "UnlinkEditBox", "|cffFFFF99Unlink the chat inputbox|r")
+	Window:CreateSwitch("All", "Chat", "ShowRightChat", "|cffFFFF99Show the right chat box|r")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Chat tool")
+	Window:CreateSwitch("All", "Chat", "ChatShortcuts", "Enable chat button shortcuts")
+	Window:CreateDropdown("All", "Chat", "ChatShortcutsPosition", "Set anchorpoint for the chat tool")
+	Window:CreateSpacerNoPos("All")
+	Window:CreateSlider("All", "Chat", "ChatShortcutsButtonHeight", "Set button height", 2, 200, 1)
+	Window:CreateSlider("All", "Chat", "ChatShortcutsButtonWidth", "Set button width", 2, 200, 1)
+	Window:CreateSwitch("All", "Chat", "ChatAndEmoteIcon", "Enable icon on emote button")
 	Window:CreateSpacerNoPos("All")
 
 	Window:CreateSection("All", "Combat State")
 	Window:CreateSwitch("All", "Chat", "CompleteChatBox", "|cffFFFF99Apply Combat State to all Chatbox elements including text and tabs|r")
 	Window:CreateDropdown("All", "Chat", "LeftChatBGCombatState", "Set combat state for left chat panel")
 	Window:CreateDropdown("All", "Chat", "RightChatBGCombatState", "Set combat state for right chat panel")
+
+	self.WindowCount = self.WindowCount -1
 end
-GUI:AddWidgets(Chat)
-
-------------------------------------------------------------------------------------------
--- DATATEXTS
-------------------------------------------------------------------------------------------
-local DataTexts = function(self)
-	local Window = self:GetWindow("DataTexts")
-	
-	Window:CreateWindowLogo("All", "|cffFFFF99Datatext system|r")
-	Window:CreateSpacer("All", 2)
-	Window:CreateSpacer("All", 3)
-	Window:CreateSpacer("All", 4)
-	Window:CreateSpacer("All", 5)
-	Window:CreateExplanationText("All", 6, "Settings for the datatext system.")
-	Window:CreateSpacer("All", 7)
-
-	Window:CreateSpacer("All", 11)
-	Window:CreateSpacer("All", 17)
-
-	Window:CreateSlider("All", "DataTexts", "FontSize", "|cffFFFFFFSet datatext font size|r", 6, 32, 1)
-	Window:CreateSpacerNoPos("All")
-
-	Window:CreateSection("All", "MaxUI Settings")
-	Window:CreateSwitch("All", "DataTexts", "Icons", "|cffFFFF99Enable datatext icons|r")
-	Window:CreateSlider("All", "General", "ScreenSpacing", "|cffFFFF99Set spacing for datapanels near the edge of the screen|r", 0, 40, 1)
-	Window:CreateSpacerNoPos("All")
-
-	Window:CreateSection("All", "Top Datatexts")
-	Window:CreateSwitch("All", "DataTexts", "Topline", "|cffFFFF99Enable top panel & datatexts|r")
-	Window:CreateSlider("All", "DataTexts", "AmountTopDataTexts", "|cffFFFF99Set datatext amount|r", 1, 21, 1)
-	Window:CreateDropdown("All", "DataTexts", "ToplineCombatState", "|cffFFFF99Set combat state for top datatexts|r")
-	Window:CreateSpacerNoPos("All")
-
-	Window:CreateSection("All", "Bottom Datatexts")
-	Window:CreateSwitch("All", "DataTexts", "Bottomline", "|cffFFFF99Enable bottom panel & datatexts|r")
-	Window:CreateSlider("All", "DataTexts", "AmountBottomDataTexts", "|cffFFFF99Set datatext amount|r", 1, 21, 1)
-	Window:CreateDropdown("All", "DataTexts", "BottomlineCombatState", "|cffFFFF99Set combat state for bottom datatexts|r")
-	Window:CreateSpacerNoPos("All")
-
-	Window:CreateSection("All", "Data center Datatexts")
-	Window:CreateSwitch("All", "DataTexts", "DataCenter", "|cffFFFF99Enable datacenter panel & datatexts|r")
-	Window:CreateSwitch("All", "DataTexts", "DataCenterClassLogo", "|cffFFFF99Enable datacenter class art|r")
-	Window:CreateSlider("All", "DataTexts", "AmountDataCenterDataTexts", "|cffFFFF99Set datatext amount|r", 1, 60, 1)
-	Window:CreateSlider("All", "DataTexts", "DataCenterAlpha", "|cffFFFF99Set datacenter backdrop alpha|r", 0, 1, 0.1)
-	Window:CreateDropdown("All", "DataTexts", "TooltipAnchor", "|cffFFFF99Set anchor for tooltips|r")
-	Window:CreateDropdown("All", "DataTexts", "DataCenterCombatState", "|cffFFFF99Set combat state for datacenter panel & datatexts|r")
-	Window:CreateSpacerNoPos("All")
-end
-GUI:AddWidgets(DataTexts)
+GUI:AddWidgets(MaxUIChat)
 
 ------------------------------------------------------------------------------------------
 -- DATABARS
@@ -309,9 +311,56 @@ local DataBars = function(self)
 	Window:CreateSwitch("Retail", "Misc", "ANIMABarBackdrop", "|cffFFFF99Enable a backdrop for the non datatext anima bar|r")
 	Window:CreateSlider("Retail", "Misc", "ANIMABarAlpha", "|cffFFFF99Set backdrop alpha|r", 0, 1, 0.1)
 	Window:CreateDropdown("Retail", "Misc", "ANIMABarCombatState", "|cffFFFF99Combat State|r")
-
 end
 GUI:AddWidgets(DataBars)
+
+------------------------------------------------------------------------------------------
+-- DATATEXTS
+------------------------------------------------------------------------------------------
+local DataTexts = function(self)
+	local Window = self:GetWindow("DataTexts")
+	
+	Window:CreateWindowLogo("All", "|cffFFFF99Datatext system|r")
+	Window:CreateSpacer("All", 2)
+	Window:CreateSpacer("All", 3)
+	Window:CreateSpacer("All", 4)
+	Window:CreateSpacer("All", 5)
+	Window:CreateExplanationText("All", 6, "Settings for the datatext system.")
+	Window:CreateSpacer("All", 7)
+
+	Window:CreateSpacer("All", 11)
+	Window:CreateSpacer("All", 17)
+
+	Window:CreateSlider("All", "DataTexts", "FontSize", "|cffFFFFFFSet datatext font size|r", 6, 32, 1)
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Settings")
+	Window:CreateSwitch("All", "DataTexts", "Icons", "|cffFFFF99Enable datatext icons|r")
+	Window:CreateSlider("All", "DataTexts", "ScreenSpacing", "|cffFFFF99Set spacing for datapanels near the edge of the screen|r", 0, 40, 1)
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Top Datatexts")
+	Window:CreateSwitch("All", "DataTexts", "Topline", "|cffFFFF99Enable top panel & datatexts|r")
+	Window:CreateSlider("All", "DataTexts", "AmountTopDataTexts", "|cffFFFF99Set datatext amount|r", 1, 21, 1)
+	Window:CreateDropdown("All", "DataTexts", "ToplineCombatState", "|cffFFFF99Set combat state for top datatexts|r")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Bottom Datatexts")
+	Window:CreateSwitch("All", "DataTexts", "Bottomline", "|cffFFFF99Enable bottom panel & datatexts|r")
+	Window:CreateSlider("All", "DataTexts", "AmountBottomDataTexts", "|cffFFFF99Set datatext amount|r", 1, 21, 1)
+	Window:CreateDropdown("All", "DataTexts", "BottomlineCombatState", "|cffFFFF99Set combat state for bottom datatexts|r")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Data center Datatexts")
+	Window:CreateSwitch("All", "DataTexts", "DataCenter", "|cffFFFF99Enable datacenter panel & datatexts|r")
+	Window:CreateSwitch("All", "DataTexts", "DataCenterClassLogo", "|cffFFFF99Enable datacenter class art|r")
+	Window:CreateSlider("All", "DataTexts", "AmountDataCenterDataTexts", "|cffFFFF99Set datatext amount|r", 1, 60, 1)
+	Window:CreateSlider("All", "DataTexts", "DataCenterAlpha", "|cffFFFF99Set datacenter backdrop alpha|r", 0, 1, 0.1)
+	Window:CreateDropdown("All", "DataTexts", "TooltipAnchor", "|cffFFFF99Set anchor for tooltips|r")
+	Window:CreateDropdown("All", "DataTexts", "DataCenterCombatState", "|cffFFFF99Set combat state for datacenter panel & datatexts|r")
+	Window:CreateSpacerNoPos("All")
+end
+GUI:AddWidgets(DataTexts)
 
 ------------------------------------------------------------------------------------------
 -- LOOT
@@ -335,7 +384,7 @@ local Loot = function(self)
 	Window:CreateSection("All", "Group Loot Module")
 	Window:CreateSlider("All", "Loot", "GroupLootHeaderHeight", "|cffFFFFFFSet height for the item header|r", 0, 32, 1)
 	Window:CreateSlider("All", "Loot", "GroupLootSpacing", "|cffFFFFFFSet spacing between items|r", 0, 100, 1)
-	Window:CreateSectionButton("All", "Test", "Run grouploot test mode, reload to remove the testframes.", GUI.TukuiGroupLootTest)	
+	--Window:CreateSectionButton("All", "Test", "Run grouploot test mode, reload to remove the testframes.", GUI.TukuiGroupLootTest)	
 	Window:CreateSpacerNoPos("All")
 end
 GUI:AddWidgets(Loot)
@@ -343,38 +392,64 @@ GUI:AddWidgets(Loot)
 ------------------------------------------------------------------------------------------	
 -- MINIMAP & LOCATION
 ------------------------------------------------------------------------------------------
-local Maps = function(self)
-	local Window = self:GetWindow("Maps")
-
-	Window:CreateWindowLogo("All", "|cffFFFF99Maps|r")
+local MaxUIMaps = function(self)
+	local Window = self:CreateWindow("MaxUIMaps")
+	
+	Window:CreateWindowLogo("All", "|cffFFFF99Maps and Quests|r")
 	Window:CreateSpacer("All", 2)
 	Window:CreateSpacer("All", 3)
 	Window:CreateSpacer("All", 4)
 	Window:CreateSpacer("All", 5)
-	Window:CreateExplanationText("All", 6, "Settings for the worldmap, minimap & location.")
-	Window:CreateSpacer("All", 7)
+	Window:CreateExplanationText("All", 6, "Settings for the worldmap, minimap & location,")
+	Window:CreateExplanationText("All", 7, "for the objective tracker and the questlog.")
+	Window:CreateSpacer("All", 8)
 
-	Window:CreateSpacer("All", 11)
-	
+	Window:CreateSection("All", "Minimap")
+	Window:CreateSwitch("All", "Location", "MinimapEnable", "Enable minimap")
+	Window:CreateSwitch("All", "Maps", "MinimapCoords", "Enable minimap coordinate on mouseover")
+	Window:CreateSwitch("All", "Location", "Compass", "Enable compass")
+	Window:CreateSwitch("WOTLK", "Maps", "MinimapTracking", "Enable minimap tracking icon")
+	Window:CreateSwitch("All", "Location", "MinimapRectangular", "Make the minimap rectangular")
+	Window:CreateSpacerNoPos("All")
+	Window:CreateDropdown("All", "Location", "Position", "Set position on screen")
+	Window:CreateSlider("All", "General", "MinimapScale", "Set minimap scale (%)", 50, 200, 1)
+	Window:CreateDropdown("All", "Location", "MinimapCombatState", "Set combat state")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Worldmap")
+	Window:CreateSwitch("All", "Misc", "WorldMapEnable", "Enable our custom world map")
+	Window:CreateSlider("All", "Misc", "FadeWorldMapAlpha", "Worldmap opacity while moving", 0, 100, 1)
+	Window:CreateSlider("All", "General", "WorldMapScale", "Set world map scale (%)", 40, 100, 1)
 	Window:CreateDropdown("All", "Location", "WorldmapCombatState", "Set combat state")
 	Window:CreateSpacerNoPos("All")
 
-	Window:CreateSection("All", "Minimap Extended")
-	Window:CreateSwitch("All", "Location", "MinimapEnable", "Enable minimap")
-	Window:CreateSwitch("All", "Location", "MinimapRectangular", "Make the minimap rectangular")
-	Window:CreateSwitch("All", "Location", "Compass", "Enable compass")
-	Window:CreateDropdown("All", "Location", "Position", "Set position on screen")
-	Window:CreateDropdown("All", "Location", "MinimapCombatState", "Set combat state")
+	--Window:CreateSection("All", "Battleground map")
+	--Window:CreateSpacerNoPos("All")
+
+	--Window:CreateSection("All", "Locator")
+	--Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Objective tracker")
+	Window:CreateSwitch("All", "Misc", "ObjectiveTracker", "Enable the objective tracker")
+	Window:CreateSwitch("All", "Quests", "QuestHeaderLines", "|cffFFFF99Add a header line/panel for the objective tracker sections|r")
+	Window:CreateSwitch("Retail", "Quests", "TrackerCollapsedOnLogin", "|cffFFFF99Start with a closed objective tracker|r")
+	Window:CreateSwitch("Retail", "Quests", "TrackerFixed", "|cffFFFF99Anchor the objective tracker to the quest datatext (BROKEN)|r")
+	Window:CreateDropdown("Retail", "Quests", "FilterTracking", "|cffFFFF99Set filter for quests tracked in the objective tracker|r")
+	Window:CreateDropdown("All", "Quests", "QuestTrackerCombatState", "Set combat state for tracker")
 	Window:CreateSpacerNoPos("All")
+	Window:CreateDropdown("All", "Textures", "QuestProgressTexture", "Set progress bar texture", "Texture")
+	Window:CreateSpacerNoPos("All")
+
+	self.WindowCount = self.WindowCount -1
 end
-GUI:AddWidgets(Maps)
+GUI:AddWidgets(MaxUIMaps)
 
 ------------------------------------------------------------------------------------------
 -- MISC
 ------------------------------------------------------------------------------------------
-local Misc = function(self)
-	local Window = self:GetWindow("Misc")
-
+local MaxUIMisc = function(self)
+	local Window = self:CreateWindow("MaxUIMisc")
+	
 	Window:CreateWindowLogo("All", "|cffFFFF99Miscellaneous|r")
 	Window:CreateSpacer("All", 2)
 	Window:CreateSpacer("All", 3)
@@ -383,68 +458,54 @@ local Misc = function(self)
 	Window:CreateExplanationText("All", 6, "All uncategorized options.")
 	Window:CreateSpacer("All", 7)
 
-if T.Retail then
-	Window:CreateSpacer("All", 10)
-	Window:CreateSpacer("All", 14)
-	Window:CreateSpacer("All", 17)
-	Window:CreateSpacer("All", 20)
-	Window:CreateSpacer("All", 23)
-	Window:CreateSpacer("All", 26)
-	Window:CreateSpacer("All", 30)
-	Window:CreateSpacer("All", 34)
-	Window:CreateSpacer("All", 37)
-	Window:CreateSpacer("All", 40)	
-else
-	Window:CreateSpacer("All", 11)
-	Window:CreateSpacer("All", 14)
-	Window:CreateSpacer("All", 17)
-	Window:CreateSpacer("All", 20)
-	Window:CreateSpacer("All", 23)
-	Window:CreateSpacer("All", 27)
-	Window:CreateSpacer("All", 31)
-	Window:CreateSpacer("All", 34)
-end
+	Window:CreateSection("Retail", "Widgets")
+	Window:CreateSwitch("Retail", "Misc", "DisplayWidgetPowerBar", "Display dragon riding power bar widget")
+	Window:CreateSpacerNoPos("Retail")
 
-	Window:CreateSection("All", "UI Error Frame Extended")
-	Window:CreateSwitch("All", "Misc", "ErrorSpeechEnable", "Enable error speech frame")
+	Window:CreateSection("All", "Micro Menu")
+	Window:CreateDropdown("All", "Misc", "MicroStyle", "Select the micromenu style you want to use")
+	Window:CreateDropdown("All", "Misc", "MicroToggle", "Select a keybind for toggling micro menu")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "MaxUI Micro Menu")
+	Window:CreateSwitch("All", "Tools", "GameMenu", "Enable the MaxUI Micro Menu & datatext")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Meters")
+	Window:CreateSwitch("All", "Tools", "Meters", "Enable the meters tool & datatext")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Buff Tracker")
+	Window:CreateSwitch("All", "Tools", "RaidBuffTracking", "Enable the buff tracker & datatext")
+	Window:CreateSpacerNoPos("All")
+	
+	Window:CreateSection("All", "Raid Tools")
+	Window:CreateSwitch("All", "Tools", "RaidTools", "Enable the raid tools & datatext")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Item Level")
+	Window:CreateSwitch("All", "Misc", "ItemLevel", "Display items level on character and inspect frames")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "Screen Saver")
+	Window:CreateSwitch("All", "Misc", "AFKSaver", "Enable AFK screensaver")
+	Window:CreateSpacerNoPos("All")
+
+	Window:CreateSection("All", "UI Error Frame")
+	Window:CreateSwitch("All", "Misc", "ErrorSpeechEnable", "Enable error text frame")
+	Window:CreateDropdown("All", "Misc", "UIErrorFont", "Set ui error text font", "Font")
+	Window:CreateSlider("All", "Misc", "UIErrorSize", "Set ui error text font size", 12, 24, 1)
 	Window:CreateDropdown("All", "Misc", "ErrorSpeechCombatState", "Set combat state for error speech frame")
 	Window:CreateSpacerNoPos("All")
-end
-GUI:AddWidgets(Misc)
 
-------------------------------------------------------------------------------------------
--- QUESTS	
-------------------------------------------------------------------------------------------
-local Quests = function(self)
-	local Window = self:CreateWindow("Quests")
-	
-	Window:CreateWindowLogo("All", "|cffFFFF99Quests|r")
-	Window:CreateSpacer("All", 2)
-	Window:CreateSpacer("All", 3)
-	Window:CreateSpacer("All", 4)
-	Window:CreateSpacer("All", 5)
-	Window:CreateExplanationText("All", 6, "Settings for quests, questlog & questtracker")
-	Window:CreateSpacer("All", 7)
-
-	Window:CreateSection("All", "Enable")
-	Window:CreateSwitch("All", "Misc", "ObjectiveTracker", "Enable the objective tracker")
+	Window:CreateSection("All", "Talking Head")
+	Window:CreateSwitch("Retail", "Misc", "TalkingHeadEnable", "Enable Talking Head")
 	Window:CreateSpacerNoPos("All")
 
-	Window:CreateSection("All", "Style")
-	Window:CreateSwitch("All", "Quests", "QuestHeaderLines", "|cffFFFF99Add a header line/panel for the objective tracker sections|r")
-	Window:CreateDropdown("All", "Textures", "QuestProgressTexture", "Set progress bar texture", "Texture")
-	Window:CreateSpacerNoPos("All")
-	
-	Window:CreateSection("Retail", "Settings")
-	Window:CreateSwitch("Retail", "Quests", "TrackerFixed", "|cffFFFF99Anchor the objective tracker to the quest datatext|r")
-	Window:CreateSwitch("Retail", "Quests", "TrackerCollapsedOnLogin", "|cffFFFF99Start with a closed objective tracker|r")
-	Window:CreateDropdown("Retail", "Quests", "FilterTracking", "|cffFFFF99Set filter for quests tracked in the objective tracker|r")
-	Window:CreateSpacerNoPos("Retail")
-	
-	Window:CreateSection("All", "Combat State")
-	Window:CreateDropdown("All", "Quests", "QuestTrackerCombatState", "Set combat state for tracker")
+	self.WindowCount = self.WindowCount -1
+
 end
-GUI:AddWidgets(Quests)
+GUI:AddWidgets(MaxUIMisc)
 
 ------------------------------------------------------------------------------------------
 -- Scrolling Combat Text
@@ -484,75 +545,6 @@ local ScrollingCombatText = function(self)
 	Window:CreateDropdown("All", "UnitFrames", "ScrollingCombatTextAnim", "Which animation you want to use?")
 end
 GUI:AddWidgets(ScrollingCombatText)
-
-------------------------------------------------------------------------------------------
--- TEXTURES
-------------------------------------------------------------------------------------------
-local Textures = function(self)
-	local Window = self:GetWindow("Textures")
-
-	Window:CreateWindowLogo("All", "|cffFFFF99Textures|r")
-	Window:CreateSpacer("All", 2)
-	Window:CreateSpacer("All", 3)
-	Window:CreateSpacer("All", 4)
-	Window:CreateSpacer("All", 5)
-	Window:CreateExplanationText("All", 6, "These texture settings are re-used by options in other sections.")
-	Window:CreateSpacer("All", 7)
-
-	Window:CreateSpacer("All", 12)
-	Window:CreateSpacer("All", 16)
-	Window:CreateSpacer("All", 20)
-	Window:CreateSpacer("All", 25)
-end
-GUI:AddWidgets(Textures)
-
-------------------------------------------------------------------------------------------
--- TOOLS
-------------------------------------------------------------------------------------------
-local Tools = function(self)
-	local Window = self:CreateWindow("Tools")
-
-	Window:CreateWindowLogo("All", "|cffFFFF99Tools|r")
-	Window:CreateSpacer("All", 2)
-	Window:CreateSpacer("All", 3)
-	Window:CreateSpacer("All", 4)
-	Window:CreateSpacer("All", 5)
-	Window:CreateExplanationText("All", 6, "Several options for cumstomizing certain tools added by MaxUI.")
-	Window:CreateSpacer("All", 7)
-
-	--Window:CreateSection("All", "Settings")
-	--Window:CreateDropdown("All", "Tools", "ButtonStyle", "Set style for button icons")
-	--Window:CreateSlider("All", "Tools", "ToolButtonSize", "Set button size", 10, 40, 1)
-	--Window:CreateDropdown("All", "Tools", "Font", "Set tools font", "Font")
-	--Window:CreateSlider("All", "Tools", "FontSize", "|cffFFFFFFSet tools font size|r", 6, 32, 1)
-	--Window:CreateSpacerNoPos("All")
-
-	--Window:CreateSection("All", "UI Configuration")
-	--Window:CreateSwitch("All", "Tools", "UIConfig", "Enable the UI config tool & datatext")
-	--Window:CreateSpacerNoPos("All")
-
-	Window:CreateSection("All", "Chat")
-	Window:CreateSwitch("All", "Tools", "ChatShortcuts", "Enable chat button shortcuts")
-	Window:CreateDropdown("All", "Tools", "ChatShortcutsPosition", "Set anchorpoint for the chat tool")
-	Window:CreateSpacerNoPos("All")
-
-	Window:CreateSection("All", "Meters")
-	Window:CreateSwitch("All", "Tools", "Meters", "Enable the meters tool & datatext")
-	Window:CreateSpacerNoPos("All")
-
-	Window:CreateSection("All", "Buff Tracker")
-	Window:CreateSwitch("All", "Tools", "RaidBuffTracking", "Enable the buff tracker & datatext")
-	Window:CreateSpacerNoPos("All")
-	
-	Window:CreateSection("All", "Raid Tools")
-	Window:CreateSwitch("All", "Tools", "RaidTools", "Enable the raid tools & datatext")
-	Window:CreateSpacerNoPos("All")
-
-	Window:CreateSection("All", "Game Menu")
-	Window:CreateSwitch("All", "Tools", "GameMenu", "Enable the game menu & datatext")
-	Window:CreateSpacerNoPos("All")
-end
-GUI:AddWidgets(Tools)
 
 ------------------------------------------------------------------------------------------
 -- TOOLTIPS

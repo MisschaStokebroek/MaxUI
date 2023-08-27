@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 28-03-2023
+-- latest update: 27-08-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up MAXUI GUI EXTENSIONS
@@ -128,7 +128,14 @@ local function ExtendedGUI()
 	TukuiGUI.MaxUIFooter:ClearAllPoints()
 	TukuiGUI.MaxUIFooter:SetPoint("TOPLEFT", TukuiGUI, "BOTTOMLEFT", 5, -21)
 	TukuiGUI.MaxUIFooter:SetPoint("TOPRIGHT", TukuiGUI, "BOTTOMRIGHT", -5, -21)
-end	
+
+	if C["ConfigMenu"]["OldTukuiGUIEnable"] == true then 
+		local TukuiOldGUIElements = CreateFrame("Frame", nil, TukuiGUI.ButtonList)
+		TukuiOldGUIElements:SetSize(TukuiGUI.ButtonList:GetWidth(), TukuiGUI.ButtonList:GetHeight())
+		TukuiOldGUIElements:SetPoint("RIGHT", TukuiGUI.ButtonList, "LEFT", -3, 0)
+		TukuiOldGUIElements:SkinMaxUIFrame()
+	end
+end
 hooksecurefunc(GUI, "Enable", ExtendedGUI)
 
 ------------------------------------------------------------------------------------------
@@ -151,12 +158,12 @@ GUI.SortMenuButtons = function(self)
 		local PreviousButton = self.Windows["Help"].Button
 
 		self.Windows["Config"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
-		self.Windows["Config"].Button.Text:SetText("|cffFFFF99Config|r")
+		self.Windows["Config"].Button.Text:SetText("|cffFFFF99Configuration|r")
 		local PreviousButton = self.Windows["Config"].Button
-	
-		self.Windows["General"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
-		self.Windows["General"].Button.Text:SetText("|cffFFFF99General|r")
-		local PreviousButton = self.Windows["General"].Button
+
+		self.Windows["MaxUIGeneral"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
+		self.Windows["MaxUIGeneral"].Button.Text:SetText("|cffFFFF99General|r")
+		local PreviousButton = self.Windows["MaxUIGeneral"].Button
 
 		self.Windows["Quick Setup"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
 		self.Windows["Quick Setup"].Button.Text:SetText("|cffFFFF99Quick Setup|r")
@@ -203,9 +210,9 @@ GUI.SortMenuButtons = function(self)
 
 		------------------------------------- UNITFRAMES -------------------------------------
 
-		self.Windows["Unitfr. ALL"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing*2 -2 + WidgetHeight))
-		self.Windows["Unitfr. ALL"].Button.Text:SetText("Unitframes")
-		local PreviousButton = self.Windows["Unitfr. ALL"].Button
+		self.Windows["MaxUIUnitFrames"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing*2 -2 + WidgetHeight))
+		self.Windows["MaxUIUnitFrames"].Button.Text:SetText("Unitframes")
+		local PreviousButton = self.Windows["MaxUIUnitFrames"].Button
 
 		self.Windows["Unitfr. Class"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
 		self.Windows["Unitfr. Class"].Button.Text:SetText("Class")
@@ -239,17 +246,17 @@ GUI.SortMenuButtons = function(self)
 		self.Windows["Unitfr. Arena"].Button.Text:SetText("Arena")
 		local PreviousButton = self.Windows["Unitfr. Arena"].Button
 
-		self.Windows["NamePlates"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
-		self.Windows["NamePlates"].Button.Text:SetText("Nameplates")
-		local PreviousButton = self.Windows["NamePlates"].Button
+		self.Windows["MaxUINamePlates"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
+		self.Windows["MaxUINamePlates"].Button.Text:SetText("Nameplates")
+		local PreviousButton = self.Windows["MaxUINamePlates"].Button
 
-		self.Windows["Party"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
-		self.Windows["Party"].Button.Text:SetText("Party")
-		local PreviousButton = self.Windows["Party"].Button
+		self.Windows["MaxUIParty"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
+		self.Windows["MaxUIParty"].Button.Text:SetText("Party")
+		local PreviousButton = self.Windows["MaxUIParty"].Button
 
-		self.Windows["Raid"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
-		self.Windows["Raid"].Button.Text:SetText("Raid")
-		local PreviousButton = self.Windows["Raid"].Button
+		self.Windows["MaxUIRaid"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
+		self.Windows["MaxUIRaid"].Button.Text:SetText("Raid")
+		local PreviousButton = self.Windows["MaxUIRaid"].Button
 
 		------------------------------------- MISC -------------------------------------
 		
@@ -261,10 +268,10 @@ GUI.SortMenuButtons = function(self)
 		self.Windows["Bags"].Button.Text:SetText("Bags")
 		local PreviousButton = self.Windows["Bags"].Button
 
-		self.Windows["Chat"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
-		self.Windows["Chat"].Button.Text:SetText("Chat")
+		self.Windows["MaxUIChat"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
+		self.Windows["MaxUIChat"].Button.Text:SetText("Chat")
+		local PreviousButton = self.Windows["MaxUIChat"].Button
 
-		local PreviousButton = self.Windows["Chat"].Button
 		self.Windows["DataBars"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
 		self.Windows["DataBars"].Button.Text:SetText("Databars")
 		local PreviousButton = self.Windows["DataBars"].Button
@@ -277,29 +284,65 @@ GUI.SortMenuButtons = function(self)
 		self.Windows["Loot"].Button.Text:SetText("Loot")
 		local PreviousButton = self.Windows["Loot"].Button
 
-		self.Windows["Maps"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
-		self.Windows["Maps"].Button.Text:SetText("Maps")
-		local PreviousButton = self.Windows["Maps"].Button	
+		self.Windows["MaxUIMaps"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
+		self.Windows["MaxUIMaps"].Button.Text:SetText("Maps & Quests")
+		local PreviousButton = self.Windows["MaxUIMaps"].Button	
 
-		self.Windows["Misc"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
-		self.Windows["Misc"].Button.Text:SetText("Misc")
-		local PreviousButton = self.Windows["Misc"].Button
-
-		self.Windows["Quests"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
-		self.Windows["Quests"].Button.Text:SetText("Quests")
-		local PreviousButton = self.Windows["Quests"].Button
+		self.Windows["MaxUIMisc"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
+		self.Windows["MaxUIMisc"].Button.Text:SetText("Misc")
+		local PreviousButton = self.Windows["MaxUIMisc"].Button
 
 		self.Windows["Scrolling Text"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
 		self.Windows["Scrolling Text"].Button.Text:SetText("Scrolling Text")
 		local PreviousButton = self.Windows["Scrolling Text"].Button
 
-		self.Windows["Tools"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
-		self.Windows["Tools"].Button.Text:SetText("Tools")
-		local PreviousButton = self.Windows["Tools"].Button
-
 		self.Windows["Tooltips"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
 		self.Windows["Tooltips"].Button.Text:SetText("Tooltips")
 		local PreviousButton = self.Windows["Tooltips"].Button
+
+		------------------------------------- Tukui old sections -------------------------------------
+
+		if C["ConfigMenu"]["OldTukuiGUIEnable"] == true then 
+			self.Windows["Textures"].Button:SetPoint("RIGHT", self.Windows["Masks"].Button, "LEFT", -(3 + Spacing*2), 0)
+			self.Windows["Textures"].Button.Text:SetText("t.Textures")
+			local PreviousButton = self.Windows["Textures"].Button
+
+			self.Windows["Actionbars"].Button:SetPoint("RIGHT", self.Windows["Actionbars 1"].Button, "LEFT", -(3 + Spacing*2), 0)
+			self.Windows["Actionbars"].Button.Text:SetText("T.Actionbars")
+			local PreviousButton = self.Windows["Actionbars"].Button
+
+			self.Windows["Chat"].Button:SetPoint("RIGHT", self.Windows["MaxUIChat"].Button, "LEFT", -(3 + Spacing*2), 0)
+			self.Windows["Chat"].Button.Text:SetText("T.Chat")
+			local PreviousButton = self.Windows["Chat"].Button
+
+			self.Windows["General"].Button:SetPoint("RIGHT", self.Windows["MaxUIGeneral"].Button, "LEFT", -(3 + Spacing*2), 0)
+			self.Windows["General"].Button.Text:SetText("T.General")
+			local PreviousButton = self.Windows["General"].Button
+
+			self.Windows["Maps"].Button:SetPoint("RIGHT", self.Windows["MaxUIMaps"].Button, "LEFT", -(3 + Spacing*2), 0)
+			self.Windows["Maps"].Button.Text:SetText("T.Maps")
+			local PreviousButton = self.Windows["Maps"].Button	
+
+			self.Windows["Misc"].Button:SetPoint("RIGHT", self.Windows["MaxUIMisc"].Button, "LEFT", -(3 + Spacing*2), 0)
+			self.Windows["Misc"].Button.Text:SetText("T.Misc")
+			local PreviousButton = self.Windows["Misc"].Button
+
+			self.Windows["NamePlates"].Button:SetPoint("RIGHT", self.Windows["MaxUINamePlates"].Button, "LEFT", -(3 + Spacing*2), 0)
+			self.Windows["NamePlates"].Button.Text:SetText("T.Nameplates")
+			local PreviousButton = self.Windows["NamePlates"].Button
+
+			self.Windows["Party"].Button:SetPoint("RIGHT", self.Windows["MaxUIParty"].Button, "LEFT", -(3 + Spacing*2), 0)
+			self.Windows["Party"].Button.Text:SetText("T.Party")
+			local PreviousButton = self.Windows["Party"].Button
+
+			self.Windows["Raid"].Button:SetPoint("RIGHT", self.Windows["MaxUIRaid"].Button, "LEFT", -(3 + Spacing*2), 0)
+			self.Windows["Raid"].Button.Text:SetText("T.Raid")
+			local PreviousButton = self.Windows["Raid"].Button
+
+			self.Windows["UnitFrames"].Button:SetPoint("RIGHT", self.Windows["MaxUIUnitFrames"].Button, "LEFT", -(3 + Spacing*2), 0)
+			self.Windows["UnitFrames"].Button.Text:SetText("T.UnitFrames")
+			local PreviousButton = self.Windows["UnitFrames"].Button
+		end	
 	end
 end
 

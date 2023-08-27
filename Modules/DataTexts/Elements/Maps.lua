@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-08-2022
+-- latest update: 08-08-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up MAPS DATATEXT.
@@ -60,11 +60,7 @@ local OnMouseDown = function(self, button)
 	end
 	
 	if button == "RightButton" then
-		if WorldMapFrame:IsShown() then
-			WorldMapFrame:Hide()
-		else
-			WorldMapFrame:Show()
-		end
+		ToggleFrame(WorldMapFrame)
 	end
 end
 

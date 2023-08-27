@@ -54,6 +54,7 @@ end
 
 local OnMouseDown = function(...)
 	local _, button = ...
+ 	
  	if button == "LeftButton" then
 		if ExpansionLandingPageMinimapButton and ExpansionLandingPageMinimapButton:IsShown() then
 			if InCombatLockdown() then
@@ -62,8 +63,16 @@ local OnMouseDown = function(...)
 				ExpansionLandingPageMinimapButton:ToggleLandingPage()
 			end
 		end
-	else
-		GarrisonLandingPage_Toggle()
+	
+	elseif button == "RightButton" then
+		unlocked = C_CovenantCallings.AreCallingsUnlocked()
+		if unlocked then 
+			if InCombatLockdown() then
+				T.Print(ERR_NOT_IN_COMBAT)
+			else
+				GarrisonLandingPage_Toggle()
+			end
+		end	
 	end	
 end
 
