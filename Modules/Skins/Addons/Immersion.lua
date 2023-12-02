@@ -49,6 +49,8 @@ local function SkinImmersionToMaxUIStyle()
 	ImmersionFrame.TalkBox.ReputationBar:SetPoint("TOPRIGHT", ImmersionFrame.TalkBox.PortraitFrame, "BOTTOMRIGHT", 0, -8)
 	ImmersionFrame.TalkBox.ReputationBar:SetHeight(12)
 
+	ImmersionFrame.TalkBox.ProgressionBar:SkinMaxUIStatusBar(true)
+
 	if C["Skins"]["BackdropFilter"] then 
 		ImmersionFrame.TalkBox.Elements.Backdrop:CreateMaxUIFilter()
 	end

@@ -513,6 +513,7 @@ C["Maps"]["MinimapCoords"] = false
 C["Location"]["Compass"] = false
 C["Maps"]["MinimapTracking"] = false
 C["Location"]["MinimapRectangular"] = false
+C["Location"]["MinimapFixedSizeDT"] = false
 C["Location"]["Position"] = {
 	["Options"] = {
 		["Top Left"] = "Topleft",
@@ -554,7 +555,19 @@ C["Quests"] = {}
 C["Misc"]["ObjectiveTracker"] = true
 C["Quests"]["QuestHeaderLines"] = true
 C["Quests"]["TrackerCollapsedOnLogin"] = false
+
 C["Quests"]["TrackerFixed"] = true
+
+
+C["Quests"]["TrackerPosition"] = {
+	["Options"] = {
+		["Anchored to datatext"] = "Anchored",	
+		["Movable"] = "Movable",
+	},
+	["Value"] = "Anchored",
+}
+C["Quests"]["TrackerMovableHeader"] = true
+
 C["Quests"]["FilterTracking"] = {
 	["Options"] = {
 		["All quests"] = "All",	

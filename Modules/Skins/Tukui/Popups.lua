@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 27-12-2022
+-- latest update: 05-11-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up MaxUISkinsBlizzard
@@ -35,6 +35,8 @@ local function SkinTukuiPopupsFrame()
 		end
 		
 		Frames[i]:SkinMaxUIBaseFrame(nil, true)
+		Frames[i]:SetFrameStrata(TukuiGUI:GetFrameStrata())
+		Frames[i]:SetFrameLevel(TukuiGUI:GetFrameLevel()+10)
 		
 		Frames[i]:ClearAllPoints()
 		Frames[i]:SetPoint("TOP", UIParent, "TOP", 0, -100)

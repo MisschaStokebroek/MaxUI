@@ -182,25 +182,46 @@ function UnitFrames:Nameplates()
 ------------------------------------------------------------------------------------------
 -- Set NamePlate alpha
 ------------------------------------------------------------------------------------------
-	local function SetNamePlateAlpha(UnitIsUnit)
-		if UnitIsUnit("target", self.unit) then
-			Nameplates:SetAlpha(1)
-			Health.Background:SetAlpha(1)
-		else
-			Nameplates:SetAlpha(C.NamePlates.NotSelectedAlpha / 100)
-			Health.Background:SetAlpha(C.NamePlates.NotSelectedAlpha / 100)
+
+	if C["NamePlates"]["EnableAlphaSettings"] == true then 
+		local function SetNamePlateAlpha(UnitIsUnit)
+			if UnitIsUnit("target", self.unit) then
+				Nameplates:SetAlpha(1)
+				Health.Background:SetAlpha(1)
+			else
+				Nameplates:SetAlpha(C.NamePlates.NotSelectedAlpha / 100)
+				Health.Background:SetAlpha(C.NamePlates.NotSelectedAlpha / 100)
+			end
 		end
-	end
-		
-	SetNamePlateAlpha(UnitIsUnit)
-			
-	local EventHandler = CreateFrame("Frame")
-	EventHandler:RegisterEvent("PLAYER_TARGET_CHANGED")
-	EventHandler:RegisterEvent("NAME_PLATE_UNIT_ADDED")
-	EventHandler:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
-	EventHandler:SetScript("OnEvent", function()
 		SetNamePlateAlpha(UnitIsUnit)
-	end)
+	
+		local EventHandler = CreateFrame("Frame")
+		EventHandler:RegisterEvent("PLAYER_TARGET_CHANGED")
+		EventHandler:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+		EventHandler:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+		EventHandler:SetScript("OnEvent", function()
+			SetNamePlateAlpha(UnitIsUnit)
+		end)
+	end
+
+	if C["NamePlates"]["EnableScaling"] == true then 
+		local function SetNamePlateScale(UnitIsUnit)
+			if UnitIsUnit("target", self.unit) then
+				Nameplates:SetScale(C["NamePlates"]["TargetScale"]/100 *C["General"]["UIScale"])
+			else
+				Nameplates:SetScale(C["NamePlates"]["NonTargetScale"]/100 *C["General"]["UIScale"])
+			end
+		end
+		SetNamePlateScale(UnitIsUnit)
+		
+		local EventHandler = CreateFrame("Frame")
+		EventHandler:RegisterEvent("PLAYER_TARGET_CHANGED")
+		EventHandler:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+		EventHandler:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+		EventHandler:SetScript("OnEvent", function()
+			SetNamePlateScale(UnitIsUnit)
+		end)
+	end
 	
 ------------------------------------------------------------------------------------------
 -- NO HEALTHBARS

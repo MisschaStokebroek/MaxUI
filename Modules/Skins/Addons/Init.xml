@@ -6,5 +6,6 @@
 	<Script file="Hekili.lua"/>
 	<Script file="Immersion.lua"/>
 	<Script file="ProjectAzilroka.lua"/>
+	<Script file="RareScanner.lua"/>
 	<Script file="Simulationcraft.lua"/>
 </Ui>

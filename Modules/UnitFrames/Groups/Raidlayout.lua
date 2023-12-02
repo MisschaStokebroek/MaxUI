@@ -137,8 +137,8 @@ function TukuiUnitFrames:GetRaidFramesAttributes()
 
 		-- Vertical (down)
 		if C["Raid"]["GrowDirection"]["Value"] == "VerticalDown" then 
-			local Properties = C.Party.Enable and "custom [@raid26,exists] hide; [@raid6,exists] show; hide" or
-			 "custom [@raid26,exists] hide; [@raid1,exists] show; [@party1,exists] show; hide" or "solo,party,raid"
+			local Properties = C.Party.Enable and "custom [@raid26,exists] hide; [@raid6,exists] show; hide" or 
+			"custom [@raid26,exists] hide; [@raid1,exists] show; [@party1,exists] show; hide"
 			 return
 				"TukuiRaid", 
 				nil, 
@@ -153,7 +153,7 @@ function TukuiUnitFrames:GetRaidFramesAttributes()
 				"showParty", true,
 				"showRaid", true,
 				"showPlayer", true,
-				"showSolo", C["Raid"]["ShowSolo"],
+				"showSolo", true,
 				"groupFilter", "1,2,3,4,5,6,7,8",
 				"groupingOrder", "1,2,3,4,5,6,7,8",
 				"yOffset", (-C["Raid"]["VerSpacing"]),

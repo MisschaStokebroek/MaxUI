@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 27-08-2023
+-- latest update: 05-11-2023
 ------------------------------------------------------------------------------------------
 
 -- extending the configuration menu for Tukui and MaxUI, additional options and settings.
@@ -295,7 +295,7 @@ local MaxUIConfig = function(self)
 
 	if C["ConfigMenu"]["Style"]["Value"] == "Developer" then
 		Window:CreateSection("All", "Developer settings")
-		Window:CreateSectionButton("All", "Help", "Print Tukui help in chat", GUI.TukuiPrint)	
+		Window:CreateSectionButton("All", "Help", "Show Tukui help window", GUI.TukuiPrint)	
 		Window:CreateSectionButton("All", "Status", "Tukui status report", GUI.TukuiStatus)	
 		Window:CreateSectionButton("All", "Frame Stack", "Run frame stack tool", GUI.FStack)	
 		Window:CreateSectionButton("All", "Trace Events", "Tukui trace events (chat)", GUI.TukuiTraceEvents)	
@@ -662,6 +662,9 @@ local MaxUISkins = function(self)
 		if IsAddOnLoaded('ProjectAzilroka') then 
 			Window:CreateSwitch("All", "AddOns", "ProjectAzilrokaSkin", "Enable skin ProjectAzilroka: Square Minimap Button Bar")
 		end
+		if IsAddOnLoaded('RareScanner') then 
+			Window:CreateSwitch("All", "AddOns", "RareScannerSkin", "Enable skin RareScanner")
+		end
 		if IsAddOnLoaded('Simulationcraft') then 
 			Window:CreateSwitch("All", "AddOns", "SimulationcraftSkin", "Enable skin Simulationcraft")
 		end
@@ -686,51 +689,55 @@ local AddOns = function(self)
 
 	Window:CreateSection("All", "Loaded AddOns")
 	if IsAddOnLoaded('AddOnSkins') then 
-		Window:CreateSectionButton("All", "open", "AddonSkins", GUI.OpenConfigAddOnSkins)	
+		Window:CreateAddonSectionButtons("All", "Addonskins: ", "open", GUI.OpenConfigAddOnSkins, "disable", GUI.OpenConfigAddOnSkins)	
 	end
 
 	if IsAddOnLoaded('AdvancedInterfaceOptions') then 
-		Window:CreateSectionButton("All", "open", "Advanced Interface Options", GUI.OpenConfigAdvancedInterfaceOptions)
+		Window:CreateAddonSectionButtons("All", "Advanced Interface Options: ", "open", GUI.OpenConfigAdvancedInterfaceOptions, "disable", GUI.DisableAdvancedInterfaceOptions)	
 	end
 
 	if IsAddOnLoaded('AstralKeys') then 
-		Window:CreateSectionButton("All", "open", "Astral Keys", GUI.OpenConfigAstralKeys)
+		Window:CreateAddonSectionButtons("All", "Astral Keys: ", "open", GUI.OpenConfigAstralKeys, "disable", GUI.DisableAstralKeys)	
 	end
 
 	if IsAddOnLoaded('Auctionator') then 
-		Window:CreateSectionButton("All", "open", "Auctionator", GUI.OpenConfigAuctionator)
+		Window:CreateAddonSectionButtons("All", "Auctionator: ", "open", GUI.OpenConfigAuctionator, "disable", GUI.DisableAuctionator)	
 	end
 	
 	if IsAddOnLoaded('BugSack') then 
-		Window:CreateSectionButton("All", "open", "BugSack", GUI.OpenConfigBugSack)
+		Window:CreateAddonSectionButtons("All", "BugSack: ", "open", GUI.OpenConfigBugSack, "disable", GUI.DisableBugSack)	
+	end
+	
+	if IsAddOnLoaded('ColorPickerPlus') then 
+		Window:CreateAddonSectionButtons("All", "Color Picker Plus: ", "open", GUI.OpenConfigColorPickerPlus, "disable", GUI.DisableColorPickerPlus)	
 	end
 	
 	if IsAddOnLoaded('Clique') then 
-		Window:CreateSectionButton("All", "open", "Clique", GUI.OpenConfigClique)
+		Window:CreateAddonSectionButtons("All", "Clique: ", "open", GUI.OpenConfigClique, "disable", GUI.DisableClique)	
 	end
 
 	if IsAddOnLoaded('DBM-Core') then 
-		Window:CreateSectionButton("All", "open", "Deadly Boss Mods", GUI.OpenConfigDBM)	
+		Window:CreateAddonSectionButtons("All", "Deadly Boss Mods: ", "open", GUI.OpenConfigDBM, "disable", GUI.DisableDBM)	
 	end
 	
 	if IsAddOnLoaded('Details') then 
-		Window:CreateSectionButton("All", "open", "Details!", GUI.OpenConfigDetails)	
+		Window:CreateAddonSectionButtons("All", "Details!: ", "open", GUI.OpenConfigDetails, "disable", GUI.DisableDetails)	
 	end
 
 	if IsAddOnLoaded('Hekili') then 
-		Window:CreateSectionButton("All", "open", "Hekili", GUI.OpenConfigHekili)	
+		Window:CreateAddonSectionButtons("All", "Hekili: ", "open", GUI.OpenConfigHekili, "disable", GUI.DisableHekili)	
 	end
 
 	if IsAddOnLoaded('Immersion') then 
-		Window:CreateSectionButton("All", "open", "Immersion", GUI.OpenConfigImmersion)	
+		Window:CreateAddonSectionButtons("All", "Immersion: ", "open", GUI.OpenConfigImmersion, "disable", GUI.DisableImmersion)	
 	end
 
 	if IsAddOnLoaded('Leatrix_Plus') then 
-		Window:CreateSectionButton("All", "open", "Leatrix Plus", GUI.OpenConfigLeatrixPlus)
+		Window:CreateAddonSectionButtons("All", "Leatrix Plus: ", "open", GUI.OpenConfigLeatrixPlus, "disable", GUI.DisableLeatrixPlus)	
 	end
 
 	if IsAddOnLoaded('ls_Toasts') then 
-		Window:CreateSectionButton("All", "open", "LS: Toasts", GUI.OpenConfigLSToasts)	
+		Window:CreateAddonSectionButtons("All", "LS Toasts: ", "open", GUI.OpenConfigLSToasts, "disable", GUI.DisableLSToasts)	
 	end
 
 	--if IsAddOnLoaded('Pawn') then 
@@ -738,53 +745,77 @@ local AddOns = function(self)
 	--end
 
 	if IsAddOnLoaded('ProjectAzilroka') then 
-		Window:CreateSectionButton("All", "open", "Project Azilroka", GUI.OpenConfigProjectAzilroka)
+		Window:CreateAddonSectionButtons("All", "Project Azilroka: ", "open", GUI.OpenConfigProjectAzilroka, "disable", GUI.DisableProjectAzilroka)	
 	end
 
 	if IsAddOnLoaded('Questie') then 
-		Window:CreateSectionButton("All", "open", "Questie", GUI.OpenConfigQuestie)	
+		Window:CreateAddonSectionButtons("All", "Questie: ", "open", GUI.OpenConfigQuestie, "disable", GUI.DisableQuestie)	
 	end
 
+	if IsAddOnLoaded('RareScanner') then 
+		Window:CreateAddonSectionButtons("All", "Rare Scanner: ", "open", GUI.OpenConfigRareScanner, "disable", GUI.DisableRareScanner)	
+	end
+	
 	if IsAddOnLoaded('RSA') then 
-		Window:CreateSectionButton("All", "open", "Raelli's Spell Announcer", GUI.OpenConfigRSA)	
+		Window:CreateAddonSectionButtons("All", "Raelli's Spell Announcer: ", "open", GUI.OpenConfigRSA, "disable", GUI.DisableRSA)	
 	end
 	
 	if IsAddOnLoaded('Simulationcraft') then 
-		Window:CreateSectionButton("All", "open", "SimCraft", GUI.OpenConfigSimCraft)	
+		Window:CreateAddonSectionButtons("All", "Simcraft: ", "open", GUI.OpenConfigSimCraft, "disable", GUI.DisableSimCraft)	
 	end
 
 	if IsAddOnLoaded('WeakAuras') then 
-		Window:CreateSectionButton("All", "open", "WeakAuras", GUI.OpenConfigWeakAuras)	
+		Window:CreateAddonSectionButtons("All", "WeakAuras: ", "open", GUI.OpenConfigWeakAuras, "disable", GUI.DisableWeakAuras)	
 	end
 
 	if IsAddOnLoaded('WorldQuestsList') then 
-		Window:CreateSectionButton("All", "open", "World Quest List", GUI.OpenConfigWorldQuestList)
+		Window:CreateAddonSectionButtons("All", "World Quest List: ", "open", GUI.OpenConfigWorldQuestList, "disable", GUI.DisableWorldQuestList)	
 	end
 	
 	if IsAddOnLoaded('WorldQuestTab') then 
-		Window:CreateSectionButton("All", "open", "World Quest Tab", GUI.OpenConfigWorldQuestTab)
+		Window:CreateAddonSectionButtons("All", "World Quest Tab: ", "open", GUI.OpenConfigWorldQuestTab, "disable", GUI.DisableWorldQuestTab)	
 	end
 	Window:CreateSpacerNoPos("All")
 
-	if IsAddOnLoaded('BugSack') and C.Skins.MaxUISkinsAddons and C.AddOns.BugSackSkin then 
+-- addon options section
+	--if IsAddOnLoaded('AddOnSkins') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "AddonSkins")
+	--	Window:CreateSpacerNoPos("All")
+	--end
+
+	--if IsAddOnLoaded('AdvancedInterfaceOptions') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "Advanced Interface Options")
+	--	Window:CreateSpacerNoPos("All")
+	--end
+
+	--if IsAddOnLoaded('AstralKeys') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "Astral Keys")
+	--	Window:CreateSpacerNoPos("All")
+	--end
+
+	--if IsAddOnLoaded('Auctionator') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "Auctionator")
+	--	Window:CreateSpacerNoPos("All")
+	--end
+	
+	if IsAddOnLoaded('BugSack') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
 		Window:CreateSection("All", "Bugsack")
 		--Window:CreateSlider("All", "AddOns", "BugSackWidth", "Set width", 500, 1000, 1)
 		Window:CreateSlider("All", "AddOns", "BugSackHeight", "Set height", 310, 1000, 1)
 		Window:CreateSpacerNoPos("All")
 	end
+	
+	--if IsAddOnLoaded('ColorPickerPlus') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "ColorPickerPlus")
+	--	Window:CreateSpacerNoPos("All")
+	--end
+	
+	--if IsAddOnLoaded('Clique') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "Clique")
+	--	Window:CreateSpacerNoPos("All")
+	--end
 
-	if IsAddOnLoaded('ProjectAzilroka') and C.Skins.MaxUISkinsAddons and C.AddOns.ProjectAzilrokaSkin then  
-		Window:CreateSection("All", "Project Azilroka")
-		Window:CreateSwitch("All", "AddOns", "MBBMaxUIFrameStyle", "Make the Minimap Button Bar a MaxUI movable frame")
-		Window:CreateSpacerNoPos("All")
-	end
-
-	if IsAddOnLoaded('ColorPickerPlus') and C.Skins.MaxUISkinsAddons and C.AddOns.ColorPickerPlusSkin then 
-		Window:CreateSection("All", "ColorPickerPlus")
-		Window:CreateSpacerNoPos("All")
-	end
-
-	if IsAddOnLoaded('DBM-Core') and C.Skins.MaxUISkinsAddons and C.AddOns.DBMSkin then 
+	if IsAddOnLoaded('DBM-Core') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
 		Window:CreateSection("All", "Deadly Boss mods")
 		Window:CreateSwitch("All", "AddOns", "DBMSkinEdge", "Set top border/edge for DBM infoframes")
 		Window:CreateDropdown("All", "AddOns", "DBMBarTextPosition", "Set position for DBM bar texts")
@@ -792,11 +823,77 @@ local AddOns = function(self)
 		Window:CreateSlider("All", "AddOns", "DBMIconBarSpacing", "Set icon spacing", -50, 50, 1)
 		Window:CreateSpacerNoPos("All")
 	end
+	
+	--if IsAddOnLoaded('Details') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "Details!")
+	--	Window:CreateSpacerNoPos("All")
+	--end
 
-	if IsAddOnLoaded('Immersion') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then 
+	--if IsAddOnLoaded('Hekili') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "Hekili Rotation Manager")
+	--	Window:CreateSpacerNoPos("All")
+	--end
+
+	if IsAddOnLoaded('Immersion') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
 		Window:CreateSection("All", "Immersion")
 		Window:CreateSwitch("All", "AddOns", "ImmersionTopEdge", "Enable a small colored top border")
 		Window:CreateSpacerNoPos("All")
 	end
+
+	--if IsAddOnLoaded('Leatrix_Plus') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "Leatrix Plus")
+	--	Window:CreateSpacerNoPos("All")
+	--end
+
+	--if IsAddOnLoaded('ls_Toasts') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "LS Toasts")
+	--	Window:CreateSpacerNoPos("All")
+	--end
+
+	--if IsAddOnLoaded('Pawn') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+		--Window:CreateSection("All", "Pawn")
+		--Window:CreateSpacerNoPos("All")
+	--end
+
+	if IsAddOnLoaded('ProjectAzilroka') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+		Window:CreateSection("All", "Project Azilroka")
+		Window:CreateSwitch("All", "AddOns", "MBBMaxUIFrameStyle", "Make the Minimap Button Bar a MaxUI movable frame")
+		Window:CreateSpacerNoPos("All")
+	end
+
+	--if IsAddOnLoaded('Questie') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "Questie")
+	--	Window:CreateSpacerNoPos("All")
+	--end
+
+	--if IsAddOnLoaded('RareScanner') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "RareScanner")
+	--	Window:CreateSpacerNoPos("All")
+	--end
+	
+	--if IsAddOnLoaded('RSA') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "Raelli's Spell Announcer (RSA)")
+	--	Window:CreateSpacerNoPos("All")
+	--end
+	
+	--if IsAddOnLoaded('Simulationcraft') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "Simulationcraft")
+	--	Window:CreateSpacerNoPos("All")
+	--end
+
+	--if IsAddOnLoaded('WeakAuras') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "WeakAuras")
+	--	Window:CreateSpacerNoPos("All")
+	--end
+
+	--if IsAddOnLoaded('WorldQuestsList') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "WorldQuestsList")
+	--	Window:CreateSpacerNoPos("All")
+	--end
+	
+	--if IsAddOnLoaded('WorldQuestTab') and C.Skins.MaxUISkinsAddons and C.AddOns.ImmersionSkin then  
+	--	Window:CreateSection("All", "WorldQuestTab")
+	--	Window:CreateSpacerNoPos("All")
+	--end
 end
 GUI:AddWidgets(AddOns)

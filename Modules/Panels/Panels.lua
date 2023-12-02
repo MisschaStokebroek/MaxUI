@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 30-10-2022
+-- latest update: 05-10-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up CUSTOM PANELS AND FRAMES.
@@ -90,6 +90,23 @@ function Minimap:MaxUITopPanels()
 	Minimap.TopLine = TopLine
 end
 
+function Minimap:MaxUITopPanelCombatState()
+	local TopLine = Minimap.TopLine
+
+	if C["DataTexts"]["ToplineCombatState"]["Value"] == "Hide" then
+		RegisterStateDriver(TopLine, "visibility", "[combat] hide; show")
+	end
+
+	if C["DataTexts"]["ToplineCombatState"]["Value"] == "Show" then
+		RegisterStateDriver(TopLine, "visibility", "[combat] show; hide")
+	end
+end
+
+------------------------------------------------------------------------------------------
+-- TOP Panels
+------------------------------------------------------------------------------------------
+
+
 ------------------------------------------------------------------------------------------
 -- BOTTOM Panels
 ------------------------------------------------------------------------------------------
@@ -131,6 +148,18 @@ function Minimap:MaxUIBottomPanels()
 	Minimap.BottomLine = BottomLine
 end
 
+function Minimap:MaxUIBottomPanelCombatState()
+	local BottomLine = Minimap.BottomLine
+
+	if C["DataTexts"]["BottomlineCombatState"]["Value"] == "Hide" then
+		RegisterStateDriver(BottomLine, "visibility", "[combat] hide; show")
+	end
+
+	if C["DataTexts"]["BottomlineCombatState"]["Value"] == "Show" then
+		RegisterStateDriver(BottomLine, "visibility", "[combat] show; hide")
+	end
+end
+
 ------------------------------------------------------------------------------------------
 -- DATATEXT CENTER Panels
 ------------------------------------------------------------------------------------------
@@ -158,11 +187,7 @@ function Minimap:MaxUIDatatextCenter()
 		DataCenter:SetFrameStrata("HIGH")
 		DataCenter:SetFrameLevel(2)
 		
-		DataCenter:CreateBackdrop("Transparent")
-		DataCenter.Backdrop:SetOutside()
-		DataCenter.Backdrop:CreateShadow()
-		DataCenter.Backdrop:SetAlpha(C["DataTexts"]["DataCenterAlpha"])
-		DataCenter.Backdrop:SetBackdropColor(unpack(C.General.BackdropColor))
+		DataCenter:SkinMaxUIFrame()
 		
 		if C["DataTexts"]["DataCenterClassLogo"] then
 			DataCenter.Logoclass = DataCenter:CreateTexture(nil, "ARTWORK")
@@ -222,12 +247,8 @@ function Minimap:MaxUIDatatextCenter()
 				DataCenter.Logoclass:SetTexture([[Interface\AddOns\MaxUI\Medias\Class\DEMONHUNTER.tga]])
 			end
 		end
-		
-		if C["Skins"]["DataCenterFilter"] == true then 
-			DataCenter:CreateMaxUIFilter()
-		end
 
-		Movers:RegisterFrame(DataCenter, "Data Center")
+		--Movers:RegisterFrame(DataCenter, "Data Center")
 
 		-- Animation
 		DataCenter:Hide()
@@ -248,39 +269,36 @@ function Minimap:MaxUIDatatextCenter()
 	end	
 end
 
-------------------------------------------------------------------------------------------
--- Combat State Bottom and Top Panels
-------------------------------------------------------------------------------------------
-function Minimap:MaxUITopPanelCombatState()
-	local TopLine = Minimap.TopLine
-
-	if C["DataTexts"]["ToplineCombatState"]["Value"] == "Hide" then
-		RegisterStateDriver(TopLine, "visibility", "[combat] hide; show")
-	end
-
-	if C["DataTexts"]["ToplineCombatState"]["Value"] == "Show" then
-		RegisterStateDriver(TopLine, "visibility", "[combat] show; hide")
-	end
-end
-
-function Minimap:MaxUIBottomPanelCombatState()
-	local BottomLine = Minimap.BottomLine
-
-	if C["DataTexts"]["BottomlineCombatState"]["Value"] == "Hide" then
-		RegisterStateDriver(BottomLine, "visibility", "[combat] hide; show")
-	end
-
-	if C["DataTexts"]["BottomlineCombatState"]["Value"] == "Show" then
-		RegisterStateDriver(BottomLine, "visibility", "[combat] show; hide")
-	end
-end
-
 function Minimap:MaxUIDataCenterCombatState()
 	local DataCenter = Minimap.DataCenter
 
 	if C["DataTexts"]["DataCenterCombatState"]["Value"] == "Hide" then
 		RegisterStateDriver(DataCenter, "visibility", "[combat] hide; nil")
 	end
+end
+
+------------------------------------------------------------------------------------------
+-- ADDITIONAL ANCHORS
+------------------------------------------------------------------------------------------
+function Minimap:MaxUIQuestLogHolder()
+	local MaxUIQuestLogHolder = CreateFrame("Frame", "MaxUIQuestLogHolder", UIParent)
+	MaxUIQuestLogHolder:SetFrameLevel(1)
+	MaxUIQuestLogHolder:SetFrameStrata("BACKGROUND")
+
+	if T.Retail and C["Quests"]["TrackerPosition"]["Value"] == "Movable" then
+		MaxUIQuestLogHolder:CreateMaxUIHeader("Objectives", false, C["Quests"]["TrackerMovableHeader"])
+	end
+
+	-- testing purposes:
+	--MaxUIQuestLogHolder:CreateBackdrop()
+	--MaxUIQuestLogHolder.Backdrop:SetBackdropColor(1, 1, 0)
+
+	Minimap.MaxUIQuestLogHolder = MaxUIQuestLogHolder
+end	
+
+function Minimap:MaxUIQuestLogHolderCombatState()
+	local MaxUIQuestLogHolder = Minimap.MaxUIQuestLogHolder
+	RegisterStateDriver(MaxUIQuestLogHolder, "visibility", "[combat] hide; nil")
 end
 
 ------------------------------------------------------------------------------------------
@@ -291,6 +309,7 @@ function Minimap:Enable()
 		self:MaxUITopPanels()
 		self:MaxUIBottomPanels()
 		self:MaxUIDatatextCenter()
+		self:MaxUIQuestLogHolder()
 		
 		if C["Skins"]["UIParentFilter"] == true then
 			self:MaxUIScreenFilter()
@@ -307,7 +326,10 @@ function Minimap:Enable()
 		if C["DataTexts"]["DataCenterCombatState"]["Value"] ~= "Nothing" then 
 			self:MaxUIDataCenterCombatState()
 		end
+		
+		if C["Quests"]["QuestTrackerCombatState"]["Value"] ~= "Nothing" then 
+			--self:MaxUIQuestLogHolderCombatState()
+		end
 	end
-	
 	baseMinimapEnable(self)
 end

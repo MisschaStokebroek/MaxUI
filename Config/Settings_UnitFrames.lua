@@ -1439,8 +1439,12 @@ C["NamePlates"]["HighlightColor"] = {1, 1, 0}
 
 -- Scale Targeted Nameplate
 C["NamePlates"]["SelectedScale"] = 100
+C["NamePlates"]["EnableScaling"] = true
+C["NamePlates"]["TargetScale"] = 100
+C["NamePlates"]["NonTargetScale"] = 80
 
 -- transparency Targeted Nameplate
+C["NamePlates"]["EnableAlphaSettings"] = true
 C["NamePlates"]["NotSelectedAlpha"] = 100
 
 -- Nameplate Spacing

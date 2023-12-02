@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 15-08-2022
+-- latest update: 15-10-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up MAPS.
@@ -149,6 +149,8 @@ function Minimap:MaxUIStyle()
 	local MinimapCoords = Minimap.MinimapCoords
 	local MapSize = T.Maps.Minimap:GetWidth()
 	local MapFont = T.GetFont(C["General"].Font)
+	local AmountTop = C["DataTexts"]["AmountTopDataTexts"]
+	local width = ((TopLine:GetWidth() / AmountTop))-1
 
 	if Mail then
 		Mail:ClearAllPoints()
@@ -166,8 +168,9 @@ function Minimap:MaxUIStyle()
 	
 	-- datatext hide it
 	MinimapDataText:ClearAllPoints()
-	MinimapDataText:SetPoint("BOTTOM", Minimap, "BOTTOM", 0, 4)
-	MinimapDataText:SetWidth(T.Maps.Minimap:GetWidth()-8)
+	MinimapDataText:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 4, 4)
+	MinimapDataText:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -4, 4)
+	--MinimapDataText:SetWidth(T.Maps.Minimap:GetWidth()-8)
 	MinimapDataText:SetHeight(22)
 	MinimapDataText:SetAlpha(0)
 	
@@ -189,6 +192,10 @@ function Minimap:MaxUIStyle()
 		y = C["Location"]["MinimapRectangular"] and -26 or 12
 	else
 		y = C["Location"]["MinimapRectangular"] and -32 or 6 
+	end
+
+	if C["Location"]["MinimapFixedSizeDT"] then 
+		Minimap:SetSize(width-1, width-1)
 	end
 
 	-- minimap position

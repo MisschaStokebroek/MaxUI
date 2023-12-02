@@ -17,6 +17,11 @@ local DataText = T["DataTexts"]
 local Update = function(self)
 	if C["DataTexts"]["DataCenter"] == false then return end
 	
+	local DataCenter = DataCenter
+	DataCenter:ClearAllPoints()
+	--DataCenter:SetWidth(self:GetWidth())
+	DataCenter:SetPoint("TOP", self, "BOTTOM", 0, -3)
+
 	if C["DataTexts"]["Icons"] == true then
 		self.icon = self:CreateTexture(nil, "OVERLAY")
 		self.icon:SetWidth(20)

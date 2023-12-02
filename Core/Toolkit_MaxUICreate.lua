@@ -400,7 +400,7 @@ local BarMouseUp = function(self)
 	end
 end
 
-API.CreateMaxUIHeader = function(frame, text, closebutton)
+API.CreateMaxUIHeader = function(frame, text, closebutton, mouseover)
 	if frame.MaxUIHeader then return end
 	
 	local Texture = T.GetTexture(C.General.HeaderTexture)
@@ -444,6 +444,17 @@ API.CreateMaxUIHeader = function(frame, text, closebutton)
 	MaxUIHeader:SetScript("OnLeave", function(self)
 		BarOnLeave(MaxUIHeader)
 	end)
+
+	if mouseover then
+		MaxUIHeader:SetAlpha(0)
+		MaxUIHeader:HookScript("OnEnter", function(self)
+			MaxUIHeader:SetAlpha(1)
+		end)
+		
+		MaxUIHeader:HookScript("OnLeave", function(self)
+			MaxUIHeader:SetAlpha(0)
+		end)
+	end
 
 	-- frame movable
 	frame:SetMovable(true)

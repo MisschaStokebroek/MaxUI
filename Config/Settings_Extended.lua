@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 27-08-2023
+-- latest update: 05-11-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up CONFIGURATION MAXUI, additional options and settings.
@@ -404,6 +404,10 @@ C["AddOns"] = {
 	-- projectazilroka (elements)
 	["ProjectAzilrokaSkin"] = true,
 	["MBBMaxUIFrameStyle"] = false,
+
+	-- pawn
+	["RareScannerSkin"] = false,
+	["RareScannerPopUpSkin"] = false,
 
 	-- simcraft
 	["SimulationcraftSkin"] = true,

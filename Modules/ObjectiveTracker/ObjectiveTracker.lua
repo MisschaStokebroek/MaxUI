@@ -1,5 +1,5 @@
 ﻿------------------------------------------------------------------------------------------
--- MaxUI 6.5 - SHADOWLANDS / TUKUI 20
+-- MaxUI 6.5 - TUKUI 20
 -- latest update: 05-08-2020
 ------------------------------------------------------------------------------------------
 
@@ -10,10 +10,10 @@
 ------------------------------------------------------------------------------------------
 local T, C, L = Tukui:unpack()
 local ObjectiveTracker = T.Miscellaneous.ObjectiveTracker
+local Movers = T["Movers"]
 
 local baseEnable = ObjectiveTracker.Enable
 local baseSkin = ObjectiveTracker.Skin
-local baseCreateToggleButtons = ObjectiveTracker.CreateToggleButtons
 local baseUpdateProgressBar = ObjectiveTracker.UpdateProgressBar
 local baseSetDefaultPosition = ObjectiveTracker.SetDefaultPosition
 
@@ -24,34 +24,9 @@ local FadeTimer = C["General"]["FaderTime"]
 ObjectiveTrackerFrame:fadeOut(FadeTimer)
 ObjectiveTrackerFrame:fadeIn(FadeTimer)
 
-function ObjectiveTracker:UpdateProgressBarColors(Min)
-	if (self.Bar and Min) then
-		local R, G, B = unpack(T.Colors.class[T.MyClass])
-		
-		self.Bar:SetStatusBarColor(R, G, B)
-		
-		if self.Bar.Backdrop then
-			self.Bar.Backdrop:SetBackdropColor(R * .2, G * .2, B * .2)
-		
-			if not (self.Bar.Filter) then
-				if C["Skins"]["ObjectiveTrackerFilter"] == true then 
-					self.Bar:CreateMaxUIFilter()
-				end
-			end
-		end
-	end
-end
-
 ------------------------------------------------------------------------------------------
 -- OBJECTIVE TRACKER FRAME
 ------------------------------------------------------------------------------------------
--- TOGGLE BUTTONS
-function ObjectiveTracker:CreateToggleButtons()
-	if C["Quests"]["TrackerFixed"] ~= true then
-		baseCreateToggleButtons(self)
-	end
-end
-
 local function UpdateMinimizeButton(button, collapsed)
 	if collapsed then
 		button.tex:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\ArrowDown.tga]])
@@ -60,61 +35,55 @@ local function UpdateMinimizeButton(button, collapsed)
 	end
 end
 
--- OBJECTIVE TRACKER
 local function MaxUISkinObjectiveTracker()
 	local Frame = ObjectiveTrackerFrame.MODULES
-	local ClassColor = {unpack(T.Colors.class[select(2, UnitClass("player"))])}
+	local ClassColor = T.Colors.class[select(2, UnitClass("player"))]
 	local thickness = C["General"]["thickness"]
 	local Width = (TopLine:GetWidth() / C["DataTexts"]["AmountTopDataTexts"]) or 266
 	local Texture = T.GetTexture(C.General.LineTexture)
-	
+
 	if (Frame) then
 		for i = 1, #Frame do
 
 			local Modules = Frame[i]
 			if (Modules) then
 				local Header = Modules.Header
-
 				local Background = Modules.Header.Background
+				local HeaderText = Modules.Header.Text
+
 				Background:SetAtlas(nil)
 
-				local Text = Modules.Header.Text
-				Text:SetFont(C.Medias.Font, 16)
-				Text:SetTextColor(unpack(C["DataTexts"]["NameColor"]))
-				Text:SetDrawLayer("OVERLAY", 7)
-				Text:SetParent(Header)
+				HeaderText:SetFont(C.Medias.Font, 16)
+				HeaderText:SetTextColor(unpack(C["DataTexts"]["NameColor"]))
+				HeaderText:SetDrawLayer("OVERLAY", 7)
+				HeaderText:SetParent(Header)
 
 				if not (Modules.IsSkinned) then
-					local HeaderPanel = CreateFrame("Frame", nil, Header)
-					HeaderPanel:SetFrameLevel(Header:GetFrameLevel() - 1)
-					HeaderPanel:SetFrameStrata("BACKGROUND")
-					HeaderPanel:SetOutside(Header, 1, 1)
-					
 					if C["Quests"]["QuestHeaderLines"] == true then 
-						local HeaderBar = CreateFrame("Frame", nil, HeaderPanel)
-						HeaderBar:SetPoint("LEFT", HeaderPanel, -13, -0)
-						HeaderBar:SetHeight(thickness)
-						HeaderBar:SetWidth(Width)
+						Header:SetHeight(thickness)
+						Header:SetWidth(Width-1)
+						Header:SetFrameLevel(Header:GetFrameLevel() - 1)
+						Header:SetFrameStrata("BACKGROUND")
 						
-						HeaderBar:CreateBackdrop(nil, Texture)
-						HeaderBar.Backdrop:SetOutside()
-						HeaderBar.Backdrop:CreateShadow()
-						HeaderBar.Backdrop:SetAlpha(C["General"]["GeneralPanelAlpha"])
-					
+						Header:CreateBackdrop(nil, Texture)
+						Header.Backdrop:SetOutside()
+						Header.Backdrop:CreateShadow()
+						Header.Backdrop:SetAlpha(C["General"]["GeneralPanelAlpha"])
+
 						if C["General"]["ClassColorLines"]["Value"] == "Dark" then 
-							HeaderBar.Backdrop:SetBackdropColor(0.11, 0.11, 0.11)
+							Header.Backdrop:SetBackdropColor(0.11, 0.11, 0.11)
 						elseif C["General"]["ClassColorLines"]["Value"] == "ClassColor" then 
-							HeaderBar.Backdrop:SetBackdropColor(unpack(ClassColor))
+							Header.Backdrop:SetBackdropColor(unpack(ClassColor))
 						elseif C["General"]["ClassColorLines"]["Value"] == "BackdropColor" then 
-							HeaderBar.Backdrop:SetBackdropColor(unpack(C.General.BackdropColor))
+							Header.Backdrop:SetBackdropColor(unpack(C.General.BackdropColor))
 						elseif C["General"]["ClassColorLines"]["Value"] == "Custom" then 
-							HeaderBar.Backdrop:SetBackdropColor(unpack(C.General.CustomColor))
+							Header.Backdrop:SetBackdropColor(unpack(C.General.CustomColor))
 						else
-							HeaderBar.Backdrop:SetBackdropColor(0.43, 0.43, 0.43, 1)
+							Header.Backdrop:SetBackdropColor(0.43, 0.43, 0.43, 1)
 						end
 
 						if C["Skins"]["ObjectiveTrackerFilter"] == true then 
-							HeaderBar:CreateMaxUIFilter()
+							Header:CreateMaxUIFilter()
 						end
 					end
 
@@ -155,7 +124,9 @@ function ObjectiveTracker:Skin()
 	end
 end
 
+------------------------------------------------------------------------------------------
 -- SCENARIO
+------------------------------------------------------------------------------------------
 local function MaxUISkinScenario()
 	local StageBlock = _G["ScenarioStageBlock"]
 	StageBlock.Stage:SetFont(C.Medias.MaxUIFont, 17)
@@ -170,7 +141,9 @@ function ObjectiveTracker:SkinScenario()
 	end	
 end
 
+------------------------------------------------------------------------------------------
 -- QUESTITEM
+------------------------------------------------------------------------------------------
 local baseUpdateQuestItem = ObjectiveTracker.UpdateQuestItem
 function ObjectiveTracker:UpdateQuestItem(block)
 	baseUpdateQuestItem(self, block)
@@ -179,17 +152,19 @@ function ObjectiveTracker:UpdateQuestItem(block)
 		if not (C.General.Themes.Value == "MaxUI") then return end
 		
 		local QuestItemButton = block.itemButton
-		QuestItemButton:SetSize(60, 60)
 
-		if C["Quests"]["TrackerFixed"] == true then
+		if C["Quests"]["TrackerPosition"]["Value"] == "Anchored" then
 			local PointA, PointB, PointC, PointD, PointE = QuestItemButton:GetPoint()
+			QuestItemButton:SetSize(120, 120)
 			QuestItemButton:ClearAllPoints()
-			QuestItemButton:SetPoint(PointA, PointB, PointC, 60, -1)
+			QuestItemButton:SetPoint(PointA, PointB, PointC, 120, -1)
 		end
 	end
 end
 
+------------------------------------------------------------------------------------------
 -- PROGRESSBAR
+------------------------------------------------------------------------------------------
 function ObjectiveTracker:UpdateProgressBar(_, line)
 	baseUpdateProgressBar(self, _, line)
 	
@@ -204,30 +179,95 @@ function ObjectiveTracker:UpdateProgressBar(_, line)
 	end
 end
 
-function ObjectiveTracker:SetDefaultPosition()
-	baseSetDefaultPosition(self)
-
-	local ObjectiveFrameHolder = TukuiObjectiveTracker
-
-	if C["Quests"]["TrackerFixed"] == true then
-		ObjectiveFrameHolder:ClearAllPoints()
-		ObjectiveFrameHolder:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 364, -26)
-	else
-		ObjectiveFrameHolder:ClearAllPoints()
-		ObjectiveFrameHolder:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+function ObjectiveTracker:UpdateProgressBarColors(Min)
+	if (self.Bar and Min) then
+		local R, G, B = unpack(T.Colors.class[T.MyClass])
+		
+		self.Bar:SetStatusBarColor(R, G, B)
+		
+		if self.Bar.Backdrop then
+			self.Bar.Backdrop:SetBackdropColor(R * .2, G * .2, B * .2)
+		
+			if not (self.Bar.Filter) then
+				if C["Skins"]["ObjectiveTrackerFilter"] == true then 
+					self.Bar:CreateMaxUIFilter()
+				end
+			end
+		end
 	end
 end
 
+------------------------------------------------------------------------------------------
+-- POSITIONING AND DEFAULTS
+------------------------------------------------------------------------------------------
+function ObjectiveTracker:OnMove()
+	ObjectiveTrackerFrame:ClearAllPoints()
+	if (C.General.Themes.Value == "MaxUI") then
+		ObjectiveTrackerFrame:SetPointBase("TOPLEFT", MaxUIQuestLogHolder, "TOPLEFT", 11, 0)
+	else
+		ObjectiveTrackerFrame:SetPointBase("TOP", TukuiObjectiveTracker)
+	end
+end
+
+function ObjectiveTracker:SetDefaultPosition()
+	baseSetDefaultPosition(self)
+	
+	if (C.General.Themes.Value == "MaxUI") then
+		local MaxUIQuestLogHolder = MaxUIQuestLogHolder
+		local Anchor1, Parent, Anchor2, X, Y = "RIGHT", UIParent, "RIGHT", -48, 300
+		local Data = TukuiDatabase.Variables[T.MyRealm][T.MyName]
+
+		ObjectiveTrackerFrame:ClearAllPoints()
+		ObjectiveTrackerFrame:SetPoint("TOPLEFT", MaxUIQuestLogHolder, "TOPLEFT", 11, 0)
+		ObjectiveTrackerFrame:SetHeight(T.ScreenHeight - 520)
+		ObjectiveTrackerFrame:SetClampedToScreen(false)
+		
+		if C["Quests"]["QuestTrackerCombatState"]["Value"] ~= "Nothing" then 
+			ObjectiveTrackerFrame:HookScript("OnUpdate", function(self)
+				if InCombatLockdown() then
+					self:SetAlpha(0)
+					if MouseIsOver(self) then
+						self:SetAlpha(1)
+					end	
+				else
+					self:SetAlpha(1)
+				end
+			end)
+		end
+
+		if C["Quests"]["TrackerPosition"]["Value"] == "Movable" then
+			TukuiObjectiveTracker:SetSize(200, 22)
+			TukuiObjectiveTracker:ClearAllPoints()
+			TukuiObjectiveTracker:SetPoint(Anchor1, Parent, Anchor2, X, Y)
+			
+			MaxUIQuestLogHolder:ClearAllPoints()
+			MaxUIQuestLogHolder:SetPoint("CENTER", TukuiObjectiveTracker)
+
+			if Data and Data.Move and Data.Move.TukuiObjectiveTracker then
+				TukuiObjectiveTracker:ClearAllPoints()
+				TukuiObjectiveTracker:SetPoint(unpack(Data.Move.TukuiObjectiveTracker))
+			end
+		else
+			TukuiObjectiveTracker:ClearAllPoints()
+		end
+	end
+end
+
+------------------------------------------------------------------------------------------
+-- ENABLE
+------------------------------------------------------------------------------------------
 function ObjectiveTracker:Enable()
+
 	-- Tukui
 	baseEnable(self)
-	
+
+	-- MaxUI
+	if (C.General.Themes.Value == "MaxUI") then
+		ObjectiveTrackerFrameHeaderMenuMinimizeButton:Hide()
+	end
+
 	if C["Quests"]["TrackerCollapsedOnLogin"] == true then
 		ObjectiveTrackerFrame:Hide()
-	end
-	
-	if C["Quests"]["TrackerFixed"] == true then
-		ObjectiveTrackerFrameHeaderMenuMinimizeButton:Hide()
 	end
 end
 

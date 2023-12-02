@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 27-08-2023
+-- latest update: 05-11-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up MAXUI GUI EXTENSIONS
@@ -135,6 +135,7 @@ local function ExtendedGUI()
 		TukuiOldGUIElements:SetPoint("RIGHT", TukuiGUI.ButtonList, "LEFT", -3, 0)
 		TukuiOldGUIElements:SkinMaxUIFrame()
 	end
+
 end
 hooksecurefunc(GUI, "Enable", ExtendedGUI)
 
@@ -200,6 +201,9 @@ GUI.SortMenuButtons = function(self)
 		self.Windows["Actionbars 1"].Button.Text:SetText("Actionbars")
 		local PreviousButton = self.Windows["Actionbars 1"].Button
 
+			PreviousButton:CreateMaxUITopEdge()
+			PreviousButton.MaxUITopEdge:SetHeight(20)
+
 		self.Windows["Actionbars 2"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
 		self.Windows["Actionbars 2"].Button.Text:SetText("Bar 1 - 8")
 		local PreviousButton = self.Windows["Actionbars 2"].Button
@@ -213,6 +217,9 @@ GUI.SortMenuButtons = function(self)
 		self.Windows["MaxUIUnitFrames"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing*2 -2 + WidgetHeight))
 		self.Windows["MaxUIUnitFrames"].Button.Text:SetText("Unitframes")
 		local PreviousButton = self.Windows["MaxUIUnitFrames"].Button
+
+			PreviousButton:CreateMaxUITopEdge()
+			PreviousButton.MaxUITopEdge:SetHeight(20)
 
 		self.Windows["Unitfr. Class"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
 		self.Windows["Unitfr. Class"].Button.Text:SetText("Class")
@@ -264,6 +271,9 @@ GUI.SortMenuButtons = function(self)
 		self.Windows["Auras"].Button.Text:SetText("Auras")
 		local PreviousButton = self.Windows["Auras"].Button
 		
+			PreviousButton:CreateMaxUITopEdge()
+			PreviousButton.MaxUITopEdge:SetHeight(20)
+
 		self.Windows["Bags"].Button:SetPoint("TOP", PreviousButton, "BOTTOM", 0, -(Spacing - 1))
 		self.Windows["Bags"].Button.Text:SetText("Bags")
 		local PreviousButton = self.Windows["Bags"].Button
@@ -570,24 +580,6 @@ GUI.Widgets.CreateDoubleSwitch = CreateDoubleSwitch
 ------------------------------------------------------------------------------------------
 -- button widget (almost same as Tukui one, only added version check)
 ------------------------------------------------------------------------------------------
---[[
-local ButtonOnEnter = function(self)
-	self.Highlight:SetAlpha(WidgetHighlightAlpha)
-end
-
-local ButtonOnLeave = function(self)
-	self.Highlight:SetAlpha(0)
-end
-
-local ButtonOnMouseDown = function(self)
-	self.Backdrop:SetBackdropColor(unpack(BGColor))
-end
-
-local ButtonOnMouseUp = function(self)
-	self.Backdrop:SetBackdropColor(unpack(BrightColor))
-end
---]]
-
 local CreateSectionButton = function(self, client, midtext, text, func)
 	local Font = C.Medias.Font
 	local IsEnabled = CheckClient(client)
@@ -605,20 +597,7 @@ local CreateSectionButton = function(self, client, midtext, text, func)
 	Button:SetPoint("LEFT", Anchor, 0, 0)
 	Button:SkinMaxUIButton()
 	Button.Backdrop.Shadow:Hide()
-
-	--Button:CreateBackdrop(nil, Texture)
-	--Button.Backdrop:SetBackdropColor(unpack(BrightColor))
-	--Button:SetScript("OnMouseDown", ButtonOnMouseDown)
-	--Button:SetScript("OnMouseUp", ButtonOnMouseUp)
-	--Button:SetScript("OnEnter", ButtonOnEnter)
-	--Button:SetScript("OnLeave", ButtonOnLeave)
 	Button:HookScript("OnMouseUp", func)
-
-		--Button.Highlight = Button:CreateTexture(nil, "OVERLAY")
-		--Button.Highlight:SetAllPoints()
-		--Button.Highlight:SetTexture(Texture)
-		--Button.Highlight:SetVertexColor(0.5, 0.5, 0.5)
-		--Button.Highlight:SetAlpha(0)
 
 		Button.Middle = Button:CreateFontString(nil, "OVERLAY")
 		Button.Middle:SetPoint("CENTER", Button, 0, 0)
@@ -639,6 +618,123 @@ local CreateSectionButton = function(self, client, midtext, text, func)
 	return Button
 end
 GUI.Widgets.CreateSectionButton = CreateSectionButton
+
+local CreateDoubleSectionButton = function(self, client, midlefttext, lefttext, leftfunc, midrighttext, righttext, rightfunc)
+	local Font = C.Medias.Font
+	local IsEnabled = CheckClient(client)
+	local ButtonWidth = 134
+	
+	if not IsEnabled then
+		return
+	end
+	
+	local Anchor = CreateFrame("Frame", nil, self)
+	Anchor:SetSize(WidgetListWidth - (Spacing * 2), WidgetHeight)
+
+	local LeftButton = CreateFrame("Frame", nil, Anchor)
+	LeftButton:SetSize(ButtonWidth, WidgetHeight)
+	LeftButton:SetPoint("LEFT", Anchor, 0, 0)
+	LeftButton:SkinMaxUIButton()
+	LeftButton.Backdrop.Shadow:Hide()
+	LeftButton:HookScript("OnMouseUp", leftfunc)
+
+		LeftButton.Middle = LeftButton:CreateFontString(nil, "OVERLAY")
+		LeftButton.Middle:SetPoint("CENTER", LeftButton, 0, 0)
+		LeftButton.Middle:SetWidth(WidgetListWidth - (Spacing * 4))
+		StyleFont(LeftButton.Middle, Font, 12)
+		LeftButton.Middle:SetJustifyH("CENTER")
+		LeftButton.Middle:SetText(midlefttext)
+
+		LeftButton.Label = LeftButton:CreateFontString(nil, "OVERLAY")
+		LeftButton.Label:SetPoint("LEFT", LeftButton, "RIGHT", Spacing, 0)
+		LeftButton.Label:SetWidth(WidgetListWidth/2 - ButtonWidth - (Spacing * 4))
+		LeftButton.Label:SetJustifyH("LEFT")
+		StyleFont(LeftButton.Label, Font, 12)
+		LeftButton.Label:SetText(lefttext)
+
+	local RightButton = CreateFrame("Frame", nil, Anchor)
+	RightButton:SetSize(ButtonWidth, WidgetHeight)
+	RightButton:SetPoint("LEFT", Anchor, WidgetListWidth/2, 0)
+	RightButton:SkinMaxUIButton()
+	RightButton.Backdrop.Shadow:Hide()
+	RightButton:HookScript("OnMouseUp", rightfunc)
+
+		RightButton.Middle = RightButton:CreateFontString(nil, "OVERLAY")
+		RightButton.Middle:SetPoint("CENTER", RightButton, 0, 0)
+		RightButton.Middle:SetWidth(WidgetListWidth - (Spacing * 4))
+		StyleFont(RightButton.Middle, Font, 12)
+		RightButton.Middle:SetJustifyH("CENTER")
+		RightButton.Middle:SetText(midrighttext)
+
+		RightButton.Label = RightButton:CreateFontString(nil, "OVERLAY")
+		RightButton.Label:SetPoint("LEFT", RightButton, "RIGHT", Spacing, 0)
+		RightButton.Label:SetWidth(WidgetListWidth/2 - ButtonWidth - (Spacing * 4))
+		RightButton.Label:SetJustifyH("LEFT")
+		StyleFont(RightButton.Label, Font, 12)
+		RightButton.Label:SetText(righttext)
+
+	tinsert(self.Widgets, Anchor)
+	return LeftButton, RightButton
+
+end
+GUI.Widgets.CreateDoubleSectionButton = CreateDoubleSectionButton
+
+------------------------------------------------------------------------------------------
+-- Addon Management buttons
+------------------------------------------------------------------------------------------
+local CreateAddonSectionButtons = function(self, client, addonname, button1text, button1func, button2text, button2func)
+	local Font = C.Medias.Font
+	local IsEnabled = CheckClient(client)
+	local AddonNameWidth = WidgetListWidth/2
+	local ButtonWidth = 134
+	
+	if not IsEnabled then
+		return
+	end
+	
+	local Anchor = CreateFrame("Frame", nil, self)
+	Anchor:SetSize(WidgetListWidth - (Spacing * 2), WidgetHeight)
+
+	Anchor.Label = Anchor:CreateFontString(nil, "OVERLAY")
+	Anchor.Label:SetPoint("LEFT", Anchor, "LEFT", Spacing, 0)
+	Anchor.Label:SetWidth(AddonNameWidth)
+	Anchor.Label:SetJustifyH("LEFT")
+	StyleFont(Anchor.Label, Font, 12)
+	Anchor.Label:SetText(addonname)
+
+	local Button1 = CreateFrame("Frame", nil, Anchor)
+	Button1:SetSize(ButtonWidth, WidgetHeight)
+	Button1:SetPoint("LEFT", Anchor, "LEFT", WidgetListWidth/2 , 0)
+	Button1:SkinMaxUIButton()
+	Button1.Backdrop.Shadow:Hide()
+	Button1:HookScript("OnMouseUp", button1func)
+
+		Button1.Middle = Button1:CreateFontString(nil, "OVERLAY")
+		Button1.Middle:SetPoint("CENTER", Button1, 0, 0)
+		Button1.Middle:SetWidth(WidgetListWidth - (Spacing * 4))
+		StyleFont(Button1.Middle, Font, 12)
+		Button1.Middle:SetJustifyH("CENTER")
+		Button1.Middle:SetText(button1text)
+
+	local Button2 = CreateFrame("Frame", nil, Anchor)
+	Button2:SetSize(ButtonWidth, WidgetHeight)
+	Button2:SetPoint("LEFT", Button1, "RIGHT", Spacing, 0)
+	Button2:SkinMaxUIButton()
+	Button2.Backdrop.Shadow:Hide()
+	Button2:HookScript("OnMouseUp", button2func)
+
+		Button2.Middle = Button2:CreateFontString(nil, "OVERLAY")
+		Button2.Middle:SetPoint("CENTER", Button2, 0, 0)
+		Button2.Middle:SetWidth(WidgetListWidth - (Spacing * 4))
+		StyleFont(Button2.Middle, Font, 12)
+		Button2.Middle:SetJustifyH("CENTER")
+		Button2.Middle:SetText(button2text)
+
+	tinsert(self.Widgets, Anchor)
+	return Button1, Button2
+
+end
+GUI.Widgets.CreateAddonSectionButtons = CreateAddonSectionButtons
 
 ------------------------------------------------------------------------------------------
 -- widget spacer positioned
@@ -995,11 +1091,31 @@ GUI.OpenConfigAdvancedInterfaceOptions = function(self)
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
+GUI.LoadAdvancedInterfaceOptions = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load AdvancedInterfaceOptions")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableAdvancedInterfaceOptions = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload AdvancedInterfaceOptions")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
 -- AstralKeys
 GUI.OpenConfigAstralKeys = function(self)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/ak")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui c")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.LoadAstralKeys = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load AstralKeys")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableAstralKeys = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload AstralKeys")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
@@ -1011,11 +1127,33 @@ GUI.OpenConfigAuctionator = function(self)
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
+GUI.LoadAuctionator = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load Auctionator")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableAuctionator = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload Auctionator")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
 -- BugSack
 GUI.OpenConfigBugSack = function(self)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/bugsack")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui c")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.LoadBugSack = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load BugSack")
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load BugGrabber")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableBugSack = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload BugSack")
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload BugGrabber")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
@@ -1027,11 +1165,49 @@ GUI.OpenConfigClique = function(self)
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
+GUI.LoadClique = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load Clique")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableClique = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload Clique")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+-- ColorPickerPlus
+GUI.OpenConfigColorPickerPlus = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui c")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.LoadColorPickerPlus = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load ColorPickerPlus")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableColorPickerPlus = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload ColorPickerPlus")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
 -- DBM
 GUI.OpenConfigDBM = function(self)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/dbm")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui c")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.LoadDBM = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load DBM-Core")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableDBM = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload DBM-Core")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
@@ -1043,11 +1219,31 @@ GUI.OpenConfigDetails = function(self)
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
+GUI.LoadDetails = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load Details")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableDetails = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload Details")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
 -- Hekili
 GUI.OpenConfigHekili = function(self)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/hek")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui c")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.LoadHekili = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load Hekili")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableHekili = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload Hekili")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
@@ -1059,11 +1255,31 @@ GUI.OpenConfigImmersion = function(self)
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
+GUI.LoadImmersion = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load Immersion")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableImmersion = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload Immersion")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
 -- LeatrixPlus
 GUI.OpenConfigLeatrixPlus = function(self)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/ltp")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui c")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.LoadLeatrixPlus = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load Leatrix_Plus")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableLeatrixPlus = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload Leatrix_Plus")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
@@ -1075,6 +1291,16 @@ GUI.OpenConfigLSToasts = function(self)
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
+GUI.LoadLSToasts = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load ls_Toasts")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableLSToasts = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload ls_Toasts")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
 -- Pawn
 GUI.OpenConfigPawn = function(self)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/pawn")
@@ -1083,10 +1309,30 @@ GUI.OpenConfigPawn = function(self)
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
+GUI.LoadPawn = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load Pawn")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisablePawn = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload Pawn")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
 -- ProjectAzilroka
 GUI.OpenConfigProjectAzilroka = function(self)
 	_G.Enhanced_Config:ToggleConfig()
 	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui c")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.LoadProjectAzilroka = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load ProjectAzilroka")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableProjectAzilroka = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload ProjectAzilroka")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
@@ -1098,11 +1344,49 @@ GUI.OpenConfigQuestie = function(self)
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
+GUI.LoadQuestie = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load Questie")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableQuestie = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload Questie")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+-- RareScanner
+GUI.OpenConfigRareScanner = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/RareScanner explorer")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui c")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.LoadRareScanner = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load RareScanner")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableRareScanner = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload RareScanner")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
 -- RSA
 GUI.OpenConfigRSA = function(self)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/rsa")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui c")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.LoadRSA = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load RSA")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableRSA = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload RSA")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
@@ -1114,6 +1398,16 @@ GUI.OpenConfigSimCraft = function(self)
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
+GUI.LoadSimCraft = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load Simulationcraft")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableSimCraft = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload Simulationcraft")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
 -- WeakAuras
 GUI.OpenConfigWeakAuras = function(self)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/wa")
@@ -1122,10 +1416,30 @@ GUI.OpenConfigWeakAuras = function(self)
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
+GUI.LoadWeakAuras = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load WeakAuras")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableWeakAuras = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload WeakAuras")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
 -- WorldQuestList
 GUI.OpenConfigWorldQuestList = function(self)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/wql")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui c")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.LoadWorldQuestList = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui load WorldQuestList")
+	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+GUI.DisableWorldQuestList = function(self)
+	DEFAULT_CHAT_FRAME.editBox:SetText("/tukui unload WorldQuestList")
 	ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end

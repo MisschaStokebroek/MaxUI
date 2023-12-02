@@ -118,11 +118,15 @@ local MaxUINamePlates = function(self)
 	Window:CreateColorSelection("All", "NamePlates", "HighlightColor", "Highlight/Indicator color")
 	Window:CreateSpacerNoPos("All")
 	
-	Window:CreateSection("All", "Current target scale")
-	Window:CreateSlider("All", "NamePlates", "SelectedScale", "Set scaling of selected plate (%)", 100, 200, 1)
+	Window:CreateSection("All", "(Current) target scale")
+	Window:CreateSwitch("All", "NamePlates", "EnableScaling", "Enable nameplate scaling")
+	--Window:CreateSlider("All", "NamePlates", "SelectedScale", "Set scaling of selected plate (%)", 100, 200, 1)
+	Window:CreateSlider("All", "NamePlates", "TargetScale", "Set scaling of selected plate (%)", 10, 300, 1)
+	Window:CreateSlider("All", "NamePlates", "NonTargetScale", "Set scaling of non selected plate (%)", 10, 300, 1)
 	Window:CreateSpacerNoPos("All")
 	
 	Window:CreateSection("All", "Non current target transparency")
+	Window:CreateSwitch("All", "NamePlates", "EnableAlphaSettings", "Enable nameplate alpha settings")
 	Window:CreateSlider("All", "NamePlates", "NotSelectedAlpha", "Set not selected nameplate alpha (%)", 0, 100, 1)
 	Window:CreateSpacerNoPos("All")
 	

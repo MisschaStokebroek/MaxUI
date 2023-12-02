@@ -1,10 +1,9 @@
 ------------------------------------------------------------------------------------------
--- MaxUI 6 - SHADOWLANDS / TUKUI 20
--- latest update: 29-12-2022
+-- MaxUI 6.5 - TUKUI 20
+-- latest update: 05-10-2023
 ------------------------------------------------------------------------------------------
 
 -- setting up QUEST DATATEXT.
--- (WIP) to do: insert required description and items
 
 ------------------------------------------------------------------------------------------
 -- SETUP
@@ -13,21 +12,17 @@ local T, C, L = unpack(Tukui)
 local DataText = T["DataTexts"]
 local format = format
 local ObjectiveTrackerFrame = ObjectiveTrackerFrame
-local QuestWatchFrame = QuestWatchFrame
 
 ------------------------------------------------------------------------------------------
--- QUEST DATATEXT
+-- QUEST DATATEXT RETAIL
 ------------------------------------------------------------------------------------------
 if T.Retail then
-
 	local Update = function(self)
-		local ObjectiveTrackerFrame = ObjectiveTrackerFrame
-		if C["Quests"]["TrackerFixed"] == true then
-			ObjectiveTrackerFrame:ClearAllPoints()
-			ObjectiveTrackerFrame:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 24, -2)
-			if C["Quests"]["QuestTrackerCombatState"]["Value"] == "Hide" then
-				ObjectiveTrackerFrame:SetParent(self)
-			end
+		local MaxUIQuestLogHolder = MaxUIQuestLogHolder
+		MaxUIQuestLogHolder:SetSize(self:GetWidth(), 22)
+		if C["Quests"]["TrackerPosition"]["Value"] == "Anchored" then
+			MaxUIQuestLogHolder:ClearAllPoints()
+			MaxUIQuestLogHolder:SetPoint("TOP", self, "BOTTOM", 0, -3)
 		end
 		
 		local numEntries, numQuests = C_QuestLog.GetNumQuestLogEntries()
@@ -70,11 +65,11 @@ if T.Retail then
 		self:SetScript("OnEvent", Update)
 		self:SetScript("OnMouseDown", function(self, btn)
 			if (btn == "RightButton") then
-				if T.BCC then 
-					ShowUIPanel(QuestLogFrame)
-				elseif T.Retail then
+				--if T.BCC then 
+				--	ShowUIPanel(QuestLogFrame)
+				--elseif T.Retail then
 					ToggleQuestLog()		
-				end
+				--end
 			else
 				ObjectiveTrackerFrame:fadeToggle()
 			end
@@ -90,10 +85,22 @@ if T.Retail then
 	end
 
 	DataText:Register("|cffFFFF99Quests|r", Enable, Disable, Update)
+end
 
-else
+------------------------------------------------------------------------------------------
+-- QUEST DATATEXT CLASSICS
+------------------------------------------------------------------------------------------
+local QuestWatchFrame = QuestWatchFrame
 
+if not T.Retail then
 	local Update = function(self)
+		local MaxUIQuestLogHolder = MaxUIQuestLogHolder
+		MaxUIQuestLogHolder:SetSize(self:GetWidth(), 22)
+		if C["Quests"]["TrackerPosition"]["Value"] == "Anchored" then
+			MaxUIQuestLogHolder:ClearAllPoints()
+			MaxUIQuestLogHolder:SetPoint("TOP", self, "BOTTOM", 0, -3)
+		end
+
 		local numEntries, numQuests = GetNumQuestLogEntries()
 		self.Text:SetText(format(DataText.NameColor.."Quests: |r"..DataText.ValueColor.."%s%s".."|r", numQuests, "/25"))
 		if C["DataTexts"]["Icons"] == true then
@@ -104,12 +111,6 @@ else
 			self.icon:SetTexture([[Interface\AddOns\MaxUI\Medias\Icons\Menu\cQuest.tga]])
 			self.icon:SetVertexColor(unpack(C["DataTexts"].ValueColor))
 		end
-		
-		--if C["Quests"]["TrackerFixed"] == true then
-			--QuestWatchFrame:SetParent(self)
-			--QuestWatchFrame:ClearAllPoints()
-			--QuestWatchFrame:SetPoint("TOP", self, "TOP", 0, -20)
-		--end
 		
 		self:SetScript("OnEnter", function(self)
 			self.Text:SetText(format(DataText.HighlightColor.."Quests: |r"..DataText.HighlightColor.."%s%s".."|r", numQuests, "/25"))
@@ -135,20 +136,15 @@ else
 	end
 
 	local OnMouseDown = function()
-		if QuestWatchFrame:IsShown() then
-			QuestWatchFrame:Hide()
+		if TukuiObjectiveTracker:IsShown() then
+			TukuiObjectiveTracker:Hide()
 		else
-			QuestWatchFrame:Show()
+			TukuiObjectiveTracker:Show()
 		end
 	end
 
 	local Enable = function(self)
-	local numEntries, numQuests = GetNumQuestLogEntries()
-		--if C["Quests"]["TrackerFixed"] == true then
-		--	self.Text:SetText(format(DataText.ValueColor.."%s%s".."|r", numQuests, "/25"))
-		--	self.Text:SetJustifyH("RIGHT")
-		--end
-
+		local numEntries, numQuests = GetNumQuestLogEntries()
 		self:RegisterEvent("PLAYER_ENTERING_WORLD")
 		self:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
 		self:RegisterEvent("QUEST_LOG_UPDATE")

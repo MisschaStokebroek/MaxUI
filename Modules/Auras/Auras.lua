@@ -100,7 +100,7 @@ function Auras:PositionAuras()
 		Buffs:ClearAllPoints()
 		Buffs:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -24, -y)
 		if C["Location"]["Position"]["Value"] == "Topright" then
-			Buffs:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", -8, 1)
+			Buffs:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", -4, 1)
 		end	
 	end
 end

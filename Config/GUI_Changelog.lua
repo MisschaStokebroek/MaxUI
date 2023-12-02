@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 -- MaxUI 6.5 - TUKUI 20
--- latest update: 27-08-2023
+-- latest update: 05-11-2023
 ------------------------------------------------------------------------------------------
 
 -- CHANGELOG for Extended GUI
@@ -47,6 +47,19 @@ local MaxUIChangelog = function(self)
 	Window:CreateTextLine("All", "|cffFFFF99explain to me how I can reprodue the problem.|r")
 	Window:CreateSpacerNoPos("All")
 	
+	Window:CreateSection("All", "MaxUI 6.706")
+	Window:CreateTextLine("All", "- ALL: TOC update for Tukui 20.41 and WoW Retail 10.2.")
+	Window:CreateTextLine("All", "- ALL: changed Addons section, added buttons to disable.")
+	Window:CreateTextLine("All", "- ALL: Changed sizing and anchoring for vehicle exit button, not noticable.")
+	Window:CreateSpacerNoPos("All")
+	Window:CreateTextLine("All", "- RETAIL: reworked the quest datatext and objectivetracker anchoring.")
+	Window:CreateTextLine("All", "- CLASSIC: reworked the quest datatext and objectivetracker anchoring.")
+	Window:CreateTextLine("All", "- WOTLK: objectivetracker and anchoring wip.")
+	Window:CreateSpacerNoPos("All")
+	Window:CreateTextLine("All", "- ALL: partial skin for RareScanner")
+	Window:CreateTextLine("All", "- ALL: added options for the minimap buttonbar from ProjectAzilroka.")
+
+
 	Window:CreateSection("All", "MaxUI 6.705")
 	Window:CreateTextLine("All", "- ALL: minor fixes for error and bug reports from the MaxUI discord.")
 	Window:CreateSpacerNoPos("All")
