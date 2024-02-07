@@ -18,6 +18,9 @@ local function SkinColorPickerPlusSkinToMaxUIStyle()
 	if ColorPickerFrame.IsMaxUISkinned then return end
 	C["Skins"]["ColorPicker"] = false
 
+	local ColorPickerOkayButton = ColorPickerFrame.Footer.OkayButton
+	local ColorPickerCancelButton = ColorPickerFrame.Footer.CancelButton
+
 	ColorPickerFrame:EnableMouse(true)
 
 	for i = 1, ColorPickerFrame:GetNumRegions() do

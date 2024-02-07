@@ -1,4 +1,4 @@
-## Interface: 11405
+## Interface: 11501
 ## Author: Maximvs
 ## Version: 6.706
 ## Title:MaxUI

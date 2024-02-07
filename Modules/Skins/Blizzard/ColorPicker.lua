@@ -42,8 +42,14 @@ local function SkinBlizzardToMaxUIStyleColorPicker()
 		ColorPickerFrame.Center:Hide()
 	end
 
-	ColorPickerOkayButton:SkinMaxUIButton(true)
-	ColorPickerCancelButton:SkinMaxUIButton(true)
+	
+	if T.Retail then
+		ColorPickerFrame.Footer.OkayButton:SkinMaxUIButton(true)
+		ColorPickerFrame.Footer.CancelButton:SkinMaxUIButton(true)
+	else
+		ColorPickerOkayButton:SkinMaxUIButton(true)
+		ColorPickerCancelButton:SkinMaxUIButton(true)
+	end
 end
 
 ------------------------------------------------------------------------------------------

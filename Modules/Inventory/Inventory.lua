@@ -126,6 +126,8 @@ function Bags:CreateContainer(storagetype, ...)
 				local SlotNormalTexture = _G[Button:GetName().."NormalTexture"]
 
 				Button:SkinMaxUIFrame()
+				Button:SetFrameLevel(20)
+
 
 				if T.Retail then
 					Button.CircleMask:Hide()
